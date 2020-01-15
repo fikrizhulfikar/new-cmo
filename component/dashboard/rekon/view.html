@@ -1,0 +1,127 @@
+<!--<div class="portlet box red-flamingo">-->
+    <!--<div class="portlet-title">-->
+        <!--<div class="caption">Realisasi Program Penurunan BPP Bulan Desember 2018</div>-->
+    <!--</div>-->
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <input type="hidden" class="form-control" data-ng-model="cari.thblmin" ng-disabled="true"/>
+                <input type="hidden" class="form-control" data-ng-model="cari.thblmax" ng-disabled="true"/>
+                <div data-alt-component="alt/fusioncharts" data-scope="chart"></div>
+            </div>
+        </div>
+    </div>
+<!--</div>-->
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" name="form">
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-2 col-sm-12 control-label">Jenis Layanan</label>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <input type="text" class="form-control" data-ng-model="modal.jenis_layanan" ng-disabled="true"/>
+                    </div>
+                    <div class="actions">
+                        <div data-alt-component="alt/button" data-scope="btnprint"></div>
+                    </div>
+                </div>
+            </form>
+            <div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+                <div id="datarekon">
+                    <table
+                            class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                        <thead>
+                        <tr>
+                            <th width="1%" align="left" style="vertical-align: middle;">
+                                <div align="center">No </div>
+                            </th>
+                            <th width="1%" align="left"
+                                style="vertical-align: middle;">
+                                <div align="center">Nama Unit </div>
+                            </th>
+                            <th width="3%" align="left"
+                                style="vertical-align: middle;">
+                                <div align="center">No SO </div>
+                            </th>
+                            <th width="5%" align="left" style="vertical-align: middle;">
+                                <div align="center">Tanggal Proses</div>
+                            </th>
+                            <th width="5%" align="left" style="vertical-align: middle;">
+                                <div align="center">No SID </div>
+                            </th>
+                            <th width="5%" align="left" style="vertical-align: middle;">
+                                <div align="center">Jenis Layanan</div>
+                            </th>
+                            <th width="40%" align="left" style="vertical-align: middle;">
+                                <div align="center">Keterangan</div>
+                            </th>
+                            <th align="left" style="vertical-align: middle;">
+                                <div align="center">Jumlah</div>
+                            </th>
+                            <th align="left" style="vertical-align: middle;">
+                                <div align="center"> Kapasitas</div>
+                            </th>
+                            <th width="5%" align="left" style="vertical-align: middle;">
+                                <div align="center">Harga Satuan</div>
+                            </th>
+                            <th align="left" style="vertical-align: middle;">
+                                <div align="center">Total</div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tr data-ng-repeat="item in modal.data" data-ng-init="btnedit = btnedit(index, item);
+								btnremove = btnremove(index, item); btnlogged = btnlogged(index, item); btnenabled = btnenabled(index, item);
+								btnpassword = btnpassword(index, item);">
+                            <td align="center" style="line-height: 2.3;>
+												<div align="center"></div>{{$index + table.offset + 1}}
+                </td>
+                <td align="left" style="line-height: 2.3">
+                    <div align="left" style="white-space: nowrap;">{{ item.nama_unit }} -
+                        {{ item.wilayah }}</div>
+                </td>
+                <!-- <td style="white-space:nowrap">
+                    {{ moment(item.thbllap, 'YYYYMM').isValid() ? moment(item.thbllap, 'YYYYMM').format('MMM-YYYY') : '' }}
+                </td> -->
+                <td align="left" style="line-height: 2.3">
+                    <div align="center" style="white-space:nowrap">
+                        <strong>{{ item.nomor_so }}</strong></div>
+                </td>
+                <td align="left" style="line-height: 2.3">
+                    <div align="left" style="white-space: nowrap">{{ item.tanggal_proses |date }}
+                    </div>
+                </td>
+                <td align="left" style="white-space: nowrap; line-height: 2.3">
+                    <strong>{{item.nomor_sid}}</strong>
+                </td>
+                <!-- <td style="text-align: right;">
+                    {{item.wilayah}}
+                </td> -->
+                <td style="text-align: right; white-space: nowrap; line-height: 2.3">
+                    {{item.jenis_layanan}}
+                </td>
+                <td style="text-align: left; white-space: nowrap; line-height: 2.3">
+                    {{item.keterangan}}
+                </td>
+                <td style="text-align: center; line-height: 2.3">
+                    {{item.jumlah}}
+                </td>
+                <td style="text-align: left; line-height: 2.3">
+                    {{item.kapasitas}}
+                </td>
+                <td style="text-align: right; white-space: nowrap; line-height: 2.3">
+                    {{item.harga_satuan | number}}
+                </td>
+                <td style="text-align: right; line-height: 2.3">
+                    {{item.total | number}}
+                </td>
+                </tr>
+                <tr>
+                    <td style="" colspan="10" align="center"> Total</td>
+                    <td style="text-align: right;"><b>{{accounting.formatNumber(accounting.unformat(total_biaya,','), 0, '.', ',')}}</b> </td>
+                </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

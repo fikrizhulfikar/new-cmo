@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="asset/lib/select2/css/select2.min.css">
+<form class="form-horizontal" name="form" autocomplete="off">
+    <div class="form-group">
+        <label class="col-lg-2 col-md-3 col-sm-2 control-label">Unit Pemohon</label>
+        <div class="col-lg-10 col-md-6 col-sm-10">
+            <input type="text" class="form-control" name="namaunit" placeholder="{{action == 'view' ? '' : 'Nama Unit'}}" data-ng-model="data.usrPermohonan_namaunit" disabled/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor Surat</label>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Nomor Surat'}}" data-ng-model="data.usrPermohonan_nomorsurat" disabled/>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Tanggal Surat</label>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <input type="text" date-time auto-close="true" view="date" min-view="date" max-view="year" format="dd MMMM yyyy" watch-direct-changes class="form-control" name="tglsurat" placeholder="{{action == 'view' ? '' : 'Tanggal Surat'}}" data-ng-model="data.usrPermohonan_tglsurat2" disabled/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Perihal Pekerjaan</label>
+        <div class="col-lg-10 col-md-6 col-sm-10">
+            <textarea rows="2" class="form-control" name="perihal" placeholder="{{action == 'view' ? '' : 'Perihal'}}" data-ng-model="data.usrPermohonan_pekerjaan" disabled></textarea>
+        </div>
+    </div>
+</form>

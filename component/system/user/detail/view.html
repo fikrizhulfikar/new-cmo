@@ -1,0 +1,102 @@
+<link rel="stylesheet" href="asset/lib/ui-select/dist/select.min.css">
+
+<form class="form-horizontal" style="padding-bottom: 20px;" name="form">
+    <div class="form-group">
+        <label for="username" class="col-lg-2 col-md-2 col-sm-2 control-label">Username</label>
+        <div class="col-md-6 col-sm-10">
+            <input type="text" class="form-control" name="username" id="username" placeholder="Username" data-ng-model="user.username" data-ng-readonly="action=='edit' || action=='chpasswd'">
+        </div>
+    </div>
+
+    <!-- INPUT PASSWORD UNTUK FORM ADD USER-->
+    <div data-ng-if="action == 'add'">
+        <div class="form-group">
+            <label for="password" class="col-lg-2 col-md-2 col-sm-2 control-label">Password</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" data-ng-model="user.password">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="konfirmasipassword" class="col-lg-2 col-md-2 col-sm-2 control-label">Konfirmasi Password</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="password" class="form-control" name="konf_password" id="konfirmasipassword" placeholder="Konfirmasi Password">
+            </div>
+        </div>
+    </div>
+
+    <!-- INPUT UNTUK FORM ADD/EDIT -->
+    <div data-ng-if="action != 'chpasswd'">
+        <input type="hidden" class="form-control" name="password" data-ng-model="user.password">
+        <div class="form-group">
+            <label for="nama" class="col-lg-2 col-md-2 col-sm-2 control-label">Nama</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" name="nama" id="nama" placeholder="Nama" data-ng-model="user.name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="alamat" class="col-lg-2 col-md-2 col-sm-2 control-label">Alamat</label>
+            <div class="col-md-6 col-sm-10">
+                <textarea class="form-control" name="alamat" id="alamat" placeholder="Alamat" data-ng-model="user.address"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email" class="col-lg-2 col-md-2 col-sm-2 control-label">Email</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" name="email" id="email" placeholder="Email" data-ng-model="user.email">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="phone" class="col-lg-2 col-md-2 col-sm-2 control-label">No. Telp</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" name="phone" id="phone" placeholder="No. Telp" data-ng-model="user.phone">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="unit" class="col-lg-2 col-md-2 col-sm-2 control-label">Unit</label>
+            <div class="col-md-6 col-sm-10">
+                <select id="unit" class="mitra form-control" name="unit" data-ng-model="user.unitid" data-ng-options="v.unitid as v.name for (k,v) in unit"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="usergroup" class="col-md-2 col-sm-2 control-label">Usergroup Utama</label>
+            <div class="col-md-6 col-sm-10">
+                <select id="usergroup" class="usergroup form-control" data-ng-model="user.usergroupid" name="usergroup" data-ng-options="v.usergroupid as v.name for (k,v) in usergroup"></select>
+            </div>
+        </div>
+        <!-- <input type="hidden" name="isenabled" data-ng-model="user.isenabled" value="1"> -->
+        <div class="form-group">
+            <label for="usergroup" class="col-md-2 col-sm-2 control-label">Usergroup Tambahan</label>
+            <div class="col-md-6 col-sm-10">
+                <ui-select multiple data-ng-model="user.additionalusergroup" theme="bootstrap" style="min-height:29px">
+                    <ui-select-match placeholder="Usergroup tambahan">{{$item.name}}</ui-select-match>
+                    <ui-select-choices repeat="u.usergroupid as u in usergroup | filter: {name: $select.search}">
+                        <div ng-bind-html="u.name | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+    </div>
+
+    <!-- INPUT PASSWORD BARU UNTUK FORM CHANGE PASSWORD -->
+    <div data-ng-if="action == 'chpasswd'">
+        <input type="hidden" class="form-control" name="password" data-ng-model="user.password">
+        <div class="form-group">
+            <label for="newpassword" class="col-md-2 col-sm-2 control-label">Password Baru</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="password" class="form-control" data-ng-model="user.newpassword" id="newpassword" placeholder="Password Baru"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="newkonfirmasipassword" class="col-md-2 col-sm-2 control-label">Konfirmasi Password Baru</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="password" class="form-control" data-ng-model="user.confnewpass" id="newkonfirmasipassword" placeholder="Konfirmasi Password Baru"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="pull-right">
+        <div data-alt-component="alt/button" data-scope="btnsave"></div>
+        <div data-alt-component="alt/button" data-scope="btncancel"></div>
+    </div>
+
+</form>

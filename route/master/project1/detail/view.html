@@ -1,0 +1,182 @@
+<style type="text/css">
+    .header-alfa{
+        background-color: #24a9e1;
+
+        text-align: center;
+    }
+
+    td .progress{
+        border-radius:20px !important;
+    }
+
+    .progress-bar {
+        vertical-align: top;
+        border-radius:20px !important;
+        width: 0;
+        animation: progress 1.5s ease-in-out forwards;
+
+    .title {
+        opacity: 0;
+        animation: show 0.35s forwards ease-in-out 0.5s;
+    }
+    }
+
+    @keyframes progress {
+        from {
+            width: 0;
+        }
+        to {
+            width: 100%;
+        }
+    }
+    @keyframes show  {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    progress[value]::-webkit-progress-value::before {
+        content: '80%';
+        position: absolute;
+        right: 0;
+        top: -125%;
+    }
+    @mediaprint {
+        thead {display: table-header-group;}
+    }
+
+</style><!--<link rel="stylesheet" type="text/css" href="asset/css/rowspan.css" />-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <img class="pull-left" src="asset/img/plnlogo2.png" height="60">
+            </div>
+        </div>
+        </br>
+
+        <div class="panel panel-default" style="border: 0 !important; border-radius: 5px !important; box-shadow: 0px 0px 20px -12px rgba(41,41,41,1) !important;">
+            <table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+                <tbody><tr>
+                    <th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt=""></th>
+                    <th class="topleft"></th>
+                    <!--<td id="tbl-border-top">&nbsp;</td>-->
+                    <th class="topright"></th>
+                    <th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt=""></th>
+                </tr>
+                <tr>
+                    <td id="tbl-border-left"></td>
+                    <td>
+
+                        <div class="portlet-body">
+
+                            <form class="form-horizontal" name="form">
+                                <!--<hr>-->
+                                <div class="row">
+                                    <div class="col-lg-12" style="text-align: center;">
+                                        <h3><b>Master Stream</b></h3>
+                                        <hr>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="wilayah" class="col-lg-2 col-md-2 col-sm-2 control-label"> Project : </label>
+                                            <div class="col-md-9 col-sm-4">
+                                            <input type="text" data-ng-model="project.nama_project" class="form-control" disabled>    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <!--<span data-alt-component="alt/button" data-scope="btnadd" class="pull-left"></span>-->
+                                        <div style="margin-left: 10px">
+                                            <span data-alt-component="alt/button" data-scope="btnadd" class="pull-left"></span>
+                                        </div>
+                                        <div style="margin-bottom:10px;padding-right:0" class="col-lg-2 col-lg-offset-5">
+                                            <select class="form-control" data-ng-model="filter.key">
+                                                <option value="">Jenis Pencarian</option>
+                                                <option value="nama_stream">Nama Stream</option>
+                                            </select>
+                                        </div>
+                                        <div style="margin-bottom:10px;padding-right:0" class="col-lg-3" data-ng-if="filter.key != 'id_stream'">
+                                            <input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+                                        </div>
+                                        <div style="margin-bottom:10px;padding-right:0" class="col-lg-3" data-ng-if="filter.key == 'id_stream'">
+                                            <select class="form-control" data-ng-model="filter.value">
+                                                <option value="">Semua Stream</option>
+                                                <option data-ng-repeat="(key,val) in refstream" value="{{key}}">{{val.name}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                </div>
+                            </form>
+                            <div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+                                <div class="table-responsive">
+                                    <div id="datatargetform">
+                                        <table style="width: 100%; max-width: 100%;" id="fixTable" class="table table-bordered table-fixed table-striped">
+                                            <thead style="background-color: #00a2b9; ">
+                                            <tr style="color: white;">
+                                                <th class="text-center" style="width:1%; vertical-align: middle;">No</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Nama Project</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Nama Stream</th>
+                                                <th class="text-center" style="width:1%; vertical-align: middle;">Aksi</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr data-ng-repeat="item in table.data" data-ng-init="btnedit = btnedit(index, item);  btnremove = btnremove(index, item);     ">
+                                                <td style="text-align: center; vertical-align: middle;">{{ $index + table.offset + 1 }}</td>
+                                                <!-- <td>{{ item.nama_indikator }}</td> -->
+                                                <td style="text-align: left; vertical-align: left;">{{ item.nama_project }}</td>
+                                                <td style="text-align: left; vertical-align: left;">{{ item.nama_stream }}</td>
+
+                                                <td class="text-center" style="white-space:nowrap">
+                                                    <div data-alt-component="alt/button" data-scope="btnedit" ></div>
+                                                    <div data-alt-component="alt/button" data-scope="btnremove" ></div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-sm-12">
+            <form>
+                <div class="form-group">    
+                    <label class="label" style="color: black;">Nama Project :</label>
+                    <input type="nama_project" data-ng-model="project.nama_project" class="form-control" disabled>
+                </div>
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Nama Stream :</label>
+                    <input type="nama_stream" data-ng-model="stream.nama_stream" class="form-control">
+                </div>
+
+                <hr>
+                <div class="pull-right">
+                    <div data-alt-component="alt/button" data-scope="btnsave"></div>
+                    <div data-alt-component="alt/button" data-scope="btnclose"></div>
+                </div>
+             </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,254 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'asset/js/accounting.min',
+    'component/alt/button/service',
+    'component/system/user',
+    'component/activiti/task',
+    'component/iconplus/master/kategori',
+    'component/iconplus/sap',
+    'component/iconplus/master/templaterab',
+    'component/proyek/inputrab',
+    'component/proyek/rabwbs',
+    'component/iconplus/master/biaya',
+    'component/iconplus/master/vproduk',
+    'component/iconplus/generatedoc',
+    'component/iconplus/master/vrabproyekrabproyekhi'
+], function (moment, accounting) {
+    return ['$scope', '$auth', '$routeParams', "$export", "$api", '$q', '$log', '$button', '$popup', '$validate', '$alert', '$window', 'Activiti_Task', 'Proyek_Input_Rab', "Iconplus_Master_Template_Rab", "Proyek_Rab_Wbs",
+        "Iconplus_Master_Biaya", "Iconplus_Sap", 'Iconplus_Generatedoc', "View_RabProyek_RabProyekHI",'Master_VProduk',
+        function ($scope, $auth, $routeParams, $export, $api, $q, $log, $button, $popup, $validate, $alert, $window, Activiti_Task, Proyek_Input_Rab, Iconplus_Master_Template_Rab, Proyek_Rab_Wbs,
+                  Iconplus_Master_Biaya, Iconplus_Sap, Iconplus_Generatedoc, View_RabProyek_RabProyekHI,Master_VProduk) {
+            $scope.action = $routeParams.action;
+            $scope.actionmodal = '';
+            $scope.moment = moment;
+            $scope.accounting = accounting;
+            $scope.isrevisi = $routeParams.isrevisi;
+
+            $scope.table = {
+                data: {}
+            };
+
+            $scope.tableKegiatan = {
+                data: {},
+                isloading: null
+            };
+            $scope.tableBLP = {
+                data: {},
+                isloading: null
+            };
+
+            $scope.tableBLNP = {
+                data: {},
+                isloading: null
+            };
+
+            $scope.tableTotal = {
+                data: [],
+                isloading: null
+            };
+
+
+            Proyek_Input_Rab.list({
+                    where: "proc_inst_id_=" + $routeParams.processInstanceId,
+                    order: "id_rab asc"
+                }).then(function (response) {
+                var temp = [];
+                var totalBLP = 0, totalBLNP = 0, total = 0;
+                angular.forEach(response.data, function (val, key) {
+                    if (val.tipe_rab == "BLP") {
+                        totalBLP += +val.subtotal_harga_satuan || 0;
+                    } else if (val.tipe_rab == "BLNP") {
+                        totalBLNP += +val.subtotal_harga_satuan || 0;
+                    }
+                    if (val.rab_code == "2") {
+                        // temp.push({rab_code: "0", nama_kegiatan: "TOTAL BLP", subtotal_harga_satuan: totalBLP});
+                    }
+                    temp.push(val);
+
+                });
+                // temp.push({rab_code: "", nama_kegiatan: "TOTAL BLNP", subtotal_harga_satuan: totalBLNP});
+                // temp.push({rab_code: "", nama_kegiatan: "GRAND TOTAL", subtotal_harga_satuan: total});
+
+                $scope.tableTotal.data = temp;
+                // $scope.tableTotal.data = customSort($scope.tableTotal.data, 'rab_code');
+                // $scope.tableTotal.data = $scope.customnumber($scope.tableTotal.data, 'level_rab');
+                $scope.totalrab = totalBLNP;
+            });
+
+
+            $scope.id = $routeParams.id;
+            $scope.data = {
+                id: $routeParams.id,
+                processInstanceId: $routeParams.processInstanceId
+            };
+
+            $scope.masterbiaya = [];
+            Iconplus_Master_Biaya.list().then(function (response) {
+                $scope.masterbiaya = response.data;
+            });
+
+            $scope.calculate = function (week) {
+                var totalrencanabiaya = 0;
+                var rencanabiaya = 0;
+                for (var i = 1; i <= week; i++) rencanabiaya += accounting.unformat($scope.table.data[i].rencanabiaya, ",");
+
+                angular.forEach($scope.table.data, function (val, key) {
+                    totalrencanabiaya += accounting.unformat(val.rencanabiaya, ",");
+                });
+                $scope.table.data[week].rencanabiaya = accounting.formatNumber(accounting.unformat($scope.table.data[week].rencanabiaya, ","), 0, '.', ',');
+                $scope.totalrencanabiaya = totalrencanabiaya;
+                $scope.table.data[week].persentase = (rencanabiaya / nilaipenugasan * 100).toFixed(2);
+                $scope.btnsave.disabled = (totalrencanabiaya != nilaipenugasan);
+            };
+            $scope.check = function (week) {
+                $scope.btnsave.disabled = true;
+                angular.forEach($scope.table.data, function (val, key) {
+                    if (val.persentase >= 100) $scope.btnsave.disabled = false;
+                });
+            };
+
+            $scope.calculateblnp = function () {
+                if ($scope.modalblnp.data.harga_satuan != null && $scope.modalblnp.data.volume != null) {
+                    $scope.modalblnp.data.subtotal_harga_satuan = $scope.modalblnp.data.harga_satuan * $scope.modalblnp.data.volume;
+                }
+            };
+
+
+            $scope.datakontrak = {};
+            $scope.datapermohonan = {};
+            var nilaipenugasan = 0;
+            $scope.isspvkonstruksi = false;
+            $scope.retrieve = function () {
+
+            };
+            $scope.retrieve();
+
+
+
+            $scope.modalrencana = {
+                header: 'Tambah RAB',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+
+            $scope.modalblnp = {
+                header: 'Update BLNP',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+
+            $scope.modalrencanatemplate = {
+                namatemplate: "",
+                header: 'Buat RAB Dari Template',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+
+            $scope.parents = [];
+            $scope.getParent = function (item, addItemCode) {
+                addItemCode = addItemCode || false;
+                var codes = item.rab_code.split(".");
+                Proyek_Input_Rab.list({
+                    level_rab: "< " + (+item.level_rab),
+                    where: "rab_code like '" + codes[0] + "%%'",
+                    proc_inst_id_: "= '" + $routeParams.processInstanceId + "'",
+                    order: "id_rab asc"
+                }).then(function (response) {
+                    $scope.parents = [];
+                    for (var i = 0; i <= response.data.length - 1; i++) {
+                        $scope.parents.push(response.data[i].rab_code);
+                    }
+                    if (addItemCode) $scope.parents.push(item.rab_code);
+                    if ($scope.parents.length > 0) $scope.parents = "" + $scope.parents.join(" → ") + "";
+                    else $scope.parents = "";
+                });
+            };
+
+
+            // get wbs list
+
+            var responsekegiatan = Proyek_Input_Rab.list({
+                where: "proc_inst_id_=" + $routeParams.processInstanceId
+                + " and tipe_rab = 'BLNP'"
+                + " and (((iskerangka != 1 or iskerangka is null) and id_biaya is null) or rab_code = '2')"
+            });
+
+            responsekegiatan.then(function (response) {
+                $scope.tableKegiatan.data = response.data;
+                // $scope.tableKegiatan.data = customSort($scope.tableKegiatan.data, 'rab_code');
+                // $scope.tableKegiatan.data = $scope.customnumber($scope.tableKegiatan.data, 'level_rab');
+                $scope.modalrencanaparent = null;
+            });
+
+                var responseblp = Proyek_Input_Rab.list({
+                    where: "proc_inst_id_ = " + $routeParams.processInstanceId
+                    + " and tipe_rab = 'BLP'",
+                    order: "id_rab asc"
+                });
+            responseblp.then(function (response) {
+                $scope.tableBLP.data = response.data;
+            });
+
+
+            //
+
+
+
+            $scope.getbiaya = {selected: undefined};
+            $scope.listbiaya = [];
+            $scope.keyvalbiaya = {};
+            Iconplus_Master_Biaya.list().then(function (response) {
+                $scope.listbiaya = response.data;
+                angular.forEach(response.data, function (val, key) {
+                    $scope.keyvalbiaya[val.id_biaya] = val;
+                });
+            });
+
+            $scope.pilih_biaya = function (item) {
+                $scope.wbs.data.satuan = item.satuan;
+                $scope.wbs.data.harga_satuan = item.rate_biaya;
+                $scope.wbs.data.nama_kegiatan = item.nama_biaya;
+                $scope.wbs.data.subtotal_harga_satuan = parseInt($scope.wbs.data.harga_satuan) * parseInt($scope.wbs.data.volume);
+            };
+            // referensi
+            $scope.ref = {
+                pegawai: {}
+            };
+
+            $scope.wbs = {
+                data: {}
+            };
+
+            $scope.calculate = function () {
+                if ($scope.wbs.data.harga_satuan != null && $scope.wbs.data.volume != null) {
+                    $scope.wbs.data.subtotal_harga_satuan = $scope.wbs.data.harga_satuan * $scope.wbs.data.volume;
+                }
+            };
+
+            // btn cancel
+            $scope.btncancelmodaltemplate = $button($scope.action == 'view' ? 'back' : 'cancel', {
+                onclick: function () {
+                    $scope.modalrencanatemplate.close();
+                }
+            });
+
+            // get is activity value
+            $scope.wbs.data.isactivity = 0;
+            $scope.isActivity = function () {
+                if ($scope.wbs.data.is_activity) {
+                    $scope.wbs.data.isactivity = 1;
+                } else {
+                    $scope.wbs.data.isactivity = 0;
+                    $scope.wbs.data.id_pegawai = null;
+                    $scope.wbs.data.nama_pegawai = null;
+                    $scope.wbs.data.tgl_awal = null;
+                    $scope.wbs.data.tgl_akhir = null;
+                }
+            };
+
+        }
+    ];
+});

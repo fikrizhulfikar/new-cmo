@@ -1,0 +1,14 @@
+<div class="panel panel-danger">
+    <div class="panel-heading" style="min-height: 40px;">
+        <h1 class="panel-title">Daftar Proyek Aktif</h1>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item" data-ng-repeat="project in data">
+            <a data-ng-href="{{ alt.baseUrl + 'dashboard/project' }}?projectid={{ project['id'] }}">{{ project['nama'] }}</a>
+            <span class="badge badge-danger">{{ project['progress'] }}%</span>
+            <div class="progress progress-striped" style="height: 5px; margin-bottom: 5px;">
+                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ project['progress'] }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ project['progress'] }}%"></div>
+            </div>
+        </li>
+    </ul>
+</div>

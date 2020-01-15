@@ -1,0 +1,91 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'component/alt/button/service',
+    'component/iconplus/master/penugasan',
+    'component/iconplus/master/vruanglingkuppenugasan'
+], function(moment){
+    return [
+        '$scope', '$routeParams', '$log', '$button', '$popup', '$validate', '$alert', '$window', 'Iconplus_VRuang_Lingkup_Penugasan',
+        'Iconplus_Master_Penugasan',
+        function($scope, $routeParams, $log, $button, $popup, $validate, $alert, $window, Iconplus_VRuang_Lingkup_Penugasan,
+                 Iconplus_Master_Penugasan){
+            $scope.info = {};
+            $scope.action = "view";
+
+            $scope.dokumenpenugasan = {
+                isupload: false,
+                isview: true,
+                accept:'application/pdf',
+                data:{}
+            };
+
+            // referensi
+            $scope.ref = {
+                unit: {},
+                kategori: {},
+                type: {},
+                customer: {}
+            };
+            $scope.dokumenpenugasan = {
+                isupload: false,
+                isview: true,
+                accept:'application/pdf',
+                data:{}
+            };
+            Iconplus_Master_Penugasan.retrieve({
+                id :  $routeParams.penugasanid
+            }).then(function(response){
+                $scope.info = response.data;
+                // console.log(response.data);
+                $scope.dokumenpenugasan.data = response.data.dokumen;
+            });
+
+            Iconplus_VRuang_Lingkup_Penugasan.list({where:"penugasanid = '"+$routeParams.penugasanid+"'"}).then(function (response) {
+                $scope.listitemruanglingkup = response.data;
+            });
+
+
+
+            $scope.$watch('info.tglsurat', function(val){
+                if(val) {
+                    $scope.info.tglsurat2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+
+            $scope.$watch('info.tglsurat2', function(val){
+                if(val) {
+                    $scope.info.tglsurat = moment(val).format('YYYYMMDD');
+                }
+            });
+
+            $scope.$watch('info.tglmulai', function(val){
+                if(val) {
+                    $scope.info.tglmulai2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+
+            $scope.$watch('info.tglmulai2', function(val){
+                if(val) {
+                    $scope.info.tglmulai = moment(val).format('YYYYMMDD');
+                }
+            });
+
+            $scope.$watch('info.targetselesai', function(val){
+                if(val) {
+                    $scope.info.targetselesai2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+
+            $scope.$watch('info.targetselesai2', function(val){
+                if(val) {
+                    $scope.info.targetselesai = moment(val).format('YYYYMMDD');
+                }
+            });
+
+
+            $scope.getData = function(){
+                return angular.copy($scope.data);
+            };
+        }
+    ];
+});

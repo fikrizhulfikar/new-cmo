@@ -1,0 +1,98 @@
+<!-- <div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div> -->
+<!-- <div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div> -->
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa icon-energy"></i>Master Tahapan
+					</div>
+					<div class="actions">
+						<div data-alt-component="alt/button" data-scope="btnadd" class="pull-right"></div>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="row">
+                        <div class="form-group" style="margin-bottom:10px">
+                            <label for="wilayah" class="col-lg-2 col-md-2 col-sm-2 control-label"> Project : </label>
+                            <div class="col-md-9 col-sm-4">
+                            <!-- <input type="text" data-ng-model="project.nama_project" class="form-control" disabled> -->
+                            <ui-select ng-model="project.selected" on-select="pilih_project($select.selected)" theme="bootstrap" style="min-height:29px">
+                                <ui-select-match   placeholder="{{project.nama_project}}">{{$select.selected.nama_project}}</ui-select-match>
+                                <ui-select-choices repeat="c in listproject | filter: $select.search  | limitTo: 60">
+                                <small ng-bind-html="c.nama_project | highlight: $select.search"></small></br>
+                                </ui-select-choices>
+                            </ui-select>    
+                            </div>
+                        </div>
+						<div style="margin-bottom:10px;padding-right:0;text-align: right;margin-top: 10px;" class="col-lg-3 col-lg-offset-5">
+							<select class="form-control" data-ng-model="filter.key">
+								<option value="">Jenis Pencarian</option>
+								<option value="nama_tahapan">Nama Tahapan</option>
+							</select>
+						</div>
+						<div style="margin-bottom:10px;padding-right:10px;margin-top: 10px;" class="col-lg-4" data-ng-if="filter.key != 'id_tahapan'">
+							<input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+						</div>
+						<div style="margin-bottom:10px;padding-right:10px;margin-top: 10px;" class="col-lg-4" data-ng-if="filter.key == 'id_tahapan'">
+							<select class="form-control" data-ng-model="filter.value">
+								<option value="">Semua Tahapan</option>
+								<option data-ng-repeat="(key,val) in reftahapan" value="{{key}}">{{val.nama_tahapan}}</option>
+							</select>
+						</div>
+					</div>
+					<div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+					    <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+					        <thead>
+					        <tr>
+					            <th class="text-center" style="width:1%; vertical-align: middle;">No</th>
+								<th class="text-center" style="width:4%;vertical-align: middle;">Nama Tahapan</th>
+					            <th class="text-center" style="width:1%; vertical-align: middle;">Aksi</th>
+								<!--<th class="text-center" style="width: 120px;">Aksi</th>-->
+					        </tr>
+					        </thead>
+					        <tr data-ng-repeat="item in table.data | filter:table.filter" data-ng-init="btnedit = btnedit(index, item);
+					            btnremove = btnremove(index, item);
+					            btnview = btnview(index, item);">
+					            <td style="text-align: center; vertical-align: middle;">{{ $index + table.offset + 1 }}.</td>
+								<td style="text-align: left; vertical-align: left;">{{ item.nama_tahapan }}</td>
+								<td class="text-center" style="white-space:nowrap">
+                                    <div data-alt-component="alt/button" data-scope="btnview" ></div>
+                                    <div data-alt-component="alt/button" data-scope="btnedit" ></div>
+                                    <div data-alt-component="alt/button" data-scope="btnremove" ></div>
+                                </td>
+					        </tr>
+					    </table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-sm-12">
+            <form>
+                <div class="form-group">    
+                    <label class="label" style="color: black;">Nama Project :</label>
+                    <input type="nama_project" data-ng-model="project.nama_project" class="form-control" disabled>
+                </div>
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Nama Tahapan :</label>
+                    <input type="nama_tahapan" data-ng-model="tahapan.nama_tahapan" class="form-control">
+                </div>
+
+                <hr>
+                <div class="pull-right">
+                    <div data-alt-component="alt/button" data-scope="btnsave"></div>
+                    <div data-alt-component="alt/button" data-scope="btnclose"></div>
+                </div>
+             </div>
+            </form>
+        </div>
+    </div>
+</div>

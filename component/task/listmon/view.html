@@ -1,0 +1,73 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="row">
+				<div class="col-md-12 filter">
+					<div class="col-lg-3 col-sm-12 col-lg-offset-5 col-sm-offset-12">
+						 <select class="form-control" data-ng-model="filter.key">
+							<option value="" selected="selected" disabled="disabled">- Jenis Pencarian -</option>
+							 <option value="nomor_po">Nomor PO</option>
+							 <!--<option value="nama_vendor">Nama Vendor</option>-->
+							 <option value="pekerjaan">Judul Pekerjaan</option>
+							 <option value="nama_vendor">Nama Vendor</option>
+							 <option value="nomor_invoice">Nomor Invoice</option>
+							 <option value="tgl_invoice">Tanggal Invoice</option>
+							 <!--<option value="tgl_proses">Tanggal Proses</option>-->
+							<!--<option value="location">Lokasi</option>-->
+						</select>
+					</div>
+					<div class="col-lg-4 col-sm-12">
+						<input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+					</div>
+				</div>
+			</div>
+			<div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+				<table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+					<thead>
+					<!--CHARGECODE, PEKERJAAN, UNITASALNAMA, ID_BIDANG, NAMA_BIDANG, ID_PTL, NAMA_PTL, STATUS							-->
+					<tr>
+						<th style="white-space:nowrap;width: 80px;">No</th>
+						<th style="white-space:nowrap;width: 100px;">Nomor PO</th>
+						<th style="white-space:nowrap;width: 100px;">Tanggal PO</th>
+						<th style="white-space:nowrap;width: 300px;">Judul Pekerjaan</th>
+						<th style="white-space:nowrap;width: 220px;">Nama Vendor</th>
+						<th style="white-space:nowrap;width: 100px;">Nomor Invoice</th>
+						<th style="white-space:nowrap;width: 100px;">Tanggal Invoice</th>
+						<th style="white-space:nowrap;width: 100px;">Nilai Invoice</th>
+						<th style="white-space:nowrap;width: 100px;">Tanggal Upload</th>
+						<th style="white-space:nowrap;width: 180px;">Status</th>
+						<th class="text-center" style="white-space:nowrap;min-width: 135px;">Aksi</th>
+					</tr>
+					</thead>
+					<!--TASK_ID_, PROC_INST_ID_, EXECUTION_ID_, DEF_KEY, DEFINITIONKEY, COMPANYCODE, NAMA_VENDOR, KATEGORI, NOMOR_PO, PEKERJAAN, NOMOR_INVOICE, NOMOR_FAKTURPAJAK, TGL_INVOICE, DPP, TGLPROSES, TGLVERIFIKASI, STATUS-->
+					<tr data-ng-repeat="item in table.data | filter:table.filter" data-ng-init="btnedit = btnedit(index, item);
+						btnremove = btnremove(index, item);
+						btnview = btnview(index, item);">
+						<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+						<td style="white-space:nowrap;">{{ item.nomor_po }}</td>
+						<td style="white-space:nowrap">{{ moment(item.tanggal_po, 'YYYYMMDD').isValid() ? moment(item.tanggal_po, 'YYYYMMDD').format('DD MMM YYYY') : '' }}</td>
+						<td>{{ item.pekerjaan }}</td>
+						<td>{{ item.nama_vendor }}</td>
+						<td style="white-space:nowrap;">{{ item.nomor_invoice }}</td>
+						<td style="white-space:nowrap">{{ moment(item.tgl_invoice, 'YYYYMMDD').isValid() ? moment(item.tgl_invoice, 'YYYYMMDD').format('DD MMM YYYY') : '' }}</td>
+						<td style="text-align: right;">{{ item.dpp }}</td>
+						<td style="white-space:nowrap">{{ moment(item.tglproses, 'YYYYMMDD').isValid() ? moment(item.tglproses, 'YYYYMMDD').format('DD MMM YYYY') : '' }}</td>
+						<!--<td>{{ item.localVariable.task_status }}</td>-->
+						<!--<td style="white-space:nowrap">{{ item.localVariable.task_status ? item.localVariable.task_status : 'SUDAH DIBAYAR' }}</td>-->
+						<td>{{ item.status }}</td>
+						<!--<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">-->
+							<!--<div data-ng-repeat="button in buttons" style="display: inline;">-->
+								<!--<div data-alt-component="alt/button" data-scope="button"></div>-->
+							<!--</div>-->
+						<!--</td>-->
+						<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">
+							<div data-ng-repeat="button in buttons" style="display: inline;">
+								<div data-alt-component="alt/button" data-scope="button"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

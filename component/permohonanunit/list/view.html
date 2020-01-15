@@ -1,0 +1,55 @@
+<!--
+<link type="text/css" rel="stylesheet" media="all" href="asset/lib/bootstrap-table/dist/bootstrap-table.min.css">
+<link type="text/css" rel="stylesheet" media="all" href="asset/css/bootstrap-table-fixed-columns.css">
+-->
+
+<div class="row" style="margin-bottom: 5px">
+	<div style="padding:0; margin-bottom: 5px; padding-right: 10px;" class="col-lg-2 col-lg-offset-6 col-md-2 col-md-offset-6 col-sm-12 col-xs-12">
+		<select class="form-control" data-ng-model="filter.key">
+			<option value="">Jenis Pencarian</option>
+			<option value="usrPermohonan_nopo">Nomor PO</option>
+			<option value="usrPermohonan_namavendor">Nama Vendor</option>
+			<option value="usrPermohonan_pekerjaan">Judul Pekerjaan</option>
+			<option value="usrPermohonan_noinvoiceataukuitansi">Nomor Invoice</option>
+			<option value="usrPermohonan_tglinvoiceataukuitansi">Tanggal Invoice</option>
+		</select>
+	</div>
+	<div style="padding:0" class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+		<input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+	</div>
+</div>
+
+
+<div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+	<div class="table-responsive">
+		<table class="table table-hover table-responsive table-bordered table-condensed" id="fixTable">
+			<thead>
+
+			<tr>
+				<th style="white-space:nowrap;width: 80px;">No</th>
+				<th style="white-space:nowrap;width: 100px;">Nomor Surat</th>
+				<th style="white-space:nowrap;width: 100px;">Tanggal Surat</th>
+				<th style="white-space:nowrap;width: 250px;">Unit Pemohon</th>
+				<th style="white-space:nowrap;width: 350px;">Perihal Pekerjaan</th>
+				<th style="white-space:nowrap;width: 180px;">Status</th>
+				<th class="text-center" style="white-space:nowrap;min-width: 30px;">Aksi</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr data-ng-repeat="item in table.data" data-ng-init="rowCreated()">
+				<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+				<td style="white-space:nowrap;">{{ item.processVariable.usrPermohonan_nomorsurat }}</td>
+				<td style="white-space:nowrap">{{ moment(item.processVariable.usrPermohonan_tglsurat, 'YYYYMMDD').isValid() ? moment(item.processVariable.usrPermohonan_tglsurat, 'YYYYMMDD').format('DD MMM YYYY') : '' }}</td>
+				<td>{{ item.processVariable.usrPermohonan_namaunit }}</td>
+				<td>{{ item.processVariable.usrPermohonan_pekerjaan }}</td>
+				<td>{{ item.localVariable.task_status }}</td>
+				<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">
+					<div data-ng-repeat="button in buttons" style="display: inline;">
+						<div data-alt-component="alt/button" data-scope="button"></div>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

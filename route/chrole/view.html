@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="asset/lib/ui-select/dist/select.min.css">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4 col-sm-8 col-md-6 col-md-offset-3 col-lg-offset-4 col-sm-offset-2">
+            <div class="account-wall">
+                <h1 class="text-center login-title">Ganti Peran</h1>
+                <form class="form-signin" data-ng-submit="login()">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="form-control"  placeholder="Username" name="username" data-ng-model="data.username" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" placeholder="Password" name="password" data-ng-model="data.password">
+                    </div>
+                   <!-- <div class="form-group">
+                        <label>Peran Baru</label>
+                        <select class="form-control" data-ng-model="data.usergroupid">
+                            <option value="1">System Administrator</option>
+                            <option value="2">Direktur Enjiniring</option>
+                            <option value="3">Manajer Senior</option>
+                            <option value="4">Manajer Enjiniring</option>
+                            <option value="5">Manajer Pemasaran</option>
+                            <option value="6">QC</option>
+                            <option value="7">PTL</option>
+                            <option value="8">Timpro</option>
+                            <option value="9">Admin Manajer Enjiniring</option>
+                            <option value="10">Staff Pemasaran</option>
+                            <option value="11">Tim Perangkat Enjiniring</option>
+                            <option value="12">Manajemen Mutu</option>
+                            <option value="13">Admin Project</option>
+                            <option value="14">Manajer Senior Pemasaran</option>
+                            <option value="15">Direktur Pemasaran</option>
+                            <option value="16">Kasir</option>
+                            <option value="17">Manajer Adkon</option>
+                        </select>
+                    </div>-->
+                    <div class="form-group">
+                        <label>Usergroup Tambahan</label>
+                        <ui-select data-ng-model="data.usergroupid" theme="bootstrap" style="min-height:29px">
+                            <ui-select-match placeholder="">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="u.usergroupid as u in usergroup | filter: {name: $select.search}">
+                                <div ng-bind-html="u.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">
+                        Ganti Peran
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

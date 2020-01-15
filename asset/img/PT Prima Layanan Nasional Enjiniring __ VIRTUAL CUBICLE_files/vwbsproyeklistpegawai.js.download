@@ -1,0 +1,21 @@
+define([
+    'component/system/index'
+], function(){
+    alt.factory('Proyek_View_Wbs_List_Pegawai', ['System', '$log', '$q', function(System, $log, $q){
+        var api = System('master/vwbsproyeklistpegawai');
+        
+        api.list = function(data){
+            return this.connect('list', data);
+        };
+        
+        api.table = function(data){
+            return this.connect('table', data);
+        };
+
+        api.retrieve = function(data){
+            return this.connect('retrieve', data);
+        };
+
+        return api;
+    }]);
+});

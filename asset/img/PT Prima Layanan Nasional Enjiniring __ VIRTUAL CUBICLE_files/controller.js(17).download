@@ -1,0 +1,1287 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'component/alt/button/service',
+    'component/system/user',
+    'component/activiti/task',
+    'component/iconplus/master/kategori',
+    'component/iconplus/master/rencanapekerjaanuwp',
+    'component/iconplus/master/pegawai',
+    'component/iconplus/master/templatewbsproyek',
+    'component/proyek/inputwbs',
+    'component/proyek/rabwbs',
+    'component/iconplus/master/itemrab',
+    'component/proyek/vwbsproyeklistpegawai',
+    'component/proyek/viewheaderkerangkarab',
+    'component/proyek/viewdetailkerangkarab',
+    'component/iconplus/master/vworkload_bulan_n6',
+    'component/timpro/timpro',
+    'component/iconplus/generatedoc',
+    'component/proyek/inputwbsweek',
+    'component/produkbobot/produkbobot',
+    'component/iconplus/master/vproduk',
+    'component/iconplus/master/trxpermohonan',
+    'component/iconplus/master/actprocess'
+], function (moment) {
+    return ['$scope', '$auth', '$routeParams', '$q', '$log', '$button', '$popup', '$validate', '$alert', '$window', 'Activiti_Task', 'Iconplus_Rencanapekerjaanuwp', 'Proyek_Input_Wbs', 'Iconplus_Master_Pegawai','Proyek_View_Wbs_List_Pegawai', "Iconplus_Master_Template_Wbs_Proyek", "Master_Item_Rab", "Proyek_Rab_Wbs","Master_vWorkload_Bulan_n6", "TIMPRO_DBO","Proyek_View_Detail_Kerangka_Rab", "Proyek_View_Header_Kerangka_Rab","Proyek_Input_Wbs_Week", "Master_Produk_Bobot",
+        'Iconplus_Master_Act_Process','Iconplus_Master_TrxPermohonan','Master_VProduk', 'Iconplus_Generatedoc',
+        function ($scope, $auth, $routeParams, $q, $log, $button, $popup, $validate, $alert, $window, Activiti_Task, Iconplus_Rencanapekerjaanuwp, Proyek_Input_Wbs, Iconplus_Master_Pegawai, Proyek_View_Wbs_List_Pegawai, Iconplus_Master_Template_Wbs_Proyek, Master_Item_Rab, Proyek_Rab_Wbs,Master_vWorkload_Bulan_n6, TIMPRO_DBO, Proyek_View_Detail_Kerangka_Rab, Proyek_View_Header_Kerangka_Rab,Proyek_Input_Wbs_Week, Master_Produk_Bobot,
+                  Iconplus_Master_Act_Process,Iconplus_Master_TrxPermohonan, Master_VProduk, Iconplus_Generatedoc) {
+            $scope.action = $routeParams.action;
+            $scope.isruanglingkup = $routeParams.isruanglingkup;
+            $scope.ispenawaran = $routeParams.ispenawaran;
+            $scope.selectAll = 0;
+
+            $scope.actionmodal = '';
+            $scope.moment = moment;
+            $scope.accounting = accounting;
+            
+            $scope.table = {
+                data: {}
+            };
+
+            $scope.pills2 = {
+                isshow: true,
+                steps: [
+                    {
+                        title: 'Kegiatan'
+                    },{
+                        title: 'Biaya'
+                    }
+                ],
+                onselect: function(currentid, previousid){
+                    //if(currentid > 1 && $scope.data.pemeriksaanid) $scope.isbtnshow = true;
+                }
+            };
+
+            $scope.tableKegiatan = {
+                data: {},
+                isloading: null,
+                reload: function () {
+                    Proyek_View_Wbs_List_Pegawai.list({
+                        where:
+                        "proc_inst_id_=" + $routeParams.processInstanceId 
+                    })
+                        .then(function (response) {
+                            $scope.tableKegiatan.data = response.data;
+                            $scope.tableKegiatan.data = customSort($scope.tableKegiatan.data, 'wbs_code');
+                            $scope.tableKegiatan.data = $scope.customnumber($scope.tableKegiatan.data,'level_wbs');
+                        });
+                }
+            };
+
+            $scope.checkShow = function (header,parent,anak) {
+
+                if(header){
+                    return true;
+                }
+
+                if(parent){
+                    return true;
+                }
+
+                if(anak){
+                    return true;
+                }
+
+                return false;
+            };
+            $scope.id = $routeParams.id;
+            $scope.data = {
+                id: $routeParams.id,
+                processInstanceId: $routeParams.processInstanceId,
+            };
+
+            $scope.procid = $routeParams.processInstanceId;
+
+            $scope.datakontrak = {};
+            $scope.datapermohonan = {};
+            $scope.penerbitanchargecode = {data:{},dokumen:{isupload:false}};
+            $scope.retrieve = function () {
+            };
+            $scope.retrieve();
+
+            $scope.modalrencana = {
+                header: 'Tambah RKP',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+            $scope.modalinfo = {
+                header: '',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+            $scope.modalrencanatemplate = {
+                namatemplate: "",
+                header: 'Buat RKP Dari Template',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+
+            $scope.rkplevel2word = $button('print', {
+                class: 'btn btn-sm btn-info',
+                title: 'Cetak RKP Word',
+                ondblclick: function () {
+                    $scope.cetak={};
+                    $scope.cetak.proc_inst_id_ = $routeParams.processInstanceId;
+                    $scope.cetak.id = $routeParams.id;
+
+                    Iconplus_Generatedoc.rkplevel2($scope.cetak).then(function (response) {
+                        $window.location.href = alt.serverUrl + response.data;
+                    });
+                }
+            });
+
+
+
+            $scope.headers = {};
+            // $scope.headers = [];
+            Proyek_View_Header_Kerangka_Rab.list({
+                where : "proc_inst_id_ = '" + $routeParams.processInstanceId + "'"
+            }).then(function(response){
+                angular.forEach(response.data, function(val, key){
+                    $scope.headers[val.id_rab] = val;
+                    // $scope.headers.push(val);
+                });
+            });
+
+            $scope.btnremoveprodukbobot = $button('remove', {
+                title: ""
+            });
+            $scope.removeprodukbobot = function(index){
+                $scope.modalrencana.data.produk_bobot.splice(index, 1);
+            };
+
+            $scope.changeHeader = function(kerangka, index){
+                Proyek_View_Detail_Kerangka_Rab.list({
+                    where: "rab_code like '" + $scope.headers[kerangka.id_rab].rab_code + "%%' and proc_inst_id_ = '" + $routeParams.processInstanceId + "'"}
+                    // where: "rab_code like '" + kerangka.rab_code + "%%' and proc_inst_id_ = '" + $routeParams.processInstanceId + "'"}
+                ).then(function(response){
+                    kerangka.children = response.data;
+                });
+            };
+
+            $scope.calculate = function(kerangka, item){
+                if(item.volume != null && item.harga_satuan != null)
+                    item.subtotal = +item.volume * +item.harga_satuan;
+            };
+
+            $scope.$watch("modalrencanatemplate.namatemplate", function(val){
+                if(val){
+                    $scope.preview = angular.copy([]);
+                    Iconplus_Master_Template_Wbs_Proyek.list({nama_template: "= '" + val + "'", order:"id_template"}).then(function(response){
+                        $scope.preview = response.data;
+                    });
+                }
+            });
+
+            $scope.$watch("wbs.data.rabwbs", function(val){
+                if(val){
+                    var totalbiaya = 0;
+                    for (var key in val){
+                        for (var keyChildren in val[key].children){
+                            totalbiaya += parseInt(val[key].children[keyChildren].subtotal) || 0;
+                        }
+                    }
+                    $scope.wbs.data.biaya = totalbiaya;
+                }
+            },true);
+
+            // $scope.$watch("wbs.data.selectall", function(val){
+            //     // val = !val;
+            //     if(val){
+            //         angular.forEach($scope.ref.pegawai, function(val, key){
+            //             val.selected = true;
+            //         });
+            //     }else{
+            //         angular.forEach($scope.ref.pegawai, function(val, key){
+            //             val.selected = false;
+            //         });
+            //     }
+            // });
+
+            $scope.updateselecttim = function () {
+                if($scope.wbs.data.selectall == 1){
+                    angular.forEach($scope.ref.pegawai, function(val, key){
+                        val.selected = true;
+                    });
+                }else{
+                    angular.forEach($scope.ref.pegawai, function(val, key){
+                        val.selected = false;
+                    });
+                }
+            };
+
+            $scope.$watchGroup(["wbs.data.tgl_awal", "wbs.data.tgl_akhir"], function(val){
+                if(val && val[0] && val[1]){
+                    $scope.wbs.data.duration = 1;
+                    var duration = moment($scope.wbs.data.tgl_akhir).diff(moment($scope.wbs.data.tgl_awal),"days");
+                    var awal = moment($scope.wbs.data.tgl_awal);
+                    for (var i = 0; i < duration; i++) {
+                        awal = awal.add(1, "day");
+
+                        if(awal.day() != 0 && awal.day() != 6) {
+                            $scope.wbs.data.duration++;
+                        }
+                    }
+                }
+            });
+
+            Proyek_View_Wbs_List_Pegawai.list({
+                where: "proc_inst_id_=" + $routeParams.processInstanceId
+            }).then(function (response) {
+                $scope.tableKegiatan.data = response.data;
+                $scope.tableKegiatan.data = customSort($scope.tableKegiatan.data, 'wbs_code');
+                $scope.tableKegiatan.data = $scope.customnumber($scope.tableKegiatan.data,'level_wbs');
+            });
+
+            $scope.customnumber = function (listname,levelname) {
+                var levelwbs = 0 ;
+                delete $scope.number;
+                delete $scope.prefixnumber;
+                $scope.number = {};
+                $scope.prefixnumber = {};
+                for(var i = 0 ; i < listname.length ; i++ ){
+                    if((listname[i].wbs_code.indexOf('0') == 0) || (listname[i].wbs_code.indexOf('99') == 0)){
+                        listname[i].customnumber = listname[i].wbs_code;
+                    }else{
+                        if(listname[i][levelname] >= levelwbs){
+                            levelwbs = listname[i][levelname];
+                            //init data numbering
+                            if(!$scope.number[listname[i][levelname]]){
+                                $scope.number[listname[i][levelname]] = 0;
+                            }
+
+                            if(listname[i][levelname] > 1){
+                                $scope.number[listname[i][levelname]] = parseInt($scope.number[listname[i][levelname]]) + 1;
+                                $scope.prefixnumber[listname[i][levelname]] = '';
+                                for(var j = 1 ; j < listname[i][levelname] ; j++ ){
+                                    var tempnumber = $scope.number[j];
+                                    $scope.prefixnumber[listname[i][levelname]] = $scope.prefixnumber[listname[i][levelname]] +  tempnumber + '.';
+                                }
+                                $scope.prefixnumber[listname[i][levelname]] = $scope.prefixnumber[listname[i][levelname]] + $scope.number[listname[i][levelname]];
+                                listname[i].customnumber = $scope.prefixnumber[listname[i][levelname]];
+                            }else{
+                                $scope.number[listname[i][levelname]] = parseInt($scope.number[listname[i][levelname]]) + 1;
+                                listname[i].customnumber = $scope.number[listname[i][levelname]];
+                            }
+                        }else{
+
+                            for(var j = listname[i][levelname]; j < levelwbs ; j++ ){
+                                $scope.number[parseInt(listname[i][levelname]) + 1] = 0;
+                            }
+
+                            levelwbs = listname[i][levelname];
+
+                            if(listname[i][levelname] > 1){
+                                $scope.number[listname[i][levelname]] = parseInt($scope.number[listname[i][levelname]]) + 1;
+                                for(var j = 1 ; j < listname[i][levelname] ; j++ ){
+                                    var tempnumber = $scope.number[j];
+                                    $scope.prefixnumber[listname[i][levelname]] = tempnumber + '.';
+                                }
+                                $scope.prefixnumber[listname[i][levelname]] = $scope.prefixnumber[listname[i][levelname]] + $scope.number[listname[i][levelname]];
+                                listname[i].customnumber = $scope.prefixnumber[listname[i][levelname]];
+                            }else{
+                                $scope.number[listname[i][levelname]] = parseInt($scope.number[listname[i][levelname]]) + 1;
+                                listname[i].customnumber = $scope.number[listname[i][levelname]];
+                            }
+                        }
+                    }
+                }
+                return listname;
+            };
+
+            /*$scope.customnumber = function (listname,levelname) {
+                //didie
+                var levelwbs = 0 ;
+                delete $scope.number;
+                delete $scope.prefixnumber;
+                $scope.number = {};
+                $scope.prefixnumber = {};
+                for(var i = 0 ; i < $scope.tableKegiatan.data.length ; i++ ){
+                    if($scope.tableKegiatan.data[i].level_wbs >= levelwbs){
+                        levelwbs = $scope.tableKegiatan.data[i].level_wbs;
+                        //init data numbering
+                        if(!$scope.number[$scope.tableKegiatan.data[i].level_wbs]){
+                            $scope.number[$scope.tableKegiatan.data[i].level_wbs] = 0;
+                        }
+
+                        if($scope.tableKegiatan.data[i].level_wbs > 1){
+                            $scope.number[$scope.tableKegiatan.data[i].level_wbs] = parseInt($scope.number[$scope.tableKegiatan.data[i].level_wbs]) + 1;
+                            $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs] = '';
+                            for(var j = 1 ; j < $scope.tableKegiatan.data[i].level_wbs ; j++ ){
+                                var tempnumber = $scope.number[j];
+                                $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs] = $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs] +  tempnumber + '.';
+                            }
+                            $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs] = $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs] + $scope.number[$scope.tableKegiatan.data[i].level_wbs];
+                            $scope.tableKegiatan.data[i].customnumber = $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs];
+                        }else{
+                            $scope.number[$scope.tableKegiatan.data[i].level_wbs] = parseInt($scope.number[$scope.tableKegiatan.data[i].level_wbs]) + 1;
+                            $scope.tableKegiatan.data[i].customnumber = $scope.number[$scope.tableKegiatan.data[i].level_wbs];
+                        }
+                    }else{
+
+                        for(var j = $scope.tableKegiatan.data[i].level_wbs; j < levelwbs ; j++ ){
+                            $scope.number[parseInt($scope.tableKegiatan.data[i].level_wbs) + 1] = 0;
+                        }
+
+                        levelwbs = $scope.tableKegiatan.data[i].level_wbs;
+
+                        if($scope.tableKegiatan.data[i].level_wbs > 1){
+                            $scope.number[$scope.tableKegiatan.data[i].level_wbs] = parseInt($scope.number[$scope.tableKegiatan.data[i].level_wbs]) + 1;
+                            for(var j = 1 ; j < $scope.tableKegiatan.data[i].level_wbs ; j++ ){
+                                var tempnumber = $scope.number[j];
+                                $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs] = tempnumber + '.';
+                            }
+                            $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs] = $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs] + $scope.number[$scope.tableKegiatan.data[i].level_wbs];
+                            $scope.tableKegiatan.data[i].customnumber = $scope.prefixnumber[$scope.tableKegiatan.data[i].level_wbs];
+                        }else{
+                            $scope.number[$scope.tableKegiatan.data[i].level_wbs] = parseInt($scope.number[$scope.tableKegiatan.data[i].level_wbs]) + 1;
+                            $scope.tableKegiatan.data[i].customnumber = $scope.number[$scope.tableKegiatan.data[i].level_wbs];
+                        }
+                    }
+                }
+            };*/
+
+
+
+            // tambah anak kegiatan
+            $scope.btnaddchild = function (index, item) {
+                return $button('add', {
+                    title: '',
+                    class: 'btn btn-sm btn-info',
+                    onclick: function () {
+                        $scope.getpegawai.selected = undefined;
+                        $scope.parents = "";
+                        $scope.getParent(item, true);
+                        $scope.modalrencanaparent = item.wbs_code;
+                        $scope.modalrencana.header = "Tambah Item WBS Anak";
+                        // clear form
+                        $scope.wbs.data = {
+                            selectall: 0,
+                            persen_beban: '10',
+                            bobot: '4',
+                            rabwbs: []
+                        };
+
+                        $scope.taskId = $routeParams.id;
+                        // get charge code dan pekerjaan dari activiti
+                        Activiti_Task.retrieve({ id: $scope.taskId }).then(function (response) {
+                            var variables = response.data.processVariable;
+                            $scope.wbs.data.chargecode = variables.usrPermohonan_chargecode;
+                            $scope.wbs.data.pekerjaan = variables.usrPermohonan_pekerjaan;
+                        });
+
+                        // generate wbs code hanya saat membuat
+                        Proyek_Input_Wbs.max({
+                            proc_inst_id_: $routeParams.processInstanceId,
+                            level_wbs: 1
+                        }).then(function (response) {
+
+                            // tambah satu nomor dari nomor terbesar
+                            if (response.data > 0) {
+                                $scope.code = response.data;
+                                $scope.wbs.data.wbs_code = parseInt($scope.code) + 1;
+                            } else {
+                                $scope.wbs.data.wbs_code = 1;
+                            }
+
+                            // jika tambah anak dari kegiatan
+                            if ($scope.modalrencanaparent) {
+                                var string = $scope.modalrencanaparent;
+                                var level = string.split('.').length;
+                                level += 1;
+
+                                Proyek_Input_Wbs.maxRecord({
+                                    proc_inst_id_: $routeParams.processInstanceId,
+                                    wbs_code: $scope.modalrencanaparent + ".%%",
+                                    level_wbs: level
+                                }).then(function (response) {
+
+                                    if (response.data[0]) {
+                                        var listwbs = customSort(response.data, 'wbs_code','desc');
+                                        var string = listwbs[0].wbs_code;
+                                        var codeArr = string.split('.');
+                                        var length = codeArr.length;
+
+                                        $scope.code = codeArr[length - 1];
+                                        $scope.code = parseInt($scope.code) + 1;
+                                        $scope.code = $scope.modalrencanaparent + '.' + $scope.code;
+                                    } else {
+                                        $scope.code = $scope.modalrencanaparent + '.' + 1;
+                                    }
+                                });
+                            }
+                        });
+
+                        $scope.actionmodal = 'add';
+                        $scope.pills2.steps[1].show = false;
+                        $scope.modalrencana.data = {
+                            produk_bobot : []
+                        };
+                        $scope.modalrencana.action = 'add';
+                        $scope.modalrencana.open();
+                    }
+                });
+            };
+
+            $scope.parents = [];
+            $scope.getParent = function(item, addItemCode){
+                addItemCode = addItemCode || false;
+                var codes = item.wbs_code.split(".");
+                Proyek_Input_Wbs.list({
+                    level_wbs: "< " + (+item.level_wbs),
+                    where: "wbs_code like '" + codes[0] + "%%'",
+                    proc_inst_id_: "= '" + $routeParams.processInstanceId + "'",
+                    order: "id_wbs asc"
+                }).then(function(response){
+                    $scope.parents = [];
+                    for(var i = 0; i <= response.data.length - 1; i++){
+                        $scope.parents.push(response.data[i].wbs_code+"("+response.data[i].nama_kegiatan+")");
+                    }
+                    if(addItemCode) $scope.parents.push(item.wbs_code + " ("+item.nama_kegiatan+") ");
+                    if($scope.parents.length > 0) $scope.parents = "" + $scope.parents.join(" → ") + "";
+                    else $scope.parents = "";
+                });
+            };
+
+            // edit kegiatan
+            $scope.btnedit = function (index, item) {
+                return $button('view', {
+                    title: '',
+                    class: 'btn btn-sm btn-warning',
+                    onclick: function () {
+                        $scope.parents = "";
+                        $scope.modalrencana.header = "Detail RKP Level 2";
+                        $scope.modalrencana.data = {
+                            produk_bobot : []
+                        };
+
+                        if (item.wbs_code) {
+                            $scope.getParent(item);
+                            var id_wbs = item.id_wbs;
+                            Proyek_Input_Wbs.retrieve({
+                                where: "id_wbs=" + item.id_wbs
+                            }).then(function (response) {
+                                $scope.getpegawai = {selected : response.data.list_pegawai};
+                                
+                                angular.forEach($scope.getpegawai.selected, function(val, key){
+                                    if($scope.ref.pegawaiKV[val.id_pegawai]){
+                                        $scope.ref.pegawaiKV[val.id_pegawai].selected = true;
+                                        $scope.ref.pegawaiKV[val.id_pegawai].workload = val.workload;
+                                    }
+                                });
+                                $scope.wbs.data = response.data;
+
+                                if(!$scope.wbs.data.persen_beban){
+                                    $scope.wbs.data.persen_beban = '10';
+                                }
+                                $scope.wbs.data.selectall = 0;
+                                $scope.wbs.data.isbapp = +$scope.wbs.data.isbapp;
+
+                                $scope.wbs.data.is_activity = $scope.wbs.data.isactivity;
+
+                                if($scope.wbs.data.produk_bobot != null){
+                                    var listidprodukbobot = $scope.wbs.data.produk_bobot.split(",");
+                                    for (var i = 0; i< listidprodukbobot.length ;i++){
+                                        $scope.modalrencana.data.produk_bobot.push({
+                                            id_produk_bobot : listidprodukbobot[i]
+                                        });
+                                    }
+                                }
+
+
+                                if ($scope.wbs.data.isactivity == 1) {
+                                    $scope.wbs.data.is_activity = true;
+                                }
+                                if ($scope.wbs.data.tgl_awal) {
+                                    $scope.wbs.data.tgl_awal = moment($scope.wbs.data.tgl_awal, 'YYYYMMDD').format();
+                                }
+                                if ($scope.wbs.data.tgl_akhir) {
+                                    $scope.wbs.data.tgl_akhir = moment($scope.wbs.data.tgl_akhir, 'YYYYMMDD').format();
+                                }
+                                // if ($scope.wbs.data.tglrencanapenyelesaian) {
+
+                                //     $scope.wbs.data.tglrencanapenyelesaian2 = moment($scope.wbs.data.tglrencanapenyelesaian, 'YYYYMMDD').format();
+                                // }
+                                $scope.wbs.data.rabwbs = [];
+
+                                Proyek_Rab_Wbs.list({select: "id_rab_header", group: "id_rab_header", proc_inst_id_: "= " + $routeParams.processInstanceId, id_wbs: "= " + id_wbs}).then(function(response){
+
+                                    $scope.result = {};
+                                    angular.forEach(response.data, function(val, key){
+                                        $scope.result[val.id_rab_header] = {id_rab: val.id_rab_header, children: []};
+
+                                        Proyek_Rab_Wbs.list({id_rab_header: "= " + val.id_rab_header, proc_inst_id_: "= " + $routeParams.processInstanceId, id_wbs: "= " + id_wbs}).then(function(response2){
+                                            angular.forEach(response2.data, function(val2, key2){
+                                                delete val2.id_rab_header;
+                                                val2.id_rab = val2.id_rab_detail;
+                                                val2.subtotal = parseInt(val2.volume) * parseInt(val2.harga_satuan) ;
+                                                delete val2.id_rab_detail;
+                                                $scope.result[val.id_rab_header].children.push(val2);
+                                            });
+                                        });
+
+                                    });
+                                    angular.forEach($scope.result, function(val, key){
+                                        $scope.wbs.data.rabwbs.push(val);
+                                    });
+                                });
+                            });
+                        }
+
+                        $scope.actionmodal = 'edit';
+                        $scope.pills2.steps[1].show = true;
+                        $scope.modalrencana.action = 'edit';
+                        $scope.modalrencana.open();
+                    }
+                });
+            };
+
+            // delete kegiatan
+            $scope.btnremove = function (index, item) {
+                return $button('remove', {
+                    title: '',
+                    class: 'btn btn-sm btn-danger',
+                    onclick: function () {
+                        Proyek_View_Wbs_List_Pegawai.list({
+                            where: "proc_inst_id_=" + $routeParams.processInstanceId+" and wbs_code not likes '99%%' "
+                        }).then(function (response) {
+                            var status = false;
+                            angular.forEach(response.data, function (val, key) {
+                                if(val.wbs_code.includes(item.wbs_code+'.')){
+                                    status = true;
+                                }
+                            });
+
+                            if (status) {
+                                $popup.confirm({
+                                    caption: "Kegiatan : " + item.nama_kegiatan + " tidak dapat dihapus karena memiliki sub kegiatan.",
+                                    buttons: [
+                                        $button('yes', {
+                                            onclick: function () {
+                                                $popup.close(false);
+                                            }
+                                        })
+                                    ]
+                                });
+                            } else {
+                                $popup.confirm({
+                                    caption: "Anda yakin akan menghapus kegiatan : " + item.nama_kegiatan + " ?",
+                                    buttons: [
+                                        $button('yes', {
+                                            onclick: function () {
+                                                Proyek_Input_Wbs.delete({ id_wbs: item.id_wbs }).then(function (response) {
+                                                    $alert.add('Data berhasil dihapus!', $alert.success);
+
+                                                    Proyek_Input_Wbs_Week.delete({where: "proc_inst_id_ = " + $routeParams.processInstanceId + " and id_wbs = " + item.id_wbs }).then(function(response){
+                                                        Proyek_Rab_Wbs.delete({where: "proc_inst_id_ = " + $routeParams.processInstanceId + " and id_wbs = " + item.id_wbs }).then(function(response){
+                                                            $scope.tableKegiatan.reload();
+                                                        });
+                                                    });
+                                                 });
+                                                $popup.close(true);
+                                            }
+                                        }),
+                                        $button('no', {
+                                            onclick: function () {
+                                                $popup.close(false);
+                                            }
+                                        })
+                                    ]
+                                });
+                            }
+                        });
+                    }
+                });
+            };
+
+            // btn add week
+            $scope.btnaddweek = function (index, item) {
+                if($scope.isruanglingkup){
+                    return $button('preview', {
+                        title: '',
+                        description:'Detail',
+                        icon: 'fa fa-align-justify',
+                        class: 'btn btn-sm btn-info',
+                        href: alt.baseUrl + 'rbp/inputwbsweek?id=' + $routeParams.id +
+                        '&processInstanceId=' + $routeParams.processInstanceId + '&wbs=' + item.id_wbs + '&isruanglingkup=true'
+                    });
+                }else if($scope.ispenawaran){
+                    return $button('preview', {
+                        title: '',
+                        description:'Detail',
+                        icon: 'fa fa-align-justify',
+                        class: 'btn btn-sm btn-info',
+                        href: alt.baseUrl + 'rbp/inputwbsweek?id=' + $routeParams.id +
+                        '&processInstanceId=' + $routeParams.processInstanceId + '&wbs=' + item.id_wbs + '&ispenawaran=true'
+                    });
+                }else{
+                    var paramrevisi = "";
+                    if($routeParams.isrevisi){
+                        paramrevisi = "&isrevisi=true"
+                    }
+                    return $button('preview', {
+                        title: '',
+                        description:'Detail',
+                        icon: 'fa fa-align-justify',
+                        class: 'btn btn-sm btn-info',
+                        href: alt.baseUrl + 'rbp/inputwbsweek?id=' + $routeParams.id +
+                        '&processInstanceId=' + $routeParams.processInstanceId + '&wbs=' + item.id_wbs + paramrevisi
+                    });
+                }
+            };
+
+            // FORM modalrencana
+
+            // referensi
+            $scope.ref = {
+                pegawai: [],
+                pegawaiKV: {},
+                itemrab: {}
+            };
+
+            $scope.wbs = {
+                data: {
+                    rabwbs: []
+                }
+            };
+
+            // get master pegawai
+            $scope.getpegawai = {selected : undefined};
+            TIMPRO_DBO.list({proc_inst_id_: $routeParams.processInstanceId}).then(function(responseTim){
+                $scope.ref.pegawai = responseTim.data;
+                angular.forEach(responseTim.data, function(val){
+                    $scope.ref.pegawaiKV[val.id_pegawai] = val;
+                });
+            });
+
+            $scope.btnadditembiaya = $button('add', {
+                title: '',
+                class: 'btn btn-sm btn-primary',
+                onclick: function () {
+                    if(!$scope.wbs.data.rabwbs) $scope.wbs.data.rabwbs = [];
+                    $scope.wbs.data.rabwbs.push({});
+                }
+            });
+
+            $scope.showworkload = function (item){
+                $scope.picworkload = item.nama_pegawai;
+                $scope.parseFloat = parseFloat;
+                $scope.workload = {};
+                Master_vWorkload_Bulan_n6.list({where : "id_pegawai = '"+item.id_pegawai+"'"}).then(function (response) {
+                    $scope.workload = response.data;
+                    $scope.total_workload_n1 = 0;
+                    $scope.total_workload_n2 = 0;
+                    $scope.total_workload_n3 = 0;
+                    $scope.total_workload_n4 = 0;
+                    $scope.total_workload_n5 = 0;
+                    $scope.total_workload_n6 = 0;
+                    for(var i = 0; i < $scope.workload.length; i++){
+                        var workload = $scope.workload[i];
+                        $scope.total_workload_n1 = parseFloat($scope.total_workload_n1)  + parseFloat(workload.workload_n1) ;
+                        $scope.total_workload_n2 = parseFloat($scope.total_workload_n2) +  parseFloat(workload.workload_n2);
+                        $scope.total_workload_n3 = parseFloat($scope.total_workload_n3) + parseFloat(workload.workload_n3);
+                        $scope.total_workload_n4 = parseFloat($scope.total_workload_n4) + parseFloat(workload.workload_n4);
+                        $scope.total_workload_n5 = parseFloat($scope.total_workload_n5) + parseFloat(workload.workload_n5);
+                        $scope.total_workload_n6 = parseFloat($scope.total_workload_n6) + parseFloat(workload.workload_n6);
+                    }
+                    $scope.warning = '';
+                    if(parseFloat($scope.total_workload_n1) >= 1){
+                        $scope.warning = "Peringatan: Man Month sudah >= 1";
+                    }
+
+                    if(parseFloat($scope.total_workload_n2) >= 1){
+                        $scope.warning = "Peringatan: Man Month sudah >= 1";
+                    }
+
+                    if(parseFloat($scope.total_workload_n3) >= 1){
+                        $scope.warning = "Peringatan: Man Month sudah >= 1";
+                    }
+
+                    if(parseFloat($scope.total_workload_n4) >= 1){
+                        $scope.warning = "Peringatan: Man Month sudah >= 1";
+                    }
+
+                    if(parseFloat($scope.total_workload_n5) >= 1){
+                        $scope.warning = "Peringatan: Man Month sudah >= 1";
+                    }
+
+                    if(parseFloat($scope.total_workload_n6) >= 1){
+                        $scope.warning = "Peringatan: Man Month sudah >= 1";
+                    }
+                });
+            };
+
+            Master_Item_Rab.list().then(function (response) {
+                $scope.masteritemrab = response.data;
+                angular.forEach(response.data, function(item){
+                    $scope.ref.itemrab[item.kode_item] = item;
+                });
+            });
+
+            $scope.$watchGroup(["wbs.data.duration","wbs.data.persen_beban"], function(val){
+                if(val[0] && val[1]){
+                    $scope.wbs.data.jamefektif = val[0] * val[1] * 8 / 100;
+                }
+            });
+
+            // btn save
+            $scope.btnsavemodal = $button('save', {
+                onclick: function () {
+                    // basic data
+                    $scope.wbs.data.proc_inst_id_ = $routeParams.processInstanceId;
+                    $scope.wbs.data.task_id_ = $routeParams.id;
+
+                    $scope.getpegawai.selected = [];
+                    angular.forEach($scope.ref.pegawai, function(val, key){
+                        if(val.selected){
+                            $scope.getpegawai.selected.push(val);
+                        }
+                    });
+
+                    // generate level
+                    if ($scope.actionmodal == 'add') {
+                        // assign wbs code
+                        $scope.wbs.data.wbs_code = $scope.code;
+
+                        if ($scope.modalrencanaparent) {
+                            var string = $scope.modalrencanaparent;
+                            var length = string.split('.').length;
+                            $scope.wbs.data.level_wbs = length + 1;
+                        } else {
+                            $scope.wbs.data.level_wbs = '1';
+                        }
+                    }
+
+
+                    if ($scope.wbs.data.isactivity == 1) {
+                        if($scope.getpegawai.selected.length > 0){
+                            $scope.wbs.data.listpegawai = angular.toJson($scope.getpegawai);
+                        }
+                        if($scope.wbs.data.tgl_awal) $scope.wbs.data.tgl_awal = moment($scope.wbs.data.tgl_awal).format('YYYYMMDD');
+                        if($scope.wbs.data.tgl_akhir) $scope.wbs.data.tgl_akhir = moment($scope.wbs.data.tgl_akhir).format('YYYYMMDD');
+
+                        if($scope.isspvkonstruksi == 1){
+                            $scope.wbs.data.tgl_awal = moment($scope.wbs.data.tgl_awal).format('YYYYMMDD');
+                            $scope.wbs.data.tgl_akhir = moment(moment(moment($scope.wbs.data.tgl_akhir).format('YYYYMMDD')).endOf('month')).format('YYYYMMDD');
+                            $scope.wbs.data.bobot = 4;
+                            var persen_bobot = 0;
+                            var jmlselected = 0;
+
+                            angular.forEach($scope.ref.pegawaiKV, function(val,index){
+                                if(val.selected){
+                                    jmlselected = parseInt(jmlselected) + 1;
+                                    persen_bobot = parseFloat(persen_bobot) + parseFloat(val.workload);
+                                }
+                            });
+                            persen_bobot = parseInt((persen_bobot / jmlselected) * 100);
+                            $scope.wbs.data.persen_bobot = persen_bobot;
+                        }
+
+                    } else {
+                        $scope.wbs.data.id_pegawai = '';
+                        $scope.wbs.data.nama_pegawai = '';
+                        $scope.wbs.data.tgl_awal = '';
+                        $scope.wbs.data.tgl_akhir = '';
+                        $scope.wbs.data.duration = '';
+                        $scope.wbs.data.persen_beban = '';
+                        $scope.wbs.data.bobot = '';
+                    }
+                    if($scope.wbs.data.isbapp){
+                        var pendapatan = 0;
+                        var listidprodukbobot = [];
+                        for(var i = 0; i < $scope.modalrencana.data.produk_bobot.length ; i++){
+                            pendapatan = parseInt(pendapatan) + parseInt($scope.termin[$scope.modalrencana.data.produk_bobot[i].id_produk_bobot].biaya);
+                            listidprodukbobot.push($scope.modalrencana.data.produk_bobot[i].id_produk_bobot);
+                        }
+                        $scope.wbs.data.pendapatan = pendapatan;
+                        $scope.wbs.data.tglrencanapenyelesaian = moment($scope.wbs.data.tgl_akhir).format('YYYYMMDD');
+                        $scope.wbs.data.produk_bobot = listidprodukbobot.join(",");
+                    }else $scope.data.isbapp = 0;
+
+                    var data = angular.copy($scope.wbs.data);
+                    data.rabwbs = angular.toJson(data.rabwbs);
+                    delete data.list_pegawai;
+
+                    if ($scope.actionmodal == 'edit') {
+                        // update
+                        if(!data.id_wbs){
+                            $alert.add('Data ID WBS tidak ada!', $alert.danger);
+                            return;
+                        }
+
+                        Proyek_Input_Wbs.update(data).then(function () {
+                            //insert wbs week disini
+                            $scope.wbsId = data.id_wbs;
+                            // isi Input Wbs Week ditutup dulu, nanti diproses pada saat simpan data saja menggunakan Proc //
+                            /*Proyek_Input_Wbs_Week.delete({where: "proc_inst_id_ = " + $routeParams.processInstanceId + " and id_wbs = " + $scope.wbsId }).then(function(response){
+                                $scope.wbsWeek = {};
+                                Proyek_Input_Wbs.retrieve({id_wbs: $scope.wbsId}).then(function(response){
+
+                                    //tambahan perhitungan beban dan durasi
+                                    $scope.bobot = response.data.bobot;
+                                    $scope.duration = response.data.duration;
+                                    $scope.persen_beban = response.data.persen_beban / 100;
+                                    $scope.biaya = response.data.biaya;
+                                    //tambahan perhitungan beban
+
+                                    $scope.wbsCode = response.data.wbs_code;
+                                    $scope.namaKegiatan = response.data.nama_kegiatan;
+                                    $scope.namaPekerjaan = response.data.pekerjaan;
+
+                                    moment.locale('id');
+
+                                    $scope.tglAwal = moment(response.data.tgl_awal, 'YYYYMMDD');
+                                    $scope.tglAkhir = moment(response.data.tgl_akhir, 'YYYYMMDD');
+
+                                    $scope.tglAwalMonth = moment(response.data.tgl_awal, 'YYYYMMDD').format("MMYYYY");
+                                    $scope.tglAkhirMonth = moment(response.data.tgl_akhir, 'YYYYMMDD').format("MMYYYY");
+                                    if($scope.tglAwalMonth != $scope.tglAkhirMonth) $scope.isDifferentMonth = true;
+
+                                    if($scope.wbs.data.isactivity) Proyek_Input_Wbs_Week.list({where:"id_wbs = " + $scope.wbsId, order: "tgl_awal asc"}).then(function(responseWeek){
+                                        var data = [{
+                                            week : 0,
+                                            tglawal : $scope.tglAwal.format("YYYYMMDD"),
+                                            tglakhir : "",
+                                            bobot : null,
+                                            duration : null,
+                                            biaya : null
+                                        }];
+                                        $scope.numOfWeeks = ($scope.tglAwal.day() == 1) ? 0 : 1;
+                                        $scope.numOfDays = moment(response.data.tgl_akhir, 'YYYYMMDD').diff(moment(response.data.tgl_awal, 'YYYYMMDD'), "days");
+
+                                        var today = moment(response.data.tgl_awal, 'YYYYMMDD');
+                                        var yesterday = moment(response.data.tgl_awal, 'YYYYMMDD');
+                                        var isDiffMonth = false;
+                                        for (var i = 0; i <= $scope.numOfDays; i++) {
+                                            if(i != 0) yesterday.add(1, "day");
+
+                                            today = today.add(1, "day");
+
+                                            isDiffMonth = (yesterday.format("YYYYMM") != today.format("YYYYMM"));
+
+                                            if((today.day() == 1 || isDiffMonth) && (+today.format("YYYYMMDD") <= +response.data.tgl_akhir)){
+                                                $scope.numOfWeeks++;
+                                                data.push({
+                                                    week : 0,
+                                                    tglawal : today.format("YYYYMMDD"),
+                                                    tglakhir : "",
+                                                    bobot : null,
+                                                    duration : null,
+                                                    biaya : null
+                                                });
+                                            }
+                                        }
+                                        
+                                        data[data.length-1].tglakhir = $scope.tglAkhir.format("YYYYMMDD");
+                                        for (i = 0; i < data.length; i++) {
+                                            if(i != data.length - 1) data[i].tglakhir = moment(data[i+1].tglawal,"YYYYMMDD").subtract(1,"day").format("YYYYMMDD");
+                                            data[i].week = $scope.getWeekOfTheDate(angular.copy(data[i].tglawal));
+                                            data[i].hariefektif = $scope.hitungharikerja(data[i].tglawal,data[i].tglakhir);
+                                            data[i].bobot = $scope.hitungbobotharikerja($scope.duration,data[i].hariefektif,$scope.bobot);
+                                            data[i].duration = $scope.hitungdurasiharikerja($scope.duration,data[i].hariefektif);
+                                            data[i].biaya = $scope.hitungbiayaharikerja($scope.duration,data[i].hariefektif);
+                                        }
+
+                                        $scope.table.data = data;
+
+                                        //insert kewbs week real disini
+                                        var promises = [];
+                                        angular.forEach($scope.table.data, function(val,index){
+                                            $scope.wbsWeek = {};
+                                            $scope.wbsWeek.proc_inst_id_ = $routeParams.processInstanceId;
+                                            $scope.wbsWeek.task_id_ = $routeParams.id;
+                                            $scope.wbsWeek.id_wbs = $scope.wbsId;
+                                            $scope.wbsWeek.wbs_code = $scope.wbsCode;
+                                            $scope.wbsWeek.nama_kegiatan = $scope.namaKegiatan;
+                                            $scope.wbsWeek.week = val.week;
+                                            $scope.wbsWeek.tgl_awal = val.tglawal;
+                                            $scope.wbsWeek.tgl_akhir = val.tglakhir;
+                                            $scope.wbsWeek.bobot = val.bobot ? val.bobot : null;
+                                            $scope.wbsWeek.duration = val.duration ? val.duration : null;
+                                            $scope.wbsWeek.biaya = val.biaya ? val.biaya : null;
+                                            promises.push(Proyek_Input_Wbs_Week.insert($scope.wbsWeek));
+                                        });
+                                        //insert ke wbs week real disin
+
+                                    });
+                                });
+                                //end insert wbs week
+                            });
+*/
+                            $scope.modalrencana.close();
+
+                            Proyek_View_Wbs_List_Pegawai.list({
+                                where: "proc_inst_id_=" + $routeParams.processInstanceId
+                            }).then(function (response) {
+                                $scope.tableKegiatan.data = response.data;
+                                $scope.tableKegiatan.data = customSort($scope.tableKegiatan.data, 'wbs_code');
+                                $scope.tableKegiatan.data = $scope.customnumber($scope.tableKegiatan.data,'level_wbs');
+                                $scope.modalrencanaparent = null;
+                            });
+                            /*Proyek_View_Wbs_List_Pegawai.list({
+                                where: "proc_inst_id_=" + $routeParams.processInstanceId + "and level_wbs = 1"
+                            }).then(function (responsex) {
+                                $scope.tableKegiatan2.data = responsex.data;
+                                $scope.tableKegiatan2.data = customSort($scope.tableKegiatan2.data, 'wbs_code');
+                                $scope.tableKegiatan2.data = $scope.customnumber($scope.tableKegiatan2.data,'level_wbs');
+                                $scope.modalrencanaparent = null;
+                            });*/
+                        });
+                    } else {
+                        // create
+                        delete data.id_wbs;
+                        data.frombtn = 1;
+                        Proyek_Input_Wbs.insert(data).then(function (response) {
+                            //insert wbs week disini
+                            $scope.wbsId = response.data;
+                            $scope.wbsWeek = {};
+                            Proyek_Input_Wbs.retrieve({id_wbs: $scope.wbsId}).then(function(response){
+
+                                //tambahan perhitungan beban dan durasi
+                                $scope.bobot = response.data.bobot;
+                                $scope.duration = response.data.duration;
+                                $scope.persen_beban = response.data.persen_beban / 100;
+                                $scope.biaya = response.data.biaya;
+                                //tambahan perhitungan beban
+
+                                $scope.wbsCode = response.data.wbs_code;
+                                $scope.namaKegiatan = response.data.nama_kegiatan;
+                                $scope.namaPekerjaan = response.data.pekerjaan;
+
+                                moment.locale('id');
+
+                                $scope.tglAwal = moment(response.data.tgl_awal, 'YYYYMMDD');
+                                $scope.tglAkhir = moment(response.data.tgl_akhir, 'YYYYMMDD');
+
+                                $scope.tglAwalMonth = moment(response.data.tgl_awal, 'YYYYMMDD').format("MMYYYY");
+                                $scope.tglAkhirMonth = moment(response.data.tgl_akhir, 'YYYYMMDD').format("MMYYYY");
+                                if($scope.tglAwalMonth != $scope.tglAkhirMonth) $scope.isDifferentMonth = true;
+
+                                Proyek_Input_Wbs_Week.list({where:"id_wbs = " + $scope.wbsId, order: "tgl_awal asc"}).then(function(responseWeek){
+                                    var data = [{
+                                        week : 0,
+                                        tglawal : $scope.tglAwal.format("YYYYMMDD"),
+                                        tglakhir : "",
+                                        bobot : null,
+                                        duration : null,
+                                        biaya : null
+                                    }];
+                                    $scope.numOfWeeks = ($scope.tglAwal.day() == 1) ? 0 : 1;
+                                    $scope.numOfDays = moment(response.data.tgl_akhir, 'YYYYMMDD').diff(moment(response.data.tgl_awal, 'YYYYMMDD'), "days");
+
+                                    var today = moment(response.data.tgl_awal, 'YYYYMMDD');
+                                    var yesterday = moment(response.data.tgl_awal, 'YYYYMMDD');
+                                    var isDiffMonth = false;
+                                    for (var i = 0; i <= $scope.numOfDays; i++) {
+                                        if(i != 0) yesterday.add(1, "day");
+
+                                        today = today.add(1, "day");
+
+                                        isDiffMonth = (yesterday.format("YYYYMM") != today.format("YYYYMM"));
+
+                                        if((today.day() == 1 || isDiffMonth) && (+today.format("YYYYMMDD") <= +response.data.tgl_akhir)){
+                                            $scope.numOfWeeks++;
+                                            data.push({
+                                                week : 0,
+                                                tglawal : today.format("YYYYMMDD"),
+                                                tglakhir : "",
+                                                bobot : null,
+                                                duration : null,
+                                                biaya : null
+                                            });
+                                        }
+                                    };
+
+                                    data[data.length-1].tglakhir = $scope.tglAkhir.format("YYYYMMDD");
+                                    for (i = 0; i < data.length; i++) {
+                                        if(i != data.length - 1) data[i].tglakhir = moment(data[i+1].tglawal,"YYYYMMDD").subtract(1,"day").format("YYYYMMDD");
+                                        data[i].week = $scope.getWeekOfTheDate(angular.copy(data[i].tglawal));
+                                        data[i].hariefektif = $scope.hitungharikerja(data[i].tglawal,data[i].tglakhir);
+                                        data[i].bobot = $scope.hitungbobotharikerja($scope.duration,data[i].hariefektif,$scope.bobot);
+                                        data[i].duration = $scope.hitungdurasiharikerja($scope.duration,data[i].hariefektif);
+                                        data[i].biaya = $scope.hitungbiayaharikerja($scope.duration,data[i].hariefektif);
+                                    }
+
+                                    $scope.table.data = data;
+
+                                    //insert kewbs week real disini   --> Ditutup dulu nanti diarahkan ke Proc
+                                    /*var promises = [];
+                                    if($scope.wbs.data.isactivity) Proyek_Input_Wbs_Week.delete({where: "proc_inst_id_ = " + $routeParams.processInstanceId + " and id_wbs = " + $scope.wbsId }).then(function(response){
+                                        angular.forEach($scope.table.data, function(val,index){
+                                            $scope.wbsWeek = {};
+                                            $scope.wbsWeek.proc_inst_id_ = $routeParams.processInstanceId;
+                                            $scope.wbsWeek.task_id_ = $routeParams.id;
+                                            $scope.wbsWeek.id_wbs = $scope.wbsId;
+                                            $scope.wbsWeek.wbs_code = $scope.wbsCode;
+                                            $scope.wbsWeek.nama_kegiatan = $scope.namaKegiatan;
+                                            $scope.wbsWeek.week = val.week;
+                                            $scope.wbsWeek.tgl_awal = val.tglawal;
+                                            $scope.wbsWeek.tgl_akhir = val.tglakhir;
+                                            $scope.wbsWeek.bobot = val.bobot ? val.bobot : null;
+                                            $scope.wbsWeek.duration = val.duration ? val.duration : null;
+                                            $scope.wbsWeek.biaya = val.biaya ? val.biaya : null;
+                                            promises.push(Proyek_Input_Wbs_Week.insert($scope.wbsWeek));
+                                        });
+                                    });*/
+                                    //insert ke wbs week real disin
+
+                                });
+                            });
+                            //end insert wbs week
+
+                            $scope.modalrencana.close();
+                            Proyek_View_Wbs_List_Pegawai.list({
+                                where: "proc_inst_id_=" + $routeParams.processInstanceId
+                            }).then(function (response) {
+                                $scope.tableKegiatan.data = response.data;
+                                $scope.tableKegiatan.data = customSort($scope.tableKegiatan.data, 'wbs_code');
+                                $scope.tableKegiatan.data = $scope.customnumber($scope.tableKegiatan.data,'level_wbs');
+                                $scope.modalrencanaparent = null;
+                            });
+                            Proyek_View_Wbs_List_Pegawai.list({
+                                where: "proc_inst_id_=" + $routeParams.processInstanceId + "and level_wbs = 1"
+                            }).then(function (responsel) {
+                                $scope.tableKegiatan2.data = responsel.data;
+                                $scope.tableKegiatan2.data = customSort($scope.tableKegiatan2.data, 'wbs_code');
+                                $scope.tableKegiatan2.data = $scope.customnumber($scope.tableKegiatan2.data,'level_wbs');
+                                $scope.modalrencanaparent = null;
+                            });
+                        });
+                    }
+                }
+            });
+
+            function customSort(data, key, order) {
+
+                function isNumber(v) {
+                    return (+v).toString() === v;
+                }
+
+                function isRoman(s) {
+                    // http://stackoverflow.com/a/267405/1447675
+                    return /^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/i.test(s);
+                }
+
+                function parseRoman(s) {
+                    var val = { M: 1000, D: 500, C: 100, L: 50, X: 10, V: 5, I: 1 };
+                    return s.toUpperCase().split('').reduce(function (r, a, i, aa) {
+                        return val[a] < val[aa[i + 1]] ? r - val[a] : r + val[a];
+                    }, 0);
+                }
+
+                var sort = {
+                        asc: function (a, b) {
+                            var i = 0,
+                                l = Math.min(a.value.length, b.value.length);
+
+                            while (i < l && a.value[i] === b.value[i]) {
+                                i++;
+                            }
+                            if (i === l) {
+                                return a.value.length - b.value.length;
+                            }
+                            if (isNumber(a.value[i]) && isNumber(b.value[i])) {
+                                return a.value[i] - b.value[i];
+                            }
+                            if (isRoman(a.value[i]) && isRoman(b.value[i])) {
+                                return parseRoman(a.value[i]) - parseRoman(b.value[i]);
+                            }
+                            return a.value[i].localeCompare(b.value[i]);
+                        },
+                        desc: function (a, b) {
+                            return sort.asc(b, a);
+                        }
+                    },
+                    mapped = data.map(function (el, i) {
+                        var string = el[key].replace(/\d(?=[a-z])|[a-z](?=\.)/gi, '$&. .'),
+                            regex = /(\d+)|([^0-9.]+)/g,
+                            m,
+                            parts = [];
+
+                        while ((m = regex.exec(string)) !== null) {
+                            parts.push(m[0]);
+                        }
+                        return { index: i, value: parts, o: el, string: string };
+                    });
+
+                mapped.sort(sort[order] || sort.asc);
+                return mapped.map(function (el) {
+                    return data[el.index];
+                });
+            }
+
+            //modul perhitungan
+            $scope.hitungbobotharikerja = function (durasi,hariefektif, bobot) {
+                var bobotreal = 0;
+                bobotreal = ( (parseInt(hariefektif) - 1) / durasi) * bobot;
+                bobotreal = Math.round(bobotreal * 100) / 100;
+                return bobotreal;
+            };
+            $scope.hitungdurasiharikerja = function (durasi,hariefektif) {
+                var durasireal = 0;
+                durasireal = ((parseInt(hariefektif) - 1)) * 8 * parseFloat($scope.persen_beban);
+                durasireal = Math.round(durasireal * 100) / 100;
+                return durasireal;
+            };
+            $scope.hitungbiayaharikerja = function (durasi,hariefektif) {
+                var hargareal = 0;
+                hargareal = ((parseInt(hariefektif) - 1) / durasi) * parseFloat($scope.biaya);
+                return hargareal;
+            };
+            $scope.hitungharikerja = function (tglawal, tglakhir) {
+                var totalhari = 1;
+                for(var i = tglawal; i<=tglakhir ; i++){
+                    //update hari kerja
+                    // if($scope.data.tipeharikerja != undefined && $scope.data.tipeharikerja == 'full'){
+                    //     totalhari = parseInt(totalhari) + 1;
+                    // }else{
+                    //     if(moment(i, 'YYYYMMDD').format("ddd") != 'Sab' && moment(i, 'YYYYMMDD').format("ddd") != 'Min' ){
+                    //         totalhari = parseInt(totalhari) + 1;
+                    //     }
+                    // }
+                    if(moment(i, 'YYYYMMDD').format("ddd") != 'Sab' && moment(i, 'YYYYMMDD').format("ddd") != 'Min' ){
+                        totalhari = parseInt(totalhari) + 1;
+                    }
+                }
+                return totalhari;
+            };
+            //modul perhitungan
+
+            $scope.getWeekStartOfMonth = function(momentObject, startOfWeek){
+                startOfWeek = startOfWeek || 1;
+                var monday = momentObject.startOf("month").day(startOfWeek);
+                if (monday.date() > 7) monday.add(7, "d");
+                var month = monday.month();
+                var result = [];
+                while(month === monday.month()){
+                    if(monday.day() == startOfWeek){
+                        result.push(monday.format("YYYYMMDD"))
+                    }
+                    monday.add(7,"d");
+                }
+
+                if(moment(result[0],"YYYYMMDD").date() != 1)
+                    result.unshift(moment(result[0],"YYYYMMDD").format("YYYYMM01"));
+
+                return result;
+            };
+
+            $scope.getWeekOfTheDate = function(date){
+                var weeks = $scope.getWeekStartOfMonth(moment(date, "YYYYMMDD"));
+                var integerDate = +date;
+
+                var result = 0;
+                for(var i = 0; i < weeks.length; i++){
+                    if(integerDate >= +(weeks[i])){
+                        result = i + 1;
+                    }
+                }
+
+                return result;
+            };
+
+            // btn cancel
+            $scope.btncancelmodal = $button($scope.action == 'view' ? 'back' : 'cancel', {
+                onclick: function () {
+                    $scope.modalrencana.close();
+                }
+            });
+
+            $scope.btnworkload = $button("view", {
+                title: "",
+                description: "Lihat Workload"
+            });
+
+            $scope.durationspvkonstruksi = function (val) {
+                if(!isNaN(val)){
+                    return val;
+                }else{
+                    return '';
+                }
+            };
+
+            $scope.btnsavemodaltemplate = $button('save', {
+                onclick: function () {
+                    var promises = [];
+                    angular.forEach($scope.preview, function (wbs) {
+                        wbs.proc_inst_id_ = $routeParams.processInstanceId;
+                        wbs.task_id_ = $routeParams.id;
+                        wbs.chargecode = $scope.datapermohonan.usrPermohonan_chargecode;
+                        wbs.pekerjaan = $scope.datapermohonan.usrPermohonan_pekerjaan;
+                        wbs.fromTemplate = "1";
+                        promises.push(Proyek_Input_Wbs.insert(wbs));
+                    });
+
+                    $q.all(promises).then(function (response) {
+                        $alert.add('Data berhasil disimpan!', $alert.success);
+                        $scope.modalrencanatemplate.close();
+                        Proyek_View_Wbs_List_Pegawai.list({
+                            where: "proc_inst_id_=" + $routeParams.processInstanceId
+                        }).then(function (response) {
+                            $scope.tableKegiatan.data = response.data;
+                            $scope.tableKegiatan.data = customSort($scope.tableKegiatan.data, 'wbs_code');
+                            $scope.tableKegiatan.data = $scope.customnumber($scope.tableKegiatan.data,'level_wbs');
+                            $scope.modalrencanaparent = null;
+                        });
+                    });
+                }
+            });
+
+            // btn cancel
+            $scope.btncancelmodaltemplate = $button($scope.action == 'view' ? 'back' : 'cancel', {
+                onclick: function () {
+                    $scope.modalrencanatemplate.close();
+                }
+            });
+
+            // get is activity value
+            $scope.wbs.data.isactivity = 0;
+            $scope.isActivity = function () {
+                if ($scope.wbs.data.is_activity) {
+                    $scope.wbs.data.isactivity = 1;
+                } else {
+                    $scope.wbs.data.isactivity = 0;
+                    $scope.wbs.data.id_pegawai = null;
+                    $scope.wbs.data.nama_pegawai = null;
+                    $scope.wbs.data.tgl_awal = null;
+                    $scope.wbs.data.tgl_akhir = null;
+                }
+            };
+
+            $scope.updateharikerja = function () {
+                $popup.confirm({
+                    caption: 'Apakah Anda yakin ?',
+                    buttons: [
+                        $button('yes', {
+                            onclick: function () {
+                                var data = {};
+                                data.id = $routeParams.id;
+                                data.usrPermohonan_harikerja = $scope.data.tipeharikerja;
+                                Activiti_Task.correct(data).then(function(response){
+
+                                });
+                                $popup.close(true);
+                            }
+                        }),
+                        $button('no', {
+                            onclick: function () {
+                                if($scope.data.tipeharikerja == 'full'){
+                                    $scope.data.tipeharikerja = 'normal';
+                                }else{
+                                    $scope.data.tipeharikerja = 'full';
+                                }
+                                $popup.close(false);
+                            }
+                        })
+                    ]
+                });
+            };
+
+
+        }
+    ];
+});

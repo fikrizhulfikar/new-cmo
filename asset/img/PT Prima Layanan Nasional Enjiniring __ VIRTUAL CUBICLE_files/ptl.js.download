@@ -1,0 +1,9 @@
+define([
+    'component/system/index'
+], function(){
+    alt.factory('Monitoring_Ptl', ['System', '$log', '$q', function(System, $log, $q){
+        var api = System('monitoring/ptl');
+
+        return api;
+    }]);
+});

@@ -1,0 +1,38 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'component/alt/button/service',
+    'component/activiti/task',
+    'component/system/user'
+], function(moment){
+    return [
+        '$scope', '$routeParams', '$log', '$q','$button', '$popup', '$validate', '$alert', '$window', 'Activiti_Task', 'System_User',
+        function($scope, $routeParams, $log,$q, $button, $popup, $validate, $alert, $window, Activiti_Task, System_User){
+            $scope.action = $routeParams.action;
+            $scope.moment = moment;
+            $scope.data = {
+                processid: "plne",
+                id: $routeParams.id,
+                usrPermohonan_data: []
+            };
+
+            $scope.$watch('data.usrPermohonan_tahunperjanjian', function(val){
+                if(val){
+                    $scope.data.usrPermohonan_tahunperjanjian2 = moment(val, "YYYY").format();
+                }
+            });
+
+            $scope.$watch('data.usrPermohonan_data', function(val){
+                if(val)
+                    $scope.data.usrPermohonan_data = angular.fromJson(val);
+            });
+
+            $scope.dokumenpenugasan = {
+                isupload: false,
+                isview: true,
+                accept:'application/pdf',
+                data:{}
+            };
+        }
+
+    ];
+});

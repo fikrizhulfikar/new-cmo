@@ -1,0 +1,11 @@
+<div class="panel panel-primary">
+    <div class="panel-heading" style="min-height: 40px;">
+        <div class="pull-left"><h1 class="panel-title ng-binding">Peta Lokasi</h1></div>
+    </div>
+    <div class="panel-body" style="padding: 0;">
+        <div data-ng-show="!map.isloaded" style="height: 393px; text-align: center; padding-top: 150px;">
+            <h4>Loading Google Maps, please check your internet connection if map wasn't loaded!</h4>
+        </div>
+        <div data-ng-show="map.isloaded" id="{{ map.elementid }}" style="height: 393px;" class="span11"></div>
+    </div>
+</div>

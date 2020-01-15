@@ -1,0 +1,469 @@
+<link rel="stylesheet" href="asset/lib/ui-select/dist/select.min.css">
+<!--<link rel="stylesheet" href="asset/lib/select2/css/select2.min.css">-->
+
+<!--<div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div>-->
+<!--<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>-->
+
+<style type="text/css">
+  table#steps{
+    line-height: 1em;
+    margin-top: 10px;
+  }
+
+  table#steps td {
+    text-align: center;
+    border: 0;
+  }
+
+  table#steps .step-label {
+    text-wrap: normal;
+    font-size: 0.9em;
+    font-family: 'Arial';
+  }
+
+  table#steps .fa-stack{
+    height: 1.25em;
+  }
+
+  table#steps .step-icon .fa-stack-1x, table#steps .step-icon .fa-stack-2x{
+    z-index: 10;
+  }
+
+  table#steps .step-icon::before{
+    content: '';
+    position: absolute;
+    top: .5em;
+    left: -50%;
+    width: 100%;
+    height: .2em;
+    background: lightgray;
+    z-index: 0;
+  }
+
+  table#steps .step-icon.step-finished::before{
+    background: #5cb85c;
+  }
+
+  table#steps .step-icon.first-step::before{
+    display: none;
+  }
+
+  table#steps .fa-stack-2x.step-current{
+    color: #F1C40F;
+  }
+
+  table#steps .fa-stack-2x.step-finished{
+    color: #5cb85c;
+  }
+
+  table#steps .fa-stack-2x{
+    color: lightgray;
+  }
+  span.step-label{
+    font-size: 14px !important;
+
+  }
+  .col-md-12.step{
+    margin-top: 20px;
+  }
+  .portlet-body.steps{
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+  .well.steps, .form-group.steps{
+    margin-bottom: 0px;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="row">
+   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+    <div class="portlet box red-flamingo">
+      <div class="portlet-title">
+        <div class="caption">
+          <strong>APPROVAL DAN TINDAK LANJUT PERMOHONAN</strong>
+        </div>
+      </div>
+      <div class="portlet-body">
+       <!-- Beginning of Time -->
+
+       <!-- Mulai Tahap -->
+       <div class="row">
+        <table class="table" id="steps">
+          <tr>
+            <td rowspan="2" data-ng-repeat="item in pills.steps" style="width: {{100 / pills.steps.length}}%; vertical-align: top">
+              <div class="col-md-12 step-icon {{$index == 0 ? 'first-step' : ''}} {{$index <= pills.current ? 'step-finished' : ''}}">
+                <span class="fa-stack fa-2x">
+                  <i class="fa fa-circle fa-stack-2x {{$index <= pills.current ? ($index == pills.current ? 'step-current' : 'step-finished') : ''}}"></i>
+                  <i class="fa fa-stack-1x fa-inverse">{{$index + 1}}</i>
+                </span>
+              </div>
+              <div class="col-md-12 step">
+                <span class="step-label">{{item.title}}</span><br>
+                <span class="step-label">{{item.title2}}
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- /Mulai Tahap -->
+      <br>
+
+      <!-- Mulai Permohonan Pekerjaan -->
+      <div class="portlet box blue" data-ng-show="pills.current != 7">
+        <div class="portlet-title">
+          <div class="caption">
+            <strong>Informasi Permohonan</strong>
+          </div>
+          <div class="actions pull-right">
+            <button class="btn btn-sm btn-default" data-ng-click="toggleCollapse('viewPermohonan')">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="portlet-body steps">
+          <!-- Container Permohonan Pekerjaan -->
+          <div class="row" id="viewPermohonan">
+            <div class="col-md-12">
+              <form class="form-horizontal">
+                <div class="form-group steps">
+                  <div class="col-md-12 well steps">
+                    <div data-alt-component="permohonan/detail_info" data-scope="datapermohonan"></div>
+                    <div class="form-group">
+                      <label class="col-lg-2 col-md-2 col-sm-2 control-label">Detail Permohonan</label>
+                      <div class="col-lg-10 col-md-10 col-sm-10">
+                        <table class="table table-hover table-responsive table-bordered table-condensed">
+                          <thead style="background-color: #eee; ">
+                          <tr>
+                            <th>No</th>
+                            <th>Jenis Permohonan</th>
+                            <th>Jenis Layanan</th>
+                            <th>Keterangan Layanan</th>
+                            <th>Originating</th>
+                            <th>Terminating</th>
+                            <th>Jarak/Zona</th>
+                            <th>Kapasitas</th>
+                            <th>Catatan</th>
+                            <th>Biaya Instalasi</th>
+                            <th>Biaya Sewa</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr data-ng-repeat="item in table">
+                            <td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+                            <td style=""> {{ item.jenispermohonan }} </td>
+                            <td style=""> {{ item.jenislayanan }} </td>
+                            <td style=""> {{ item.keteranganlayanan }} </td>
+                            <td style=""> {{ item.originating }} </td>
+                            <td style=""> {{ item.terminating }} </td>
+                            <td style=""> {{ item.jarak }} </td>
+                            <td style=""> {{ item.kapasitas }} </td>
+                            <td style=""> {{ item.catatan }} </td>
+                            <td class="text-right">{{ accounting.formatNumber(item.rpinstalasi, 0, '.', ',') }}</td>
+                            <td class="text-right">{{ accounting.formatNumber(item.rpsewa, 0, '.', ',') }}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <!--<hr class="background-color:rgba(10,10,10,.40)">-->
+                    <div class="form-group">
+                      <label class="col-lg-2 col-md-2 col-sm-2 control-label">Dokumen</label>
+                      <div class="col-lg-6 col-md-6 col-sm-10">
+                        <div id="usrPermohonan_dokumen" data-alt-component="alt/file" data-scope="usrPermohonan_dokumen"></div>
+                      </div>
+                    </div>
+
+                   </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <!-- /Container Permohonan Pekerjaan -->
+        </div>
+      </div>
+      <!-- /Mulai Permohonan Pekerjaan -->
+
+        <!-- Histori -->
+        <div class="portlet box green" data-ng-show="pills.current >= 1">
+          <div class="portlet-title">
+            <div class="caption">
+              <strong>Informasi Persetujuan Permohonan</strong>
+            </div>
+            <div class="actions pull-right">
+              <button class="btn btn-sm btn-default" data-ng-click="toggleCollapse('viewHisto')">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="portlet-body steps">
+            <!-- Container Permohonan Pekerjaan -->
+            <div class="row" id="viewHisto">
+              <div class="col-md-12">
+                <form class="form-horizontal">
+                  <div class="form-group steps">
+                    <div class="col-md-12 well steps">
+                      <div class="form-group" data-ng-show="pills.current >= 1">
+                        <label class="col-lg-2 col-md-2 col-sm-12 control-label">Catatan Persetujuan Permohonan (Div STI)</label>
+                        <div class="col-lg-10 col-md-10 col-sm-12">
+                          <textarea rows="2" class="form-control" name="perihal" placeholder="{{action=='view'? '' : 'Catatan'}}" data-ng-model="dataproduk.usrVerifikasiSTI_perihal" disabled></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- /Container Permohonan Pekerjaan -->
+          </div>
+
+        </div>
+        <!-- Histori -->
+
+        <!-- Histori -->
+        <!-- Persetujuan dan Pengesahan -->
+      <div class="portlet box yellow" data-ng-show="pills.current != 7">
+        <div class="portlet-title">
+          <div class="caption">
+            <strong data-ng-show="pills.steps[0].isactive">Approval Permohonan (Div STI)</strong>
+            <strong data-ng-show="pills.steps[1].isactive">Tindak Lanjut Permohonan</strong>
+          </div>
+        </div>
+        <div class="portlet-body steps">
+
+          <div class="row" >
+            <div class="col-md-12">
+              <form class="form-horizontal">
+                <div class="form-group steps">
+                  <div class="col-md-12 well steps">
+                   <div class="col-md-12" data-ng-show="action != 'view'" style="background-color: ghostwhite; padding-top: 20px;padding-bottom: 20px">
+                    <div class="tab-pane" data-ng-class="{true: 'active'}[pills.steps[0].isactive]" data-ng-show="pills.steps[0].isactive">
+
+
+                      <div class="form-group">
+                        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Status Persetujuan</label>
+                        <div class="col-lg-4 col-md-6 col-sm-10">
+                          <select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi">
+                            <option value="ya">Setuju (Ya)</option>
+                            <option value="tidak">Reject (Untuk di Revisi)</option>
+                            <option value="batal">Batal (Tidak disetujui)</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Catatan</label>
+                        <div class="col-lg-10 col-md-6 col-sm-10">
+                          <textarea rows="3" class="form-control" name="perihal" placeholder="{{action=='view'? '' : 'Catatan'}}" data-ng-model="data.perihal" data-ng-disabled="action=='view'"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane" data-ng-class="{true: 'active'}[pills.steps[1].isactive]" data-ng-show="pills.steps[1].isactive">
+                      <div class="form-group">
+                        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Input CRM</label>
+                        <div class="col-lg-10 col-md-10 col-sm-10">
+                          <table class="table table-hover table-responsive table-bordered table-condensed">
+                            <thead style="background-color: #eee; ">
+                            <tr>
+                              <th>No</th>
+                              <th>Jenis Permohonan</th>
+                              <th>Jenis Layanan</th>
+                              <th>Keterangan Layanan</th>
+                              <th>Originating</th>
+                              <th>Terminating</th>
+                              <th>Jarak/Zona</th>
+                              <th>Kapasitas</th>
+                              <th>Catatan</th>
+                              <th>Biaya Instalasi</th>
+                              <th>Biaya Sewa</th>
+                              <th>Service ID</th>
+                              <th class="text-center" >Aksi</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr data-ng-repeat="item in tablekpk">
+                              <td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+                              <td style=""> {{ item.jenispermohonan }} </td>
+                              <td style=""> {{ item.jenislayanan }} </td>
+                              <td style=""> {{ item.keteranganlayanan }} </td>
+                              <td style=""> {{ item.originating }} </td>
+                              <td style=""> {{ item.terminating }} </td>
+                              <td style=""> {{ item.jarak }} </td>
+                              <td style=""> {{ item.kapasitas }} </td>
+                              <td style=""> {{ item.catatan }} </td>
+                              <td class="text-right">{{ accounting.formatNumber(item.rpinstalasi, 0, '.', ',') }}</td>
+                              <td class="text-right">{{ accounting.formatNumber(item.rpsewa, 0, '.', ',') }}</td>
+                              <td style=""> {{ item.nomorcrm }} </td>
+                              <!--<td class="text-right">Rp. {{ accounting.formatNumber(item.nilai, 0, '.', ',') }}</td>-->
+                              <td class="text-center" style="white-space: nowrap">
+                                <a class="btn btn-sm btn-info" type="button" data-ng-click="viewTransaksi($index,item)" style="background-color:#45b6af;border-color:#3ea49d;margin-right: 0" data-ng-show="action == 'view'"><i class="fa fa-eye"></i></a>
+                                <a class="btn btn-sm btn-warning" type="button" data-ng-click="editTransaksi($index,item)" style="margin-right: 0" data-ng-show="action != 'view'"><i class="fa fa-edit"></i></a>
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Catatan</label>
+                        <div class="col-lg-10 col-md-6 col-sm-10">
+                          <textarea rows="3" class="form-control" name="perihal" placeholder="{{action=='view'? '' : 'Catatan'}}" data-ng-model="data.perihal" data-ng-disabled="action=='view'"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                   </div>
+                </div>
+              </div>
+              </form>
+              </div>
+            </div>
+          </div>
+          <div class="pull-right">
+            <div data-ng-hide="action=='view'" data-alt-component="alt/button" data-scope="btnsave"></div>
+            <div data-alt-component="alt/button" data-scope="btncancel"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+       <div class="row">
+         <div class="col-md-12">
+           <form class="form-horizontal" name="form">
+             <div class="form-group">
+               <label class="col-lg-2 col-md-3 col-sm-2 control-label">Jenis Permohonan</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <select class="form-control" name="category" data-ng-model="modal.data.jenispermohonan" disabled>
+                   <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" disabled>-->
+                   <option value="aktivasi">Aktivasi</option>
+                   <option value="deaktivasi">Deaktivasi</option>
+                   <option value="upgrade">Upgrade</option>
+                   <option value="downgrade">Downgrade</option>
+                   <option value="relokasi">Relokasi</option>
+                 </select>
+               </div>
+               <label class="col-lg-2 col-md-3 col-sm-2 control-label">Lokasi</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <select class="form-control" name="category" data-ng-model="modal.data.lokasi" disabled>
+                   <option value="JB">Jawa Bali</option>
+                   <option value="IB">Indonesia Barat</option>
+                   <option value="IT">Indonesia Timur</option>
+                 </select>
+               </div>
+             </div>
+             <div class="form-group">
+               <label class="col-lg-2 col-md-3 col-sm-2 control-label">Jenis Layanan</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <select class="form-control" name="category" data-ng-model="modal.data.jenislayanan" disabled>
+                   <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" disabled>-->
+                   <option value="ipvpn">IPVPN</option>
+                   <option value="metronet">METRONET</option>
+                   <option value="internet">Internet</option>
+                   <option value="clearchannel">Clear Channel</option>
+                   <option value="vsat">VSAT</option>
+                 </select>
+               </div>
+               <!--<div class="portlet light bordered" data-ng-show="tipepengadaan == 'kontrak'">-->
+               <label class="col-lg-2 col-md-3 col-sm-2 control-label">Keterangan Layanan</label>
+               <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == ''">
+                 <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" disabled>
+                 </select>
+               </div>
+               <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'ipvpn'">
+                 <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" disabled>
+                   <option value="ipvpnbasic">IPVPN Basic</option>
+                   <option value="ipvpnscada">IPVPN Scada</option>
+                   <option value="ipvpnpremium">IPVPN Premium</option>
+                 </select>
+               </div>
+               <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'clearchannel'">
+                 <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" disabled>
+                   <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" disabled>-->
+                   <option value="clearchannelbasic">Clear Channel Basic</option>
+                   <option value="clearchannelscada">Clear Channel Scada</option>
+                 </select>
+               </div>
+               <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'metronet'">
+                 <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" disabled>
+                   <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" disabled>-->
+                   <option value="metrobasic">MetroNet Basic</option>
+                   <option value="metroqinq">MetroNet QinQ</option>
+                 </select>
+               </div>
+               <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'internet'">
+                 <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" disabled>
+                   <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" disabled>-->
+                   <option value="internet">Akses Internet</option>
+                   <option value="intondemand">Internet on Demand</option>
+                 </select>
+               </div>
+
+             </div>
+
+             <div class="form-group">
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Originating</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Contoh : PLN Pusat'}}" data-ng-model="modal.data.originating" disabled/>
+               </div>
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Koordinat Originating</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Contoh : -6.2400341,106.7985371'}}" data-ng-model="modal.data.koordinat_originating" disabled/>
+               </div>
+             </div>
+             <div class="form-group">
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Terminanting</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Contoh : PLN Disjaya'}}" data-ng-model="modal.data.terminating" disabled/>
+               </div>
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Koordinat Terminating</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Contoh : -6.1803576,106.8310379'}}" data-ng-model="modal.data.koordinat_terminating" disabled/>
+               </div>
+             </div>
+             <div class="form-group">
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Jarak/Zona</label>
+               <div class="col-lg-4 col-md-6 col-sm-10" >
+                 <!--<input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Jarak/Zona'}}" data-ng-model="modal.data.jarak" disabled/>-->
+                 <select class="form-control" name="nomorsurat" data-ng-model="modal.data.jarak" disabled data-ng-options="u.jarak as u.jarak for u in ref.jarak">
+                   <option></option>
+                 </select>
+               </div>
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Kapasitas/BandWidth</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <select class="form-control" name="nomorsurat" data-ng-model="modal.data.kapasitas" disabled data-ng-options="u.bandwith as u.bandwith for u in ref.bandwith">
+                   <option></option>
+                 </select>
+                 <!--<input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Kapasitas'}}" data-ng-model="modal.data.kapasitas" disabled/>-->
+               </div>
+             </div>
+             <div class="form-group">
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Catatan</label>
+               <div class="col-lg-10 col-md-6 col-sm-10">
+                 <textarea rows="2" class="form-control" name="catatan" placeholder="{{action == 'view' ? '' : 'Catatan'}}" data-ng-model="modal.data.catatan" disabled></textarea>
+               </div>
+             </div>
+             <div class="form-group">
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Biaya Instalasi</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <input type="text" data-format-number="" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Biaya Instalasi'}}" data-ng-model="modal.data.rpinstalasi" disabled/>
+               </div>
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Biaya Sewa Per Bulan</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <input type="text" data-format-number="" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Biaya Sewa Per Bulan'}}" data-ng-model="modal.data.rpsewa" disabled/>
+               </div>
+             </div>
+             <div class="form-group">
+               <label class="col-lg-2 col-md-2 col-sm-2 control-label">Service ID</label>
+               <div class="col-lg-4 col-md-6 col-sm-10">
+                 <input type="text" class="form-control" name="nomorcrm" placeholder="{{action == 'view' ? '' : 'Service ID'}}" data-ng-model="modal.data.nomorcrm" data-ng-disabled="action== 'view'"/>
+               </div>
+             </div>
+
+           </form>
+         </div>
+       </div>
+     </div>
+
+
+

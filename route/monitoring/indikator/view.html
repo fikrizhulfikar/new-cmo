@@ -1,0 +1,105 @@
+<!-- <div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div> -->
+<!-- <div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div> -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <b><i class="fa fa-television"></i> Monitoring Realisasi Program Penurunan BPP</b>
+                    </div>
+                    <div class="actions">
+                        <div data-alt-component="alt/button" data-scope="btnprint" class="pull-right"></div>
+                    </div>
+                </div>
+				<div class="portlet-body">
+					<div class="row">
+						<form class="form-horizontal" name="form">
+							<div class="form-group">
+								<label class="col-lg-2 col-sm-4 control-label">Periode</label>
+								<div class="col-lg-2 col-sm-2">
+									<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Bulan Awal" data-ng-model="cari.tahun"/>
+								</div>
+								<div class="col-lg-2 col-sm-2">
+									<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Bulan Akhir" data-ng-model="cari.tahun2"/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<!--<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto" id="datatarget">-->
+					<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto" id="datatarget">
+						<!--<table class="table table-hover table-responsive table-bordered table-condensed table-striped">-->
+                        <table class="table table-hover table-responsive table-bordered table-condensed" id="fixTable">
+							<thead>
+							<tr>
+								<th rowspan="2" colspan="2"  style="width: 40px;">NO</th>
+								<th rowspan="2"  style="width: 70px;">INDIKATOR</th>
+								<th colspan="2" class="text-center">JBB</th>
+								<th colspan="2" class="text-center">JBT</th>
+								<th colspan="2" class="text-center">JBTB</th>
+								<th colspan="2" class="text-center">KAL</th>
+								<th colspan="2" class="text-center">MP</th>
+								<th colspan="2" class="text-center">SNT</th>
+								<th colspan="2" class="text-center">SUM</th>
+								<th colspan="2" class="text-center">ANAK PERUSAHAAN</th>
+								<th colspan="2" class="text-center">PUSAT PUSAT</th>
+								<th colspan="2" class="text-center">TOTAL PUSAT</th>
+								<!--<th colspan="12" bgcolor="#FFFF00" class="text-center">Man Month</th>-->
+								<!--<th colspan="12" bgcolor="#FF4500" class="text-center">Realisasi Biaya</th>-->
+							</tr>
+							<tr>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+								<th style="white-space:nowrap;width: 50px;">TARGET</th>
+								<th style="white-space:nowrap;width: 50px;">REALISASI</th>
+							</tr>
+							</thead>
+                            <tr data-ng-repeat="item in table.data" data-ng-init="rowCreated()">
+								<td align="left"><div align="center"></div>{{item.kode}}</td>
+								<td align="left"><div align="center"></div>{{item.kodeno}}</td>
+								<td align="left"><div align="left" style="white-space:nowrap">{{ item.indikator }}</div></td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.jbb_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.jbb_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.jbt_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.jbt_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.jbtb_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.jbtb_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.kal_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.kal_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.mp_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.mp_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.snt_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.snt_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.sum_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.sum_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.anak_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.anak_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.psps_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.psps_target,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.pusat_realisasi,','), 0, '.', ',')}} </td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.pusat_target,','), 0, '.', ',')}} </td>
+							</tr>
+
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

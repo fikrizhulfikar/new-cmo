@@ -1,0 +1,30 @@
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">Implementasi Fitur pada Bidang Pemasaran</div>
+    </div>
+    <div class="portlet-body">
+        <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+            <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                <thead>
+                <!--CHARGECODE, PEKERJAAN, UNITASALNAMA, ID_BIDANG, NAMA_BIDANG, ID_PTL, NAMA_PTL, STATUS							-->
+                <tr>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh Input Penugasan</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh Evaluasi Penugasan</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah Input Chargecode </th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh Input Penawaran</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh Kontrak Baru</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh Data Termin</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td>{{ datapemasaran.inputpenugasan }}</td>
+                    <td>{{ datapemasaran.evaluasipenugasan }}</td>
+                    <td>{{ datapemasaran.inputchargecode }}</td>
+                    <td>{{ datapemasaran.inputpenawaran }}</td>
+                    <td>{{ datapemasaran.inputkontrak }}</td>
+                    <td>{{ datapemasaran.inputtermin }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

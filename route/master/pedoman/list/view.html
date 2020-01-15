@@ -1,0 +1,108 @@
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+            <div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa icon-energy"></i>Master Pedoman
+                    </div>
+                    <div class="actions">
+                        <div data-alt-component="alt/button" data-scope="btnadd" class="pull-right"></div>
+                    </div>
+                </div>
+                <div class="portlet-body">  
+                    <div class="row">
+                        <div class="col-md-12 filter">
+                            <div class="col-lg-3 col-sm-12 col-lg-offset-5 col-sm-offset-12">
+                                <select class="form-control" data-ng-model="filter.key">
+                                    <option value="" selected="selected" disabled="disabled">- Jenis Pencarian -</option>
+                                    <option value="judul_dokumen">Judul Dokumen</option>
+                                    <option value="modifieduser">PIC Upload</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom:10px;padding-right:0" class="col-lg-4 col-sm-12" data-ng-if="filter.key != 'id_pedoman'">
+                                <input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+                        <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center" style="width:1%; vertical-align: middle;">No</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Judul Dokumen</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Dokumen</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Tanggal Upload</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">PIC Upload</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Keterangan</th>
+                                                <th class="text-center" style="width:1%; vertical-align: middle;">Aksi</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr data-ng-repeat="item in pedomans" data-ng-init="btnedit = btnedit(index, item);btnview = btnview(index, item);btnremove = btnremove(index, item);    ">
+                                                <td style="text-align: center; vertical-align: middle;">{{ $index + table.offset + 1 }}</td>
+                                                <!-- <td>{{ item.nama_indikator }}</td> -->
+                                                <td style="text-align: left; vertical-align: left;">{{ item.judul_dokumen }}</td>
+                                                <td style="text-align: center; vertical-align: left;"><a href="{{ item.file }}" target="_blank" style="font-size: 2em;"><i class="fa fa-file"></i></a></td>
+                                                <td style="text-align: left; vertical-align: left;">{{ item.modifiedtime }}</td>
+                                                <td style="text-align: left; vertical-align: left;">{{ item.modifieduser }}</td>
+                                                <td style="text-align: left; vertical-align: left;">{{ item.keterangan }}</td>
+                                               
+                                                                                  
+
+                                                <td class="text-center" style="white-space:nowrap">
+                                                     <!-- <div data-alt-component="alt/button" data-scope="btnview" ></div> -->
+                                                    <div data-alt-component="alt/button" data-scope="btnedit" ></div>
+                                                    <div data-alt-component="alt/button" data-scope="btnremove" ></div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-sm-12">
+            <form>
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Judul Dokumen:</label>
+                    <select class="form-control">
+                        <option data-ng-repeat='drop in drops' value={{id_project}}>{{nama_project}}</option>
+                    </select>
+                    <input type="name" data-ng-model="pedoman.judul_dokumen" class="form-control">
+                </div>
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Dokumen:</label>
+                    <input type="address" data-ng-model="pedoman.nama_project" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="label" style="color: black;">Tanggal Upload:</label>
+                    <input type="name" data-ng-model="pedoman.modifiedtime" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="label" style="color: black;">Keterangan:</label>
+                    <input type="address" data-ng-model="pedoman.keterangan" class="form-control">
+                </div>
+                <hr>
+                <div class="pull-right">
+                    <div data-alt-component="alt/button" data-scope="btnsave"></div>
+                    <div data-alt-component="alt/button" data-scope="btnclose"></div>
+                </div>
+             </div>
+            </form>
+        </div>
+    </div>
+</div>

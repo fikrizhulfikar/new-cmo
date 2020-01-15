@@ -1,0 +1,312 @@
+requirejs.s.contexts._.config.shim['asset/js/tableHeadFixer'] = {
+    deps: ['asset/lib/jquery/jquery.min']
+};
+
+requirejs.s.contexts._.config.shim['asset/lib/bootstrap/dist/js/bootstrap.min'] = {
+    deps: ['asset/lib/jquery/jquery.min']
+};
+
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'asset/js/accounting.min',
+    'asset/lib/jquery/jquery.min',
+    'asset/lib/bootstrap/dist/js/bootstrap.min',
+    'asset/js/tableHeadFixer',
+    'component/alt/button/service',
+    'component/activiti/task',
+    'component/activiti/process',
+    'component/system/user/userrole',
+    'component/iconplus/master/rencanapekerjaanuwp',
+    'component/iconplus/master/realisasipekerjaan',
+    'component/iconplus/master/unit',
+    'component/iconplus/master/customer',
+    'component/iconplus/master/perjanjian',
+    'component/iconplus/master/kategori',
+    'component/iconplus/master/status',
+    'component/iconplus/master/pegawai',
+    'component/iconplus/master/kelompokbidang',
+    'component/iconplus/master/actprocess',
+    'component/iconplus/monitoring/ptl',
+    'component/iconplus/monitoring/pemberikerja',
+    'component/iconplus/monitoring/pemberikerjabidang',
+    'component/iconplus/monitoring/chargecode',
+    'component/timpro/timpro'
+], function(moment,accounting){
+    return ['$scope', '$auth', '$q', '$routeParams', '$log', '$button', 'Iconplus_Master_Unit', 'Iconplus_Master_Kategori', 'Iconplus_Master_Customer', 'Activiti_Task', 'Iconplus_Master_Status', 'Iconplus_Master_Pegawai', 'Iconplus_Master_Kelompok_Bidang', "Activiti_Process", "TIMPRO_DBO",
+        "Iconplus_Master_Act_Process",'Monitoring_Ptl','Monitoring_Pemberikerja','Monitoring_Pemberikerja_Bidang','Monitoring_Chargecode',
+        function($scope, $auth, $q, $routeParams, $log, $button, Iconplus_Master_Unit, Iconplus_Master_Kategori, Iconplus_Master_Customer, Activiti_Task, Iconplus_Master_Status,Iconplus_Master_Pegawai,Iconplus_Master_Kelompok_Bidang, Activiti_Process, TIMPRO_DBO, Iconplus_Master_Act_Process,
+                 Monitoring_Ptl,Monitoring_Pemberikerja,Monitoring_Pemberikerja_Bidang,Monitoring_Chargecode){
+            moment.locale('id');
+            $scope.moment = moment;
+            $scope.accounting = accounting;
+            $scope.unitid = $auth.userdata.unitid;
+            $scope.usergroupid = $auth.userdata.usergroupid;
+
+            $(document).ready(function(){
+                $('#myTab a').click(function (e) {
+                    e.preventDefault();
+                    $(this).tab('show');
+                })
+            });
+
+            //filter
+            $scope.filter = {};
+            $scope.showReport = false;
+            $scope.btndetail = $button('', {
+                title: 'Detail',
+                description: 'Detail',
+                class: 'btn btn-info',
+                onclick: function(){
+                    $scope.reportType = 'detail';
+                    $scope.isAllowGetData = true;
+                    $scope.setFilter();
+                    $scope.table.reload();
+                }
+            });
+
+            $scope.btnreset = $button('', {
+                title: 'Reset',
+                description: 'Reset',
+                class: 'btn btn-danger',
+                onclick: function(){
+                    $scope.test='';
+                    $scope.test1='';
+                    $scope.getnoproyek = {selected : undefined};
+                    $scope.getunit = {selected : undefined};
+                    $scope.filter_chargecode='';
+                    $scope.filter_status='';
+                    $scope.filter_bidang='';
+
+                }
+            });
+
+            $scope.setFilter = function(){
+                $scope.table.filter = {};
+                if($scope.test1) $scope.table.filter.unitasalid = "= "+$scope.test1;
+                if($scope.test) $scope.table.filter.id_ptl = "= "+$scope.test;
+                if($scope.filter_bidang) $scope.table.filter.id_bidang = "= "+$scope.filter_bidang;
+                if($scope.filter_status) $scope.table.filter.status = "= "+$scope.filter_status;
+                if($scope.filter_chargecode) $scope.table.filter.chargecode = "= '"+$scope.filter_chargecode+"'";
+                if($scope.filter.bulanawal) $scope.table.filter.tglawalprapenugasan = moment($scope.filter.bulanawal).format('YYYYMM') + '01';
+                if($scope.filter.bulanakhir) $scope.table.filter.tglakhirprapenugasan = moment($scope.filter.bulanakhir).format('YYYYMM') + '31';
+            };
+
+            $scope.ref_status = {};
+            Iconplus_Master_Status.list().then(function(response){
+                angular.forEach(response.data, function (status) {
+                    $scope.ref_status[status['name']] = status['group'];
+                })
+            });
+
+            // table
+            $scope.isAllowGetData = false;
+            $scope.rekap = {};
+            $scope.rekapjumlah = {kategori: 0, status: 0};
+            $scope.table = {
+                total_data: [],
+                filter: {},
+                reload: function(){
+                    if ($scope.isAllowGetData) {
+                        // set parameter untuk dikirim
+                        var param = angular.copy($scope.table.filter);
+                        param.limit = $scope.table.limit;
+                        param.offset = $scope.table.offset;
+                        if($auth.userdata.usergroupid == 7){
+                            param.id_ptl = "= "+$auth.userdata.userid;
+                        }
+
+                        /*if($auth.userdata.usergroupid == 7){
+                            param.where = "chargecode in (" + $scope.proyekArray.join(",") + ")";
+                        }*/
+
+                        // cek apakah sedang mengambil data, batalkan jika ada
+                        if ($scope.table.isloading != null && $scope.table.isloading.abort)
+                            $scope.table.isloading.abort();
+
+                        // kirim data ke server
+                        // $scope.table.isloading = Activiti_Process.table(param);
+                        $scope.table.isloading = Iconplus_Master_Act_Process.table(param);
+                        $scope.table.isloading.then(function (response) {
+                            $scope.table.total = response.data.total;
+                            $scope.table.data = response.data.list;
+                            $scope.showReport = true;
+                        });
+                    }
+                }
+            };
+
+            $scope.lastRenderPeriod = {
+                kategori: '',
+                status: ''
+            };
+            $scope.getLastRenderPeriod = function (type, label) {
+                var lastRender = angular.copy($scope.lastRenderPeriod[type]);
+                $scope.lastRenderPeriod[type] = label;
+                return lastRender;
+            };
+            
+            $scope.getObjectLength = function (obj) {
+                return Object.keys(obj).length;
+            };
+
+            $scope.rowCreated = function(){
+                $("#fixTable").tableHeadFixer({"head" : false, "left" : 2});
+                $('table thead tr th').css('background-color', '#eee');
+            };
+            $scope.rowCreated();
+
+            $scope.buttons = function(index, item){
+                return [
+                   $button('', {
+                        icon:'fa fa-file-archive-o',
+                        title: '',
+                        description: 'Detail Form Input',
+                        href: alt.baseUrl + 'dashboard/monproject/detail?id=' + item.task_id_ + '&processInstanceId=' + item.proc_inst_id_ + '&penugasanid=' + item.penugasanid+ '&kontrakid=' + item.kontrakid,
+                        class: 'btn btn-sm btn-warning'
+                    }),
+                    $button('', {
+                        title: '',
+                        description: 'S-Curve',
+                        icon: 'fa fa-line-chart',
+                        href: alt.baseUrl + 'monitoring/status/scurve?id=' + item.task_id_ + '&processInstanceId=' + item.proc_inst_id_ + '&definitionKey=' + item.def_key,
+                        class: 'btn btn-sm btn-success'
+                    })
+                ];
+            };
+
+            // referensi
+            $scope.ref = {
+                unit: [],
+                kategori: [],
+                perjanjian: [],
+                customer : [],
+                pemberikerja : [],
+                pegawai : [],
+                ptl : [],
+                bidang : [],
+                sts : [],
+                proyek : []
+            };
+
+            $scope.proyekArray = [];
+            var paramfilter ={
+                select:"proc_inst_id_, chargecode, pekerjaan"
+            };
+            if($auth.userdata.usergroupid == 7){
+                paramfilter.id_ptl = "= " + $auth.userdata.userid;
+            }
+            Iconplus_Master_Act_Process.list(paramfilter).then(function(response){
+                $scope.ref.proyek = response.data;
+                // angular.forEach(response.data, function(val, key){
+                //     $scope.ref.proyek[val.chargecode] = val;
+                //     $scope.proyekArray.push("'" + val.chargecode + "'");
+                // });
+            });
+
+
+            $scope.pilih_chargecode = function(val){
+                $scope.filter_chargecode = val ;
+            };
+
+
+
+            $scope.combobox = [];
+            Iconplus_Master_Pegawai.list().then(function(response){
+                $scope.combobox = response.data;
+                angular.forEach(response.data, function(val, key){
+                    $scope.ref.pegawai[val.id_pegawai] = val;
+                });
+            });
+
+            $scope.combobox1 = [];
+            Monitoring_Pemberikerja.list().then(function(response){
+                $scope.combobox1 = response.data;
+                angular.forEach(response.data, function(val, key){
+                    $scope.ref.customer[val.customerid] = val;
+                });
+            });
+
+            Iconplus_Master_Kelompok_Bidang.list().then(function(response){
+                angular.forEach(response.data, function(val, key){
+                    $scope.ref.bidang[val.id_bidang] = val;
+
+                });
+            });
+
+
+
+            Iconplus_Master_Status.list().then(function(response){
+                angular.forEach(response.data, function (val, key) {
+                    $scope.ref.sts[val.name] = val;
+                })
+            });
+
+            $scope.pilih_nomor_proyek = function(val){
+                $scope.test = $scope.ref.pegawai[val].id_pegawai;
+
+            };
+
+            $scope.pilih_unit = function(val){
+                $scope.test1 = $scope.ref.customer[val].customerid;
+            };
+
+            $scope.combobox = [];
+            $scope.$watch('filter_bidang', function(val){
+                if(val) {
+                    // console.log(val);
+                    Monitoring_Ptl.list({id_bidang: val}).then(function (response) {
+                        angular.forEach(response.data, function (val2, key) {
+                            // console.log(response.data);
+                            $scope.combobox = response.data;
+                            $scope.ref.ptl[val.id_pegawai] = val2;
+                        })
+                    });
+                    $scope.getunit = {selected: undefined};
+                    Monitoring_Pemberikerja_Bidang.list({id_bidang: val}).then(function (response) {
+                        angular.forEach(response.data, function (val3, key) {
+                            // console.log(response.data);
+                            $scope.combobox1 = response.data;
+                            $scope.ref.pemberikerja[val3.customerid] = val3;
+                        })
+                    });
+                    $scope.getchargecode = {selected: undefined};
+                    Monitoring_Chargecode.list({id_bidang: val}).then(function (response) {
+                        angular.forEach(response.data, function (val3, key) {
+                            // console.log(response.data);
+                            $scope.ref.proyek = response.data;
+                        })
+                    });
+                }
+            });
+
+            $scope.combobox1 = [];
+            $scope.$watch('getnoproyek.selected', function(val5){
+                if(val5) {
+                    console.log(val5);
+                    $scope.getunit = {selected: undefined};
+                    Monitoring_Pemberikerja.list({id_ptl: val5.id_ptl}).then(function (response) {
+                        angular.forEach(response.data, function (val2, key) {
+                            // console.log(response.data);
+                            $scope.combobox1 = response.data;
+                            $scope.ref.pemberikerja[val5.customerid] = val2;
+                        })
+                    });
+                    $scope.getchargecode = {selected: undefined};
+                    Monitoring_Chargecode.list({id_ptl: val5.id_ptl}).then(function (response) {
+                        angular.forEach(response.data, function (val3, key) {
+                            // console.log(response.data);
+                            $scope.ref.proyek = response.data;
+                        })
+                    });
+                }
+            });
+
+
+            $scope.getnoproyek = {selected : undefined};
+            $scope.getunit = {selected : undefined};
+            $scope.getchargecode = {selected : undefined};
+            // chart
+            $scope.chart1 = {};
+            $scope.chart2 = {};
+        }];
+});

@@ -1,0 +1,250 @@
+requirejs.s.contexts._.config.shim['asset/lib/jquery-te/jquery-te-1.4.0.min'] = {
+    deps: ['asset/lib/jquery/jquery-2.0.min']
+};
+
+
+define([
+    'component/alt/button/service',
+    'component/iconplus/master/dokumen_fase_perubahan',
+    'component/iconplus/master/vprojectstream',
+    'component/alt/button/service',
+    'asset/lib/jquery-te/jquery-te-1.4.0.min'
+], function(){
+    return ['$scope','$route', '$routeParams', '$log', '$button', '$auth', '$window', '$alert', '$validate', '$popup', 'Iconplus_Master_Vprojectstream', 'Iconplus_Master_Dokumen_Fase_Perubahan',
+        function($scope, $route, $routeParams, $log,  $button, $auth, $window, $alert, $validate, $popup, Iconplus_Master_Vprojectstream, Iconplus_Master_Dokumen_Fase_Perubahan){
+        // toolbar
+        $scope.toolbar = {
+            title: 'Pengelolaan Dokumen',
+            description: 'Pengelolaan Dokumen'
+        };
+
+        $scope.refindikator = {};
+            Iconplus_Master_Dokumen_Fase_Perubahan.keyval().then(function(response){
+            $scope.refindikator = response.data;
+        });
+        // breadcrumb
+        $scope.breadcrumb = {
+            data: [{
+                title: alt.title,
+                url: alt.baseUrl
+            }, {
+                title: 'Pengelolaan Indikator',
+                url: alt.baseUrl + 'master/dokumen_fase_perubahan/list',
+                isactive: true
+            }]
+        };
+
+         Iconplus_Master_Aspek.list().then(function(response){
+                $scope.listaspek = angular.copy(response.data)
+            });
+
+         $scope.pilih_aspek = function (item) {
+                $scope.dokumen_fase_perubahan.id_dokumen = dokumen_fase_perubahan.id_dokumen;
+                $scope.dokumen_fase_perubahan.nama_dokumen = dokumen_fase_perubahan.id_dokumen;
+                debugger;
+                Iconplus_Master_Dokumen_Fase_Perubahan.list({
+                    select:"id_dokumen,nama_dokumen",
+                    order:"id_dokumen"
+                }).then(function(response){
+                    $scope.listaspek = response.data;
+                });
+            };
+
+        $scope.$auth = $auth;
+
+        $scope.table = {
+            total_data: [],
+            isloading: null,
+            reload: function () {
+                // set parameter untuk dikirim
+                var param = angular.copy($scope.table.filter);
+                param.limit = $scope.table.limit;
+                param.offset = $scope.table.offset;
+
+                // cek apakah sedang mengambil data, batalkan jika ada
+                if ($scope.table.isloading != null && $scope.table.isloading.abort)
+                    $scope.table.isloading.abort();
+
+                // kirim data ke server
+                $scope.table.isloading = Iconplus_Master_Indikator.table(param);
+                $scope.table.isloading.then(function (response) {
+                    $scope.table.total = response.data.total;
+                    $scope.table.data = response.data.list;
+                });
+            }
+        };
+
+        $scope.modal = {
+                header: 'Master Indikator',
+                data  : {
+
+                }
+            }   
+
+        var state = ''; 
+       $scope.btnadd = $button('add', {
+                title: 'Tambah',
+                icon: 'fas fa-plus-circle',
+                class: 'btn btn-default',
+                onclick: function(){
+                    state = 'add';
+                    $scope.indikator = {
+                        gcg_kode_lvl1:"",
+                        item_nama_lvl1:"",
+                        item_bobot_lvl1:"",
+                        item_nama:"",
+                        //createddate:moment().format('DD-MMM-YYYY'),
+                        createdby: $auth.userdata.name
+                    }
+                    $scope.modal.open();
+                }
+            });
+
+        $scope.btnedit = function (index, item) {
+                return $button('edit', {
+                    title: '',
+                    class: 'btn btn-sm btn-warning',
+                    onclick: function(){
+                        //$('.jqte_editor').jqteVal('');
+                        state = 'edit';
+                        //$scope.modal.data.item_id = item.item_id;
+                        // console.log(item.id_berita);
+
+                        Iconplus_Master_Indikator.retrieve({item_id_lvl1: item.item_id_lvl1}).then(function(response){
+                            $scope.indikator = angular.copy(response.data);
+                            $scope.modal.data.table = angular.copy(response.data);
+                            //console.log($scope.berita);
+                            $scope.indikator.item_id_lvl1 = response.data.item_id_lvl1;
+                            $scope.indikator.gcg_kode_lvl1 = response.data.gcg_kode_lvl1;
+                            $scope.indikator.item_nama_lvl1 = response.data.item_nama_lvl1;
+                            $scope.indikator.item_bobot_lvl1 = response.data.item_bobot_lvl1;
+                            $scope.indikator.item_nama = response.data.item_nama;
+                            console.log($scope.indikator.item_id_lvl1);
+                            //angular.element('.jqte_editor').append(response.data.konten); //'.jqte_editor' <= class editornya
+                            //angular.element('textarea').append(response.data.konten);
+                        
+                            $scope.modal.open();
+                        });
+
+                        
+                    }
+                });
+            };
+
+            $scope.btnclose =  $button('close', {
+                    title: 'Batal',
+                    icon:'fas fa-times-circle',
+                    class: 'btn btn-sm btn-danger',
+                    onclick: function(){
+                        $scope.modal.close();
+                      $route.reload();
+                       
+                    }
+                });
+            
+
+       $scope.btnview = function (index, item) {
+            return $button('view', {
+                title: '',
+                icon:'fa fa-eye',
+                class: 'btn btn-sm btn-info',
+                href: alt.baseUrl + 'master/indikator/detail?action=view&item_id_lvl1=' + item.item_id_lvl1
+            });
+        };
+
+        $scope.btnsave = $button('save', {
+                title: 'Simpan',
+                onclick: function(){ 
+                    if(state == 'add'){
+                        //$scope.unit.unitid = angular.element('#unitid').val();
+                        var isvalid = $validate()
+                            .rule($validate.required($scope.indikator.gcg_kode_lvl1), 'Harap isi Bobot unit terlebih dahulu!')
+                            .rule($validate.required($scope.indikator.item_nama_lvl1), 'Harap isi Bobot unit terlebih dahulu!')
+                            .rule($validate.required($scope.indikator.item_bobot_lvl1), 'Harap isi Bobot unit terlebih dahulu!')
+                            .rule($validate.required($scope.indikator.item_nama), 'Harap isi Bobot unit terlebih dahulu!')
+                            .check();
+                        if(!isvalid) return;
+                        Iconplus_Master_Indikator.insert({ 
+                                gcg_kode_lvl1: $scope.indikator.item_id+'.'+$scope.indikator.gcg_kode_lvl1,
+                                item_nama_lvl1: $scope.indikator.item_nama_lvl1,
+                                item_bobot_lvl1: $scope.indikator.item_bobot_lvl1,
+                                item_id: $scope.indikator.item_id,
+                                item_nama: $scope.indikator.item_nama
+                            }).then(function (response) {
+                            $scope.modal.close();
+                            $alert.add('Data berhasil disimpan!', $alert.success);
+                            $route.reload();
+
+
+                            //console.log(response);    
+                        });
+                    }else if(state == 'edit'){
+                        
+                        var isvalid = $validate()
+                            .rule($validate.required($scope.indikator.gcg_kode_lvl1), 'Harap isi Nama Aspek unit terlebih dahulu!')
+                            .rule($validate.required($scope.indikator.item_nama_lvl1), 'Harap isi Bobot unit terlebih dahulu!')
+                            .rule($validate.required($scope.indikator.item_bobot_lvl1), 'Harap isi Bobot unit terlebih dahulu!')
+                            .rule($validate.required($scope.indikator.item_nama), 'Harap isi Bobot unit terlebih dahulu!')
+                            .check();
+                        if(!isvalid) return;
+                        $scope.indikator.action = 'edit';
+                        Iconplus_Master_Indikator.update({ 
+                                gcg_kode_lvl1: $scope.indikator.item_id+'.'+$scope.indikator.gcg_kode_lvl1,
+                                item_nama_lvl1: $scope.indikator.item_nama_lvl1,
+                                item_bobot_lvl1: $scope.indikator.item_bobot_lvl1,
+                                item_id: $scope.indikator.item_id,
+                                item_nama: $scope.indikator.item_nama
+                            }).then(function (response) {
+                            $scope.modal.close();
+                            $alert.add('Data berhasil diubah!', $alert.success);
+                            $route.reload();
+                            //console.log(response);    
+                        });
+                    }
+                }
+            });
+
+        $scope.btnremove = function (index, item) {
+            return $button('remove', {
+                title: '',
+                class: 'btn btn-sm btn-danger',
+                onclick: function () {
+                    $popup.confirm({
+                        caption: "Anda yakin akan menghapus indikator : " + item.item_nama + " ?",
+                        buttons: [
+                            $button('yes', {
+                                onclick: function () {
+                                    Iconplus_Master_Indikator.remove({item_id_lvl1: item.item_id_lvl1}).then(function (response) {
+                                        $scope.table.reload();
+                                        $alert.add('Data berhasil dihapus!', $alert.success);
+                                    });
+                                    $popup.close(true);
+                                }
+                            }),
+                            $button('no', {
+                                onclick: function () {
+                                    $popup.close(false);
+                                }
+                            })
+                        ]
+                    });
+                }
+            });
+        };
+        $scope.$watch('filter',function(val, oldval){
+            if(oldval.key != val.key){
+                $scope.filter.value = '';
+            }else {
+                if ($scope.filter.key && $scope.filter.value) {
+                    if ($scope.filter.key != 'item_id_lvl1') {
+                        $scope.table.filter[$scope.filter.key] = $scope.filter.value;
+                    } else {
+                        $scope.table.filter['where'] = $scope.filter.key + ' = ' + $scope.filter.value;
+                    }
+                } else {
+                    $scope.table.filter = {};
+                }
+            }
+        },true);
+    }];
+});

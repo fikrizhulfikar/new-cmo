@@ -1,0 +1,360 @@
+<link rel="stylesheet" href="asset/lib/ui-select/dist/select.min.css">
+<!--<link rel="stylesheet" href="asset/lib/select2/css/select2.min.css">-->
+
+<div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div>
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+
+<style type="text/css">
+    table#steps{
+        line-height: 1em;
+        margin-top: 10px;
+    }
+
+    table#steps td {
+        text-align: center;
+        border: 0;
+    }
+
+    table#steps .step-label {
+        text-wrap: normal;
+        font-size: 0.9em;
+        font-family: 'Myriad Pro';
+    }
+
+    table#steps .fa-stack{
+        height: 1.25em;
+    }
+
+    table#steps .step-icon .fa-stack-1x, table#steps .step-icon .fa-stack-2x{
+        z-index: 10;
+    }
+
+    table#steps .step-icon::before{
+        content: '';
+        position: absolute;
+        top: .5em;
+        left: -50%;
+        width: 100%;
+        height: .2em;
+        background: lightgray;
+        z-index: 0;
+    }
+
+    table#steps .step-icon.step-finished::before{
+        background: #5cb85c;
+    }
+
+    table#steps .step-icon.first-step::before{
+        display: none;
+    }
+
+    table#steps .fa-stack-2x.step-current{
+        color: #F1C40F;
+    }
+
+    table#steps .fa-stack-2x.step-finished{
+        color: #5cb85c;
+    }
+
+    table#steps .fa-stack-2x{
+        color: lightgray;
+    }
+    span.step-label{
+        font-size: 18px !important;
+
+    }
+    .col-md-12.step{
+        margin-top: 20px;
+    }
+    .portlet-body.steps{
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
+    .well.steps, .form-group.steps{
+        margin-bottom: 0px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+            <div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <strong>STATUS VERIFIKASI DOKUMEN DAN PEMBAYARAN</strong>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <!-- Beginning of Time -->
+
+                    <!-- Mulai Tahap -->
+                    <div class="row">
+                        <table class="table" id="steps">
+                            <tr>
+                                <td rowspan="2" data-ng-repeat="item in pills.steps" style="width: {{100 / pills.steps.length}}%; vertical-align: top">
+                                    <div class="col-md-12 step-icon {{$index == 0 ? 'first-step' : ''}} {{$index <= pills.current ? 'step-finished' : ''}}">
+                <span class="fa-stack fa-2x">
+                  <i class="fa fa-circle fa-stack-2x {{$index <= pills.current ? ($index == pills.current ? 'step-current' : 'step-finished') : ''}}"></i>
+                  <i class="fa fa-stack-1x fa-inverse">{{$index + 1}}</i>
+                </span>
+                                    </div>
+                                    <div class="col-md-12 step">
+                                        <span class="step-label">{{item.title}}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- /Mulai Tahap -->
+                    <br>
+
+                    <!-- Mulai Permohonan Pekerjaan -->
+                    <div class="portlet box blue" data-ng-show="pills.current != 7">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <strong>Informasi Dokumen Penagihan</strong>
+                            </div>
+                            <div class="actions pull-right">
+                                <button class="btn btn-sm btn-default" data-ng-click="toggleCollapse('viewPermohonan')">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="portlet-body steps">
+                            <!-- Container Permohonan Pekerjaan -->
+                            <div class="row" id="viewPermohonan">
+                                <div class="col-md-12">
+                                    <form class="form-horizontal">
+                                        <div class="form-group steps">
+                                            <div class="col-md-12 well steps">
+                                                <div data-alt-component="permohonan/detail_info" data-scope="datapermohonan"></div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Data GR</label>
+                                                    <div class="col-lg-8 col-md-8 col-sm-8">
+                                                        <table class="table table-hover table-responsive table-bordered table-condensed">
+                                                            <thead style="background-color: #eee; ">
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>Nomor GR</th>
+                                                                <th>Tanggal GR</th>
+                                                                <th>Tahap atau Keterangan</th>
+                                                                <th>Nilai</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr data-ng-repeat="item in table">
+                                                                <td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+                                                                <td style=""> {{ item.nogr }} </td>
+                                                                <td style=""> {{ item.tglgr }} </td>
+                                                                <td style=""> {{ item.tahapatauketerangan }} </td>
+                                                                <td style="text-align: right;"> {{ item.nilai }} </td>
+                                                            </tr>
+                                                            <tr >
+                                                                <td></td>
+                                                                <td>Total</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td class="text-right">
+                                                                    {{ getInfoTotal() }} </td>
+                                                                <!--<td>{{bobot.nilai}}</td>-->
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <!--<div data-ng-show="action != 'view'" data-alt-component="alt/button" data-scope="btnadd"></div>-->
+                                                    </div>
+                                                </div>
+                                                <hr class="background-color:rgba(5,5,5,.40)">
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor Invoice</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control" name="noinvoiceataukuitansi" placeholder="{{action=='view'? '' : 'Nomor Invoice atau Kuitansi'}}" data-ng-model="dataproduk.usrPermohonan_noinvoiceataukuitansi" disabled>
+                                                    </div>
+                                                    <div>
+                                                        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Tanggal Invoice</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-10">
+                                                        <input type="text" date-time auto-close="true" view="date" min-view="date" max-view="year" format="dd MMMM yyyy" watch-direct-changes class="form-control" name="tglinvoiceataukuitansi" placeholder="{{action == 'view' ? '' : 'Tanggal Invoice atau Kuitansi'}}" data-ng-model="dataproduk.usrPermohonan_tglinvoiceataukuitansi2" disabled/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor Faktur Pajak</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control" name="nofakturpajak" placeholder="{{action == 'view' ? '' : 'Nomor Faktur Pajak'}}" data-ng-model="dataproduk.usrPermohonan_nofakturpajak" disabled/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">DPP </label>
+                                                    <div class="col-lg-4 col-md-4 col-sm-10">
+                                                        <input type="text" class="form-control  text-right" name="nilaiinvoice" placeholder="{{action == 'view' ? '' : 'Nilai DPP'}}" data-ng-model="dataproduk.usrPermohonan_dpp" disabled/>
+                                                    </div>
+                                                </div>
+                                                <hr class="background-color:rgba(10,10,10,.40)">
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Dokumen</label>
+                                                    <div class="col-lg-8 col-md-8 col-sm-8">
+                                                        <table class="table table-hover table-responsive table-bordered table-condensed">
+                                                            <thead style="background-color: #eee; ">
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>Jenis Dokumen</th>
+                                                                <th>File</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td style="text-align: right;">1.</td>
+                                                                <td>Invoice dan Kuitansi</td>
+                                                                <td><div id="bap_dokumen" data-alt-component="alt/file" data-scope="usrPermohonan_kuitansi_dokumen"></div></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;">2.</td>
+                                                                <td>Faktur Pajak</td>
+                                                                <td><div id="bap_dokumen" data-alt-component="alt/file" data-scope="usrPermohonan_faktupjk_dokumen"></div></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;">3.</td>
+                                                                <td>Berita Acara</td>
+                                                                <td><div id="bap_dokumen" data-alt-component="alt/file" data-scope="usrPermohonan_bap_dokumen"></div></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;">4.</td>
+                                                                <td>Denda (optional)</td>
+                                                                <td><div id="sptjp_dokumen" data-alt-component="alt/file" data-scope="usrPermohonan_sptjp_dokumen"></div></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;">5.</td>
+                                                                <td>Dokumen Pendukung Lain</td>
+                                                                <td><div id="dpl_dokumen" data-alt-component="alt/file" data-scope="usrPermohonan_dpl_dokumen"></div></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /Container Permohonan Pekerjaan -->
+                        </div>
+                    </div>
+                    <!-- /Mulai Permohonan Pekerjaan -->
+
+                    <!-- Histori -->
+                    <div class="portlet box green" data-ng-show="pills.current >= 1">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <strong>Informasi Verifikasi dan Approval Pembayaran</strong>
+                            </div>
+                            <div class="actions pull-right">
+                                <button class="btn btn-sm btn-default" data-ng-click="toggleCollapse('viewHisto')">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="portlet-body steps">
+                            <!-- Container Permohonan Pekerjaan -->
+                            <div class="row" id="viewHisto">
+                                <div class="col-md-12">
+                                    <form class="form-horizontal">
+                                        <div class="form-group steps">
+                                            <div class="col-md-12 well steps">
+                                                <div class="form-group" data-ng-show="pills.current >= 1">
+                                                    <label class="col-lg-2 col-md-2 col-sm-12 control-label">Catatan Verifikasi Softcopy</label>
+                                                    <div class="col-lg-10 col-md-10 col-sm-12">
+                                                        <textarea rows="2" class="form-control" name="perihal" placeholder="{{action=='view'? '' : 'Catatan'}}" data-ng-model="dataproduk.usrODSVerifikasiOnline_perihal" disabled></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" data-ng-show="pills.current >= 2">
+                                                    <!--<hr class="background-color:rgba(0,0,0,.05)">-->
+                                                    <label class="col-lg-2 col-md-2 col-sm-12 control-label">Catatan Verifikasi Hardcopy</label>
+                                                    <div class="col-lg-10 col-md-10 col-sm-12">
+                                                        <textarea rows="2" class="form-control" name="perihal" placeholder="{{action=='view'? '' : 'Catatan'}}" data-ng-model="dataproduk.usrODSVerifikasiHardcopy_perihal" disabled></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /Container Permohonan Pekerjaan -->
+                        </div>
+
+                    </div>
+                    <!-- Histori -->
+
+                    <!-- Histori -->
+                    <div class="portlet box green" data-ng-show="pills.current >= 3">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <strong>Informasi Account Payable</strong>
+                            </div>
+                            <div class="actions pull-right">
+                                <button class="btn btn-sm btn-default" data-ng-click="toggleCollapse('viewHistoPay')">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="portlet-body steps">
+                            <!-- Container Permohonan Pekerjaan -->
+                            <div class="row" id="viewHistoPay">
+                                <div class="col-md-12">
+                                    <form class="form-horizontal">
+                                        <div class="form-group steps">
+                                            <div class="col-md-12 well steps">
+                                                <div class="form-group" data-ng-show="pills.current >= 3">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor Mitra</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control" name="nosurat" placeholder="{{action == 'view' ? '' : 'Nomor Mitra'}}" data-ng-model="dataproduk.usrPermohonan_companycode" disabled />
+                                                    </div>
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor NPWP</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control" name="nosurat" placeholder="{{action == 'view' ? '' : 'Nomor NPWP'}}" data-ng-model="dataproduk.usrPermohonan_npwp" disabled />
+                                                    </div>
+                                                </div>
+                                                <hr class="background-color:rgba(0,0,0,.5)">
+                                                <div class="form-group" data-ng-show="pills.current >= 3">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor AP</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control" name="nosurat" placeholder="{{action == 'view' ? '' : 'Nomor AP'}}" data-ng-model="dataproduk.usrODSInputAP_nomorap" disabled />
+                                                    </div>
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Tanggal AP</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control" name="nosurat" placeholder="{{action == 'view' ? '' : 'Tanggal AP'}}" data-ng-model="dataproduk.usrODSInputAP_tglap" disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" data-ng-show="pills.current >= 3">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor Invoice</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control" name="nosurat" placeholder="{{action == 'view' ? '' : 'Nomor AP'}}" data-ng-model="dataproduk.usrODSInputAP_nomorinvoice" disabled />
+                                                    </div>
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor Faktur Pajak</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control" name="nosurat" placeholder="{{action == 'view' ? '' : 'Tanggal AP'}}" data-ng-model="dataproduk.usrODSInputAP_nofakturpajak" disabled />
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Jumlah Bayar</label>
+                                                    <div class="col-lg-4 col-md-6 col-sm-10">
+                                                        <input type="text" class="form-control text-right" name="nosurat" placeholder="{{action == 'view' ? '' : 'Jumlah Bayar'}}" data-ng-model="dataproduk.usrODSInputAP_dpp" disabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /Container Permohonan Pekerjaan -->
+                        </div>
+
+                    </div>
+                    <!-- Histori -->
+                </div>
+            </div>
+            <div class="pull-right">
+                <div data-ng-hide="action=='view'" data-alt-component="alt/button" data-scope="btnsave"></div>
+                <div data-alt-component="alt/button" data-scope="btncancel"></div>
+            </div>
+</div>
+</div>

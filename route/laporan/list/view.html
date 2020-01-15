@@ -1,0 +1,113 @@
+<div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div>
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-search"></i>Report Data Layanan
+					</div>
+                    <div class="caption pull-right" style="font-weight: bold">
+                        <a class="btn btn-flat btn-sm" data-ng-click="toggleCollapse('filter')">
+                            <i class="fa fa-arrows-v" style="color: white"></i>
+                        </a>
+                    </div>
+				</div>
+                <div class="portlet-body" id="filter">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="col-lg-2 col-sm-4 control-label">Periode</label>
+							<div class="col-lg-4 col-sm-8">
+								<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Periode" data-ng-model="filter.bulanawal" />
+							</div>
+							<!-- <label class="col-lg-2 col-sm-4 control-label">s.d.</label>
+							<div class="col-lg-4 col-sm-8">
+								<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Bulan Akhir" data-ng-model="filter.bulanakhir" />
+							</div> -->
+						</div>
+						<div class="form-group">
+							<label class="col-lg-2 col-sm-6 control-label">Nama Unit Pemohon</label>
+							<div class="col-lg-10 col-md-12 col-sm-12">
+								<!--<ui-select ng-model="getunit.selected" on-select="pilih_unit($select.selected.customerid)" limit="10"  theme="bootstrap" ng-disabled="disabled" style="min-height:29px">
+									<ui-select-match placeholder="&#45;&#45; SEMUA UNIT &#45;&#45;">{{$select.selected.name}}</ui-select-match>
+									<ui-select-choices repeat="d in combobox1 | filter: $select.search  | limitTo: 10">
+										<small ng-bind-html="d.name | highlight: $select.search"></small></br>
+									</ui-select-choices>
+								</ui-select>-->
+
+								<ui-select ng-show="unitid == 0" ng-model="filter.usrLaporan_unitid"
+										   on-select="pilih_unit($select.selected.customerid)" limit="10"  theme="bootstrap" ng-disabled="disabled" style="min-height:29px">
+									<ui-select-match placeholder="Unit Pemohon">{{$select.selected.name}}</ui-select-match>
+									<ui-select-choices repeat="c in ref.unit | filter: $select.search  | limitTo: 10">
+										<small ng-bind-html="c.name | highlight: $select.search"></small></br>
+									</ui-select-choices>
+								</ui-select>
+
+								<input ng-show="unitid != 0" type="text" class="form-control" name="namaunit" placeholder="{{action == 'view' ? '' : 'Nama Unit'}}" data-ng-model="data.usrLaporan_namaunit" disabled/>
+
+							</div>
+						</div>
+						<div class="text-right">
+							<div data-alt-component="alt/button" data-scope="btndetail"></div>
+							<div data-alt-component="alt/button" data-scope="btnreset"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="row" data-ng-show="reportType == 'detail' && showReport">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-calendar-check-o"></i>Detail Data Layanan
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+						<div style="overflow-x: auto" class="table-responsive">
+							<table class="table table-hover table-responsive table-bordered table-condensed" id="fixTable">
+								<thead>
+								<tr>
+									<th style="white-space:nowrap;width: 80px;">No</th>
+									<th style="white-space:nowrap;width: 100px;">Nomor SID</th>
+									<th style="white-space:nowrap;width: 250px;">Unit Pemohon</th>
+									<th style="white-space:nowrap;width: 350px;">Jenis Permohonan</th>
+									<th style="white-space:nowrap;width: 350px;">Jenis Layanan</th>
+									<th style="white-space:nowrap;width: 350px;">Originating</th>
+									<th style="white-space:nowrap;width: 350px;">Terminating</th>
+									<th style="white-space:nowrap;width: 350px;">Kapasitas</th>
+									<th style="white-space:nowrap;width: 180px;">Status</th>
+									<!--<th class="text-center" style="white-space:nowrap;min-width: 60px;">Aksi</th>-->
+								</tr>
+								</thead>
+								<tr data-ng-repeat="item in table.data" data-ng-init="rowCreated()">
+									<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+									<td style="white-space:nowrap;">{{ item.nomor_sid }}</td>
+									<td>{{ item.namaunit }}</td>
+									<td>{{ item.jenispermohonan }}</td>
+									<td>{{ item.jenislayanan||'-'||item.keteranganlayanan }}</td>
+									<td>{{ item.originating }}</td>
+									<td>{{ item.terminating }}</td>
+									<td>{{ item.kapasitas }}</td>
+									<td>{{ item.statuspermohonan }}</td>
+									<!--<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">-->
+										<!--<div data-ng-repeat="button in buttons" style="display: inline;">-->
+											<!--<div data-alt-component="alt/button" data-scope="button"></div>-->
+										<!--</div>-->
+									<!--</td>-->
+								</tr>
+							</table>
+						</div>
+						<div data-alt-component="alt/button" data-scope="printdoc"></div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>

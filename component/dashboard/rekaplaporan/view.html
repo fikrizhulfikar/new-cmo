@@ -1,0 +1,59 @@
+<!--<div class="portlet box yellow">-->
+    <!--<div class="portlet-title">-->
+        <!--<div class="caption">*) Rekapitulasi Total</div>-->
+    <!--</div>-->
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <div data-alt-component="alt/fusioncharts" data-scope="chart"></div>
+            </div>
+        </div>
+    </div>
+<!--</div>-->
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" name="form">
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-2 col-sm-12 control-label">Periode</label>
+                    <div class="col-lg-10 col-md-10 col-sm-12">
+                        <input type="text" class="form-control" data-ng-model="modal.tahun" ng-disabled="true"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-2 col-sm-12 control-label">Nama Unit</label>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <input type="text" class="form-control" data-ng-model="modal.bidang" ng-disabled="true"/>
+                    </div>
+                </div>
+            </form>
+            <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+                <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr>
+                        <th colspan="2">No</th>
+                        <th>Indikator</th>
+                        <th>Realisasi (Rp.) s.d</th>
+                        <th>Target (Rp.)</th>
+                    </tr>
+                    </thead>
+                    <tr data-ng-repeat="item in modal.data">
+                        <!--<td style="text-align: right;">{{ $index + 1 }}.</td>-->
+                        <!--<td>{{ item.keterangan }}</td>-->
+                        <td>{{ item.kode }}</td>
+                        <td>{{ item.kodeno }}</td>
+                        <td>{{ item.indikator }}</td>
+                        <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.penghematan_sd,','), 0, '.', ',')}} </td>
+                        <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.target,','), 0, '.', ',')}} </td>
+                    </tr>
+                    <tr>
+                        <td style="" colspan="3" align="right"> Total</td>
+                        <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(total_realisasi,','), 0, '.', ',')}} </td>
+                        <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(total_target,','), 0, '.', ',')}} </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

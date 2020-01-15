@@ -1,0 +1,58 @@
+
+define([
+    'component/system/index'
+], function(){
+    alt.factory('Proyek_Input_Rab', ['System', '$log', '$q', function(System, $log, $q){
+        var api = System('master/rabproyek');
+
+        api.table = function(data){
+            return this.connect('table', data);
+        };
+
+        api.retrieve = function(data){
+            return this.connect('retrieve', data);
+        };
+
+        api.insert = function(data){
+            return this.connect('insert', data);
+        };
+
+        api.isirabdaritemplate = function(data){
+            return this.connect('isirabdaritemplate', data);
+        };
+
+        api.list = function(data){
+            return this.connect('list', data);
+        };
+
+        api.count = function(data){
+            return this.connect('count', data);
+        };
+        
+        api.max = function(data){
+            return this.connect('max', data);
+        };
+
+        api.maxRecord = function(data){
+            return this.connect('maxRecord', data);
+        };
+        
+        api.delete = function(data) {
+            return this.connect('delete', data);  
+        };
+        
+        api.getBLP = function(data) {
+            return this.connect('getBLP', data);  
+        };
+
+        api.getBLNP = function(data) {
+            return this.connect('getBLNP', data);  
+        };
+
+        api.insertdatastatic = function(data) {
+            return this.connect('insertdatastatic', data);
+        };
+        
+        return api;
+    }]);
+});

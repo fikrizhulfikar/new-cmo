@@ -1,0 +1,224 @@
+<div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div>
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box blue">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-search"></i>Pencarian
+					</div>
+                    <div class="caption pull-right" style="font-weight: bold">
+                        <a class="btn btn-flat btn-sm" data-ng-click="toggleCollapse('filter')">
+                            <i class="fa fa-arrows-v" style="color: white"></i>
+                        </a>
+                    </div>
+				</div>
+                <div class="portlet-body" id="filter">
+					<form class="form-horizontal">
+						<!-- <div class="form-group">
+							<label class="col-lg-2 col-sm-4 control-label">Periode</label>
+							<div class="col-lg-4 col-sm-8">
+								<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Bulan Awal" data-ng-model="filter.bulanawal" />
+							</div>
+							<label class="col-lg-2 col-sm-4 control-label">s.d.</label>
+							<div class="col-lg-4 col-sm-8">
+								<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Bulan Akhir" data-ng-model="filter.bulanakhir" />
+							</div>
+						</div>
+
+						-->
+						<div class="form-group">
+							<label class="col-lg-2 col-sm-4 control-label">Nama PTL</label>
+							<div class="col-lg-4 col-md-10 col-sm-10">
+								<ui-select ng-model="getnoproyek.selected" on-select="pilih_nomor_proyek($select.selected.id_pegawai)" limit="10"  theme="bootstrap" ng-disabled="disabled" style="min-height:29px">
+									<ui-select-match placeholder="-- SEMUA PTL --">{{$select.selected.nama_pegawai}}</ui-select-match>
+									<ui-select-choices repeat="c in combobox | filter: $select.search  | limitTo: 10">
+										<small ng-bind-html="c.nama_pegawai | highlight: $select.search"></small> <b>(<small ng-bind-html="c.nip_pegawai | highlight: $select.search"></small>)</b> </br>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+
+							<label class="col-lg-2 col-sm-4 control-label">Nomor Proyek</label>
+							<div class="col-lg-4 col-sm-8">
+								<select class="form-control" data-ng-model="filter_chargecode" data-ng-options="k as v.chargecodeid for (k,v) in ref.proyek">
+									<option value="" selected>-- CHARGE CODE --</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-2 col-sm-4 control-label">Unit Pemberi Kerja</label>
+							<div class="col-lg-4 col-md-10 col-sm-10">
+								<ui-select ng-model="getunit.selected" on-select="pilih_unit($select.selected.customerid)" limit="10"  theme="bootstrap" ng-disabled="disabled" style="min-height:29px">
+									<ui-select-match placeholder="-- SEMUA UNIT --">{{$select.selected.name}}</ui-select-match>
+									<ui-select-choices repeat="d in combobox1 | filter: $select.search  | limitTo: 10">
+										<small ng-bind-html="d.name | highlight: $select.search"></small></br>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+							<label class="col-lg-2 col-sm-4 control-label">Bidang Satuan</label>
+							<div class="col-lg-4 col-sm-8">
+								<select class="form-control" data-ng-model="filter_bidang" data-ng-options="k as v.nama_bidang for (k,v) in ref.bidang">
+									<option value="" selected>-- SEMUA BIDANG --</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-2 col-sm-4 control-label">Status Project</label>
+							<div class="col-lg-4 col-sm-8">
+								<select class="form-control" data-ng-model="filter_status" data-ng-options="k as v.name for (k,v) in ref.sts">
+									<option value="" selected>-- PILIH STATUS --</option>
+								</select>
+							</div>
+						</div>
+						<div class="text-right">
+							<div data-alt-component="alt/button" data-scope="btndetail"></div>
+							<div data-alt-component="alt/button" data-scope="btnrekap"></div>
+							<div data-alt-component="alt/button" data-scope="btnreset"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+    <div class="row" data-ng-show="reportType == 'detail' && showReport">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box blue">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-calendar-check-o"></i>Detail Laporan Proyek
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+						<div style="overflow-x: auto" class="table-responsive">
+							<table class="table table-hover table-responsive table-bordered table-condensed" id="fixTable">
+								<thead>
+								<tr>
+									<th style="white-space:nowrap;width: 40px;">No</th>
+									<th style="white-space:nowrap;min-width: 25rem;max-width: 25rem">Nomor Proyek</th>
+									<th style="white-space:nowrap;min-width: 25rem;max-width: 25rem">Nama Pekerjaan</th>
+									<th style="white-space:nowrap;width: 120px;">Unit Pemberi Kerja</th>
+									<th style="white-space:nowrap;min-width: 25rem;max-width: 25rem">Bidang/Satuan</th>
+									<th style="white-space:nowrap;width: 120px;">Project Tim Leader</th>
+									<th style="white-space:nowrap;width: 120px;">Status </th>
+									<th class="text-center" style="white-space:nowrap;min-width: 60px;">Aksi</th>
+								</tr>
+								</thead>
+								<tr data-ng-repeat="item in table.data" data-ng-init="rowCreated()">
+									<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+									<td>{{item.processVariable.usrPermohonan_chargecode }}</td>
+									<td>{{item.processVariable.usrPermohonan_pekerjaan}}</td>
+									<td style="white-space:nowrap">{{item.processVariable.usrPermohonan_unitasalnama}}</td>
+									<td>{{ item.processVariable.usrPermohonan_nama_bidang}}</td>
+									<td>{{item.processVariable.usrPermohonan_nama_ptl}}</td>
+									<td >{{item.processVariable.process_status}}</td>
+									<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">
+										<div data-ng-repeat="button in buttons" style="display: inline;">
+											<div data-alt-component="alt/button" data-scope="button"></div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" data-ng-show="reportType == 'rekap' && showReport">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box blue">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa icon-energy"></i>Rekap Monitoring Praproyek
+					</div>
+				</div>
+				<div class="portlet-body">
+                    <ul class="nav nav-tabs" role="tablist" id="myTab">
+                        <li role="presentation" class="active">
+                            <a href="#kategori" aria-controls="kategori" role="tab" data-toggle="tab">Per Kategori</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#status" aria-controls="status" role="tab" data-toggle="tab">Per Status</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="kategori">
+                            <div class="row">
+                                <div class="col-xs-12 col-lg-6">
+                                    <table class="table table-responsive table-bordered table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th>Bulan - Tahun Permohonan</th>
+                                            <th>Kategori Pekerjaan</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody data-ng-repeat="(period, periodvalue) in rekap | orderBy:period">
+                                            <tr data-ng-repeat="(cat, catvalue) in periodvalue.value.kategori">
+												<td style="text-align: right; font-weight: bold">{{ $index > 0 ? '' : periodvalue.label}}</td>
+                                                <td>{{catvalue.label}}</td>
+                                                <td style="text-align: right">{{catvalue.jumlah}}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody>
+                                        <tr>
+                                            <td style="text-align: right; font-weight: bold" colspan="2">Total</td>
+                                            <td style="text-align: right; font-weight: bold">{{totalrekap}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+								<div class="col-xs-12 col-lg-6">
+									<div data-alt-component="dashboard/prapenugasan/kategori" data-scope="chart1"></div>
+								</div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade in" id="status">
+                            <div class="row">
+                                <div class="col-xs-12 col-lg-6">
+                                    <table class="table table-responsive table-bordered table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th>Bulan - Tahun Permohonan</th>
+                                            <th>Status</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody data-ng-repeat="(period, periodvalue) in rekap | orderBy:period">
+                                        <tr data-ng-repeat="(stat, statvalue) in periodvalue.value.status">
+                                            <td style="text-align: right; font-weight: bold">{{ $index > 0 ? '' : periodvalue.label}}</td>
+                                            <td>{{statvalue.label}}</td>
+                                            <td style="text-align: right">{{statvalue.jumlah}}</td>
+                                        </tr>
+                                        <tr>
+											<td>&nbsp;</td>
+                                            <td style="text-align: right; font-weight: bold">Jumlah</td>
+                                            <td style="text-align: right; font-weight: bold">{{periodvalue.jumlah}}</td>
+                                        </tr>
+                                        </tbody>
+                                        <tbody>
+                                            <tr>
+                                                <td style="text-align: right; font-weight: bold" colspan="2">Total</td>
+                                                <td style="text-align: right; font-weight: bold">{{totalrekap}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+								<div class="col-xs-12 col-lg-6">
+									<div data-alt-component="dashboard/prapenugasan/status" data-scope="chart2"></div>
+								</div>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

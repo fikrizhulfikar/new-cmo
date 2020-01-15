@@ -1,0 +1,23 @@
+define([
+    'component/system/index'
+], function(){
+    alt.factory('TIMPRO_DBO', ['System', '$log', '$q', function(System, $log, $q){
+        var api = System('timpro/timpro');
+
+        api.insert = function(data){
+            return this.connect('insert', data);
+        };
+
+        api.retrieve = function(data){
+            return this.connect('retrieve', data);
+        };
+        api.list = function(data){
+            return this.connect('list', data);
+        };
+        api.getlistptldrsetiapproyek = function(data){
+            return this.connect('getlistptldrsetiapproyek', data);
+        };
+
+        return api;
+    }]);
+});

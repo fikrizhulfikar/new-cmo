@@ -1,0 +1,126 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<!--<div class="row">-->
+				<!--<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">-->
+					<!--<div data-alt-component="dashboard/stat" data-scope="tahap1" data-ng-click="viewadmin()"></div>-->
+				<!--</div>-->
+				<!--<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">-->
+					<!--<div data-alt-component="dashboard/stat" data-scope="tahap2" data-ng-click="viewman()"></div>-->
+				<!--</div>-->
+				<!--<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">-->
+					<!--<div data-alt-component="dashboard/stat" data-scope="tahap3" data-ng-click="viewms()"></div>-->
+				<!--</div>-->
+				<!--<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">-->
+					<!--<div data-alt-component="dashboard/stat" data-scope="tahap4" data-ng-click="viewdir()"></div>-->
+				<!--</div>-->
+			<!--</div>-->
+			<div class="portlet box red-flamingo">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-television"></i>
+						<b>Proses Rekap Laporan Efisiensi Penurunan BPP</b>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="row">
+					<div class="col-md-12">
+						<form class="form-horizontal" name="form">
+							<div class="form-group" data-ng-show="usergroupid == 5">
+								<label class="col-lg-2 col-sm-4 control-label">Nama PLN</label>
+								<div class="col-lg-4 col-sm-4">
+									<input type="text" class="form-control" name="nama_wilayah"
+										   placeholder="{{action == 'view' ? '' : 'Nama PLN'}}"
+										   data-ng-model="nama_pln"
+										   disabled/>
+								</div>
+								<div data-alt-component="alt/button" data-scope="btnrekappusat" ></div>
+							</div>
+							<div class="form-group" data-ng-show="usergroupid == 4">
+								<label class="col-lg-2 col-sm-4 control-label">Nama Regional</label>
+								<div class="col-lg-4 col-sm-4">
+									<input type="text" class="form-control" name="nama_wilayah"
+										   placeholder="{{action == 'view' ? '' : 'Nama Regional'}}"
+										   data-ng-model="cari.nama_regional"
+										   disabled/>
+								</div>
+								<div data-alt-component="alt/button" data-scope="btnrekapregional" ></div>
+							</div>
+							<div class="form-group">
+								<label class="col-lg-2 col-sm-4 control-label">Periode</label>
+								<div class="col-lg-2 col-sm-2">
+									<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMM yyyy"
+										   watch-direct-changes class="form-control" placeholder="Pilih Tahun" data-ng-model="cari.tahun"
+										   data-ng-disabled="action == 'view'"/>
+								</div>
+								<label class="col-lg-2 col-sm-4 control-label">Nama Unit</label>
+								<div class="col-lg-4 col-sm-4" data-ng-show="action!='view' && (usergroupid == 5 || usergroupid == 4)">
+									<ui-select ng-model="cari.unit" on-select="pilih_wilayah($select.selected)" theme="bootstrap"
+											   style="min-height:29px">
+										<ui-select-match placeholder="Pilih Nama Unit">{{$select.selected.kode_wilayah + ' - ' + $select.selected.nama}}</ui-select-match>
+										<ui-select-choices repeat="c in listwilayah | filter: $select.search  | limitTo: 60">
+											<small ng-bind-html="c.kode_wilayah   + ' - ' + c.nama | highlight: $select.search"></small></br>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+								<div class="col-lg-4 col-sm-4" data-ng-show="action=='view' || (usergroupid != 5 && usergroupid != 4)">
+									<input type="text" class="form-control" name="nama_wilayah"
+										   placeholder="{{action == 'view' ? '' : 'Nama Wilayah'}}"
+										   data-ng-model="cari.nama_wilayah"
+										   disabled/>
+								</div>
+							</div>
+							<hr>
+							<div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+								<div class="table-responsive">
+									<!--No	Proses	Periode	Unit / Anak Perusahaan	Status Proses-->
+									<table class="table table-hover table-responsive table-bordered table-condensed" id="fixTable">
+										<thead>
+										<tr>
+											<th rowspan="2" style="white-space:nowrap;width: 40px;">No</th>
+											<th rowspan="2" class="text-center" style="white-space:nowrap;width: 100px;">Periode</th>
+											<th rowspan="2" class="text-center" style="white-space:nowrap;width: 200px;">Unit / Anak Perusahaan</th>
+											<th rowspan="2" class="text-center" style="white-space:nowrap;width: 150px;">Status Proses</th>
+											<th colspan="4" class="text-center">Status Verifikasi & Persetujuan Laporan</th>
+											<th rowspan="2" colspan = "1" class="text-center" style="white-space:nowrap;width: 150px;">Aksi</th>
+
+										</tr>
+										<tr>
+											<th class="text-center" style="white-space:nowrap;width: 40px;">Manajer</th>
+											<th class="text-center" style="width: 40px;">Senior Manager</th>
+											<th class="text-center" style="width: 40px;">General Manager</th>
+											<th class="text-center" style="width: 40px;">Divisi Pembina</th>
+										</tr>
+
+										</thead>
+										<tbody>
+										<tr data-ng-repeat="item in table.data" data-ng-init="btnedit = btnedit(index, item);btnrekap = btnrekap(index, item)">
+											<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+											<td style="white-space:nowrap">{{ moment(item.thbllap, 'YYYYMM').isValid() ? moment(item.thbllap, 'YYYYMM').format('MMM-YYYY') : '' }}</td>
+											<td align="left">
+												<div align="left" style="white-space: nowrap">{{ item.kode_wilayah }} - {{ item.nama_wilayah }}</div>
+											</td>
+											<td>{{ convertstatus(item.status_proses) }}</td>
+											<!--<td>{{ convertstatus(item.definitionkey) }}</td>-->
+											<td class="text-center"><i class="fa fa-2x fa-{{item.status_proses >= '1' ? 'check' : 'remove'}} {{item.status_proses >= '1' ? 'text-success' : 'text-danger'}}" ></i></td>
+											<td class="text-center"><i class="fa fa-2x fa-{{item.status_proses >= '2' ? 'check' : 'remove'}} {{item.status_proses >= '2'  ? 'text-success' : 'text-danger'}}" ></i></td>
+											<td class="text-center"><i class="fa fa-2x fa-{{item.status_proses >= '3' ? 'check' : 'remove'}} {{item.status_proses >= '3' ? 'text-success' : 'text-danger'}}" ></i></td>
+											<td class="text-center"><i class="fa fa-2x fa-{{item.status_proses >= '4' ? 'check' : 'remove'}} {{item.status_proses >= '4' ? 'text-success' : 'text-danger'}}" ></i></td>
+											<td class="text-center" style="white-space:nowrap">
+												<div data-alt-component="alt/button" data-scope="btnrekap" ></div>
+												<div data-alt-component="alt/button" data-scope="btnedit" ></div>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</form>
+					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

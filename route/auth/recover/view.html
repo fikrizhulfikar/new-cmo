@@ -1,0 +1,22 @@
+<div class="login-container">
+    <div class="panel-container">
+        <div class="panel">
+            <div class="panel-heading">
+                <h1 style="color: white;">{{ alt.title }}</h1>
+                <p>{{ alt.description }}</p>
+            </div>
+            <div class="panel-body">
+                <form>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Username">
+                    </div>
+
+                    <div class="form-group text-center">
+                        <a data-ng-href="{{ alt.baseUrl }}" class="btn-login btn btn-primary">Recover Password<i class="ti-unlock"></i><i class="ti-lock"></i></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

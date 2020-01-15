@@ -1,0 +1,23 @@
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">Nilai RAB Proyek</div>
+    </div>
+    <div class="portlet-body">
+        <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+            <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                <thead>
+                <tr>
+                    <th style="white-space:nowrap;width: 120px;">Chargecode </th>
+                    <th style="white-space:nowrap;width: 120px;">Pekerjaan </th>
+                    <th style="white-space:nowrap;width: 120px;">Nilai RAB Proyek</th>
+                </tr>
+                </thead>
+                <tr data-ng-repeat="item in table.data | filter:table.filter">
+                    <td>{{ item.chargecode}}</td>
+                    <td>{{ item.pekerjaan}}</td>
+                    <td style="text-align: right">{{ accounting.formatNumber(item.nilai_rab, 0, ".", ",")}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

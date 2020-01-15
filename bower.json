@@ -1,0 +1,25 @@
+{
+  "name": "pusharlis",
+  "version": "1.0.0",
+  "dependencies": {
+    "angular-sanitize": "~1.4.7",
+    "bootstrap": "~3.3.5",
+    "bootstrap2.3.2": "~2.3.2",
+    "font-awesome": "fontawesome#~4.4.0",
+    "html5shiv": "~3.7.3",
+    "moment": "~2.11.2",
+    "ng-table": "~0.8.3",
+    "respond": "~1.4.2",
+    "ui-select": "angular-ui-select#~0.13.1",
+    "alt-angularjs": "~3.1.1",
+    "angular-datepicker": "~1.0.20",
+    "cryptojslib": "~3.1.2",
+    "js-xlsx": "~0.8.0"
+  },
+  "resolutions": {
+    "select2": "~4.0.0",
+    "angular": "1.4.9",
+    "jquery": ">= 2.1.0",
+    "moment": "~2.11.2"
+  }
+}

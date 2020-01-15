@@ -1,0 +1,48 @@
+<link type="text/css" rel="stylesheet" media="all" href="asset/css/login-weni.css">
+<div class="back"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4 col-sm-8 col-md-6 col-md-offset-3 col-lg-offset-4 col-sm-offset-2">
+            <br>
+            <!--<br>-->
+            <div class="account-wall">
+                <h1 class="text-center login-title">Login ke</h1>
+                <h2 class="text-center">Sistem Informasi Monitoring Pekerjaan</h2>
+                <!--<h1 class="text-center login-title">PT PLN (Persero)</h1>-->
+                <img class="profile-img" src="asset/img/logo-pln.png"
+                alt="">
+
+                <form class="form-signin" data-ng-submit="login()">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="form-control"  placeholder="Username" name="username" data-ng-model="data.username"  autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" placeholder="Password" name="password" data-ng-model="data.password" >
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">
+                        Login
+                    </button>
+                    <p class="text-center"> 
+
+                        <a class="text-center need-help" data-ng-click="forgot()" id="register-btn" >Lupa Password 
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row copyright">
+        <div class="col-md-8 col-md-offset-2">
+            <span style="color:#3e3e3e;">Copyright &copy;</span> 
+            <a href="http://www.pln.co.id//" class="link-footer">
+                <strong style="color:#3e3e3e;">
+                    PT PLN (Persero)
+                </strong>
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+define([
+    'component/system/index'
+], function(){
+    alt.factory('Iconplus_Master_TrxPermohonan', ['System', '$log', '$q', function(System, $log, $q){
+        var api = System('master/trxpermohonan');
+
+        api.table = function(data){
+            return this.connect('table', data);
+        };
+
+        api.list = function(data){
+            return this.connect('list', data);
+        };
+
+        api.keyval = function(data){
+            return this.connect('keyval', data);
+        };
+
+        api.isibyproc = function(data) {
+            return this.connect('isibyproc', data);
+        };
+
+        return api;
+    }]);
+});

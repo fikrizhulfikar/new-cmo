@@ -1,0 +1,94 @@
+<style>
+    .timeline:before {
+        margin-left: 80px !important;
+    }
+    .timeline .timeline-body {
+        margin-left: 150px !important;
+        margin-top: 0 !important;
+    }
+    .timeline .timeline-body-content{
+        margin-top: 0 !important;
+    }
+    .portlet{
+        margin-bottom: 0 !important;
+    }
+    .portlet .portlet-body{
+        padding-top: 15px !important;
+    }
+    .tabbable-custom{
+        margin-bottom: 0 !important;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+            <div data-alt-transclude="alt/pills" data-scope="pills" class="timilini">
+                <div data-alt-transclude="alt/pills/pane" data-scope="pills" data-id="0">
+                    <section class="panel panel-default">
+                        <div class="tabbable-custom">
+                            <div class="tab-content">
+                                <div class="tab-pane active">
+                                    <table class="table table-bordered table-condensed table-striped">
+                                        <thead>
+                                            <tr style="background: #005e8c; color: white">
+                                                <th>Kode</th>
+                                                <th>Uraian</th>
+                                                <th>Role</th>
+                                                <th>Tanggal Proses</th>
+                                                <th>Nama User</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="row in data.pemasaran">
+                                                <td>{{row.kode}}</td>
+                                                <td>{{row.uraian}}</td>
+                                                <td>{{row.role}}</td>
+                                                <td>{{row.tglproses}}</td>
+                                                <!--<td>{{row.role ? moment(row.tglproses, "YYYY-MM-DD HH:mm:ss.S").format("DD MMMM YYYY") : ''}}</td>-->
+                                                <td>{{row.role ? row.nama_user: ''}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div data-alt-transclude="alt/pills/pane" data-scope="pills" data-id="1">
+                    <section class="panel panel-default">
+                        <div class="tabbable-custom">
+                            <div class="tab-content">
+                                <div class="tab-pane active">
+                                    <table class="table table-bordered table-condensed table-striped">
+                                        <thead>
+                                        <tr style="background: #005e8c; color: white">
+                                            <th>Kode</th>
+                                            <th>Uraian</th>
+                                            <th>Role</th>
+                                            <th>Tanggal Proses</th>
+                                            <th>Nama User</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr data-ng-repeat="row in data.enjiniring">
+                                            <td>{{row.kode}}</td>
+                                            <td>{{row.uraian}}</td>
+                                            <td>{{row.role}}</td>
+                                            <td>{{row.tglproses}}</td>
+                                            <!--<td>{{row.role ? moment(row.tglproses, "YYYY-MM-DD HH:mm:ss.S").format("DD MMMM YYYY") : ''}}</td>-->
+                                            <td>{{row.role ? row.nama_user: ''}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="pull-right col-lg-1" data-alt-component="alt/button" data-scope="btncancel"></div>
+        </div>
+    </div>
+</div>

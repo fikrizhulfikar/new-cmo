@@ -1,0 +1,112 @@
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+            <div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa icon-energy"></i>Master Dokumen Fase Perubahan
+                    </div>
+                    <div class="actions">
+                        <div data-alt-component="alt/button" data-scope="btnadd" class="pull-right"></div>
+                    </div>
+                </div>
+                <div class="portlet-body">  
+                    <div class="row">
+                        <div class="col-md-12 filter">
+                            <div class="col-lg-3 col-sm-12 col-lg-offset-5 col-sm-offset-12">
+                                <select class="form-control" data-ng-model="filter.key">
+                                    <option value="" selected="selected" disabled="disabled">- Jenis Pencarian -</option>
+                                    <option value="nama_project">Project</option>
+                                    <option value="fase_perubahan">Fase Perubahan</option>
+                                    <option value="nama_dokumen">Nama Dokumen</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+                        <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center" style="width:1%; vertical-align: middle;">No</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Project</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Fase perubahan</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Nama Dokumen</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Bobot</th>
+                                                <th class="text-center" style="width:4%;vertical-align: middle;">Keterangan</th>
+                                                <th class="text-center" style="width:1%; vertical-align: middle;">Aksi</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr data-ng-repeat="item in table.data" data-ng-init="btnedit = btnedit(index, item);btnview = btnview(index, item);btnremove = btnremove(index, item);    ">
+                                                <td style="text-align: center; vertical-align: middle;">{{ $index + table.offset + 1 }}</td>
+                                                <!-- <td>{{ item.nama_indikator }}</td> -->
+                                                <td style="text-align: left; vertical-align: left;">{{ item.id_project }}</td>
+                                                <td style="text-align: left; vertical-align: left;">{{ item.fase_perubahan }}</td>
+                                                <td style="text-align: left; vertical-align: left;">{{ item.nama_dokumen }}</td>
+                                                <td style="text-align: left; vertical-align: left;">{{ item.bobot }}</td>
+                                                <td style="text-align: left; vertical-align: left;">{{ item.keterangan }}</td>
+                                                
+                                                
+
+                                                <td class="text-center" style="white-space:nowrap">
+                                                     <!-- <div data-alt-component="alt/button" data-scope="btnview" ></div> -->
+                                                    <div data-alt-component="alt/button" data-scope="btnedit" ></div>
+                                                    <div data-alt-component="alt/button" data-scope="btnremove" ></div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-sm-12">
+            <form>
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Project:</label>
+                     <select class="form-control"data-ng-modal='isi.project'>
+                        <option data-ng-repeat='drop in drops' >{{drop.id_project}}</option>
+                    </select>
+                    
+                </div>
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Fase Perubahan:</label>
+                    <input type="address" data-ng-model="dokumen_fase_perubahan.fase_perubahan" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="label" style="color: black;">Nama Dokumen:</label>
+                    <input type="name" data-ng-model="dokumen_fase_perubahan.nama_dokumen" class="form-control">
+                </div>
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Bobot:</label>
+                    <input type="address" data-ng-model="dokumen_fase_perubahan.bobot" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="label" style="color: black;">Keterangan:</label>
+                    <input type="address" data-ng-model="dokumen_fase_perubahan.keterangan" class="form-control">
+                </div>
+                  <hr>
+                <div class="pull-right">
+                    <div data-alt-component="alt/button" data-scope="btnsave"></div>
+                    <div data-alt-component="alt/button" data-scope="btnclose"></div>
+                </div>
+             </div>
+            </form>
+        </div>
+    </div>
+</div>

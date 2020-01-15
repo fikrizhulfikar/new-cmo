@@ -1,0 +1,101 @@
+<li class="nav-item" data-ng-click="closeMenu(); menu = 'home';" data-ng-class="{'active': (menu == 'home')}">
+    <a data-ng-href="{{ alt.baseUrl }}dashboard/administrasi" class="nav-link nav-toggle">
+        <i class="fa fa-home"></i>
+        <span class="title">Home</span>
+        <span class="selected"></span>
+    </a>
+</li>
+<li class="nav-item" data-ng-click="menu = 'dashboard';" data-ng-class="{'active': (menu == 'dashboard'), 'open': (menu == 'dashboard' && showsub)}">
+    <a href="" class="nav-link nav-toggle" data-ng-click="showsub = menu != 'dashboard' ? true : !showsub;">
+        <i class="fa fa-dashboard"></i>
+        <span class="title">Dashboard</span>
+        <span class="selected"></span>
+        <span class="arrow" data-ng-class="{true: 'open'}[menu == 'dashboard' && showsub]"></span>
+    </a>
+    <ul class="sub-menu" data-ng-show="menu == 'dashboard' && showsub">
+        <li class="nav-item start" data-ng-class="{true: 'active open'}[submenu == 'dashregional']">
+            <a data-ng-click="closeMenu(); submenu = 'dashregional'; showsub = true;" data-ng-href="{{ alt.baseUrl }}dashboard/permohonanunit" class="nav-link">
+                <i class="fa fa-bar-chart"></i>
+                <span class="title">Permohonan Per Unit</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+        <li class="nav-item start" data-ng-class="{true: 'active open'}[submenu == 'dashunit']">
+            <a data-ng-click="closeMenu(); submenu = 'dashunit'; showsub = true;" data-ng-href="{{ alt.baseUrl }}dashboard/rekonunit" class="nav-link">
+                <i class="fa fa-cubes"></i>
+                <span class="title">Master Data Rekon</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item" data-ng-class="{true: 'active open'}[submenu == 'templateword']">
+    <a data-ng-click="closeMenu(); submenu = 'templateword'; showsub = true;" data-ng-href="{{ alt.baseUrl }}master/template/list" class="nav-link">
+        <i class="fa fa-file-excel-o"></i>
+        <span class="title">Template Excel</span>
+        <span class="selected"></span>
+    </a>
+</li>
+<li class="nav-item" data-ng-click="menu = 'praproyek';" data-ng-class="{'active': (menu == 'praproyek'), 'open': (menu == 'praproyek' && showsub)}">
+    <a href="" class="nav-link nav-toggle" data-ng-click="showsub = menu != 'praproyek' ? true : !showsub;">
+        <i class="fa fa-calendar-check-o"></i>
+        <span class="title">Permohonan</span>
+        <span class="selected"></span>
+        <span class="arrow" data-ng-class="{true: 'open'}[menu == 'praproyek' && showsub]"></span>
+    </a>
+    <ul class="sub-menu" data-ng-show="menu == 'praproyek' && showsub">
+        <li class="nav-item start" data-ng-class="{true: 'active open'}[submenu == 'aktivasi']">
+            <a data-ng-click="submenu = 'aktivasi'; showsub = true;" data-ng-href="{{ alt.baseUrl }}odp/permohonan/list" class="nav-link">
+                <!--<i class="fa fa-gavel"></i>-->
+                <span class="title">Network Request</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+        <li class="nav-item" data-ng-click="menu = 'praproyek';" data-ng-class="{'active': (menu == 'revisi'), 'open': (menu == 'revisi' && showsub)}">
+            <a data-ng-click="submenu = 'revisi'; showsub = true;" data-ng-href="{{ alt.baseUrl }}odp/revisi/list" class="nav-link">
+                <span class="title">Revisi Permohonan</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+    </ul>
+
+</li>
+
+<li class="nav-item" data-ng-click="menu = 'proyek';" data-ng-class="{'active': (menu == 'proyek'), 'open': (menu == 'proyek' && showsub)}">
+    <a href="" class="nav-link nav-toggle" data-ng-click="showsub = menu != 'proyek' ? true : !showsub;">
+        <i class="fa fa-paper-plane-o"></i>
+        <span class="title">Tindak Lanjut</span>
+        <span class="selected"></span>
+        <span class="arrow" data-ng-class="{true: 'open'}[menu == 'proyek' && showsub]"></span>
+    </a>
+    <ul class="sub-menu" data-ng-show="menu == 'proyek' && showsub">
+        <li class="nav-item start" data-ng-class="{true: 'active open'}[submenu == 'pelaksanaan']">
+            <a data-ng-click="submenu = 'pelaksanaan'; showsub = true;" data-ng-href="{{ alt.baseUrl }}odp/pelaksanaan/list" class="nav-link">
+                <!--<i class="fa fa-gavel"></i>-->
+                <span class="title">Pelaksanaan</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item" data-ng-click="menu = 'koreksi';" data-ng-class="{'active': (menu == 'koreksi'), 'open': (menu == 'koreksi' && showsub)}">
+    <a data-ng-click="submenu = 'sap'; showsub = true;" data-ng-href="{{ alt.baseUrl }}koreksi/list" class="nav-link">
+        <i class="fa fa-edit"></i>
+        <span class="title">Koreksi</span>
+        <span class="selected"></span>
+    </a>
+</li>
+<li class="nav-item" data-ng-click="menu = 'laporan';" data-ng-class="{'active': (menu == 'laporan'), 'open': (menu == 'laporan' && showsub)}">
+    <a data-ng-click="closeMenu(); submenu = 'laporan'; showsub = true;" data-ng-href="{{ alt.baseUrl }}monitoring/list" class="nav-link">
+        <i class="fa fa-bar-chart"></i>
+        <span class="title">Monitoring Status</span>
+        <span class="selected"></span>
+    </a>
+</li>
+<li class="nav-item" data-ng-click="menu = 'datarekon';" data-ng-class="{'active': (menu == 'datarekon'), 'open': (menu == 'datarekon' && showsub)}">
+    <a data-ng-click="closeMenu(); submenu = 'datarekon'; showsub = true;" data-ng-href="{{ alt.baseUrl }}master/rekon/list" class="nav-link">
+        <i class="fa fa-television"></i>
+        <span class="title">Monitoring Data Rekon</span>
+        <span class="selected"></span>
+    </a>
+</li>

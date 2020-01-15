@@ -1,0 +1,24 @@
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">Jumlah Proyek FS/BidDoc > Tahun 2017</div>
+    </div>
+    <div class="portlet-body">
+        <div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto">
+            <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                <thead>
+                <!--CHARGECODE, PEKERJAAN, UNITASALNAMA, ID_BIDANG, NAMA_BIDANG, ID_PTL, NAMA_PTL, STATUS							-->
+                <tr>
+                    <th style="white-space:nowrap;width: 120px;">Bidang/Satuan</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah Proyek</th>
+                </tr>
+                </thead>
+                <tr data-ng-repeat="item in table.data | filter:table.filter" data-ng-init="btnedit = btnedit(index, item);
+						btnremove = btnremove(index, item);
+						btnview = btnview(index, item);">
+                    <td>{{ item.nama_bidang }}</td>
+                    <td>{{ item.jml_proyek }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

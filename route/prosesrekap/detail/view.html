@@ -1,0 +1,208 @@
+<link rel="stylesheet" href="asset/lib/ui-select/dist/select.min.css">
+<style type="text/css">
+	table#steps {
+		line-height: 1em;
+		margin-top: 10px;
+	}
+
+	table#steps td {
+		text-align: center;
+		border: 0;
+	}
+
+	table#steps .step-label {
+		text-wrap: normal;
+		font-size: 0.9em;
+		font-family: 'Arial';
+	}
+
+	table#steps .fa-stack {
+		height: 1.25em;
+	}
+
+	table#steps .step-icon .fa-stack-1x, table#steps .step-icon .fa-stack-2x {
+		z-index: 10;
+	}
+
+	.tableCenter {
+		margin: 0 auto;
+		width: 1000px;
+	}
+
+	table#steps .step-icon::before {
+		content: '';
+		position: absolute;
+		top: .5em;
+		left: -50%;
+		width: 100%;
+		height: .2em;
+		background: lightgray;
+		z-index: 0;
+	}
+
+	table#steps .step-icon.step-finished::before {
+		background: #5cb85c;
+	}
+
+	table#steps .step-icon.first-step::before {
+		display: none;
+	}
+
+	table#steps .fa-stack-2x.step-current {
+		color: #F1C40F;
+	}
+
+	table#steps .fa-stack-2x.step-finished {
+		color: #5cb85c;
+	}
+
+	table#steps .fa-stack-2x {
+		color: lightgray;
+	}
+
+	span.step-label {
+		font-size: 14px !important;
+
+	}
+
+	.col-md-12.step {
+		margin-top: 20px;
+	}
+
+	.portlet-body.steps {
+		padding-top: 0px !important;
+		padding-bottom: 0px !important;
+	}
+
+	.well.steps, .form-group.steps {
+		margin-bottom: 0px;
+	}
+</style>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <b><i class="fa fa-television"></i> Rekap Efisiensi Program Penurunan BPP </b>
+                    </div>
+                </div>
+				<div class="portlet-body">
+					<div class="row">
+						<table class="table" id="steps">
+							<tr>
+								<td rowspan="2" data-ng-repeat="item in pills.steps"
+									style="width: {{100 / pills.steps.length}}%; vertical-align: top">
+									<div class="col-md-12 step-icon {{$index == 0 ? 'first-step' : ''}} {{$index <= pills.current ? 'step-finished' : ''}}">
+                                        <span class="fa-stack fa-2x">
+                                          <i class="fa fa-circle fa-stack-2x {{$index <= pills.current ? ($index == pills.current ? 'step-current' : 'step-finished') : ''}}"></i>
+                                          <i class="fa fa-stack-1x fa-inverse">{{$index + 1}}</i>
+                                        </span>
+									</div>
+									<div class="col-md-12 step">
+										<span class="step-label">{{item.title}}</span><br>
+										<span class="step-label">{{item.title2}}</span>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!-- /Mulai Tahap -->
+					<hr>
+					<div class="row">
+						<form class="form-horizontal" name="form">
+							<div class="form-group">
+								<label class="col-lg-2 col-sm-4 control-label">Periode</label>
+								<div class="col-lg-2 col-sm-2">
+									<input type="text" disabled date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Pilih Periode" data-ng-model="cari.tahun"/>
+								</div>
+								<label class="col-lg-2 col-sm-4 control-label">Nama Unit</label>
+								<div class="col-lg-4 col-sm-4">
+									<input type="text" class="form-control" name="nama_wilayah"
+										   placeholder="{{action == 'view' ? '' : 'Nama Wilayah'}}"
+										   data-ng-model="cari.nama_wilayah"
+										   disabled/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<!--<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto" id="datatarget">-->
+					<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto" id="datatarget">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+							<div class="col-md-6 col-sm-6">
+							<!--<table class="table table-hover table-responsive table-bordered table-condensed table-striped">-->
+								<table class="table table-hover table-responsive table-bordered table-condensed table-striped" id="fixTable">
+								<thead style="background-color: #eee; ">
+								<tr>
+									<th  class="text-center" colspan="2"  style="width: 40px;">No</th>
+									<th style="width: 250px;">Indikator</th>
+									<th  class="text-center" style="width: 200px;">Realisasi (Rp.) s.d</th>
+									<th  class="text-center" style="width: 200px;">Target (Rp.)</th>
+									<th class="text-center" style="width: 120px;">Detail</th>
+								</tr>
+								</thead>
+								<tr data-ng-repeat="item in table.data" data-ng-init="btnview = btnview(index, item); btnreal = btnreal(index, item); rowCreated()">
+									<td align="center"><div align="center" style="white-space:nowrap"></div>{{item.kode}}</td>
+									<td align="left"><div align="center" style="white-space:nowrap"></div>{{item.kodeno}}</td>
+									<td align="left"><div align="left" style="white-space:nowrap">{{ item.indikator }}</div></td>
+									<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.penghematan_sd,','), 0, '.', ',')}} </td>
+									<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.target,','), 0, '.', ',')}} </td>
+									<td class="text-center" style="white-space:nowrap">
+										<!--<div data-alt-component="alt/button" data-scope="btnview" ></div>-->
+										<div data-alt-component="alt/button" data-scope="btnreal" ></div>
+										<!--<div data-alt-component="alt/button" data-scope="btnremove"></div>-->
+									</td>
+								</tr>
+								<tr>
+									<td style="" colspan="3" align="right"> Total</td>
+									<td style="text-align: right;"> <b>{{accounting.formatNumber(accounting.unformat(total_realisasi,','), 0, '.', ',')}}</b> </td>
+									<td style="text-align: right;"> <b>{{accounting.formatNumber(accounting.unformat(total_target,','), 0, '.', ',')}}</b> </td>
+									<td></td>
+								</tr>
+							</table>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<div data-alt-component="dashboard/rekaplaporan" data-scope="chart1"></div>
+								<!--<br>-->
+								<!--<br>-->
+								<!--<label class="col-lg-0 col-sm-6 control-label">*) Rekapitulasi Total</label>-->
+							</div>
+							<br>
+
+							<div class="col-md-6 col-sm-6">
+								<div class="row">
+									<form class="form-horizontal" name="form">
+										<hr>
+										<div class="form-group" data-ng-show="status_proses >= 1 && action == 'edit'">
+											<label class="col-lg-2 col-md-2 col-sm-2 control-label">Status Approval</label>
+											<div class="col-lg-6 col-md-6 col-sm-8">
+												<select class="form-control" data-ng-model="data.hasilevaluasi">
+													<option value="ya">Setuju</option>
+													<option value="tidak">Tidak</option>
+												</select>
+										</div>
+										</div>
+										<div class="form-group" data-ng-show="data.hasilevaluasi == 'tidak'">
+											<!--<div class="form-group" data-ng-show="data.jenispekerjaan == 'proyeklama'">                                            -->
+											<label class="col-lg-2 col-md-2 col-sm-2 control-label">Catatan</label>
+											<div class="col-lg-6 col-md-6 col-sm-8">
+												<textarea rows="3" class="form-control" data-ng-model="data.catatanevaluasi"></textarea>
+											</div>
+										</div>
+										<hr>
+										<div class="pull-right">
+											<div data-alt-component="alt/button" data-scope="btnsave" data-ng-show="action == 'edit'"></div>
+											<div data-alt-component="alt/button" data-scope="btncancel"></div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,15 @@
+define([
+    'component/timpro/timpro'
+], function(){
+    return ['$scope', '$auth', '$window', '$routeParams', '$log', '$button', '$popup', '$alert','$validate',
+        'TIMPRO_DBO',
+        function($scope, $auth, $window, $routeParams, $log, $button, $popup, $alert, $validate,
+                 TIMPRO_DBO){
+            $scope.data = {};
+
+        TIMPRO_DBO.list({where : "proc_inst_id_ = "+$routeParams.processInstanceId, order : "nourut"}).then(function (response) {
+            $scope.timpro = response.data;
+        });
+
+        }];
+});

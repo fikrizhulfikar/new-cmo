@@ -1,0 +1,1026 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'asset/js/accounting.min',
+    'asset/lib/ui-select/dist/select.min',
+    'component/alt/button/service',
+    'component/activiti/task',
+    'component/iconplus/generatedoc',
+    'component/iconplus/master/unit',
+    'component/iconplus/master/customer',
+    'component/iconplus/master/penugasan',
+    'component/iconplus/master/kontrak',
+    'component/iconplus/master/pegawai',
+    'component/iconplus/master/prosedurenjiniring',
+    'component/iconplus/master/vacuanprosedurenjinir',
+    'component/iconplus/master/pe',
+    'component/iconplus/master/kategori',
+    'component/iconplus/master/contactperson',
+    'component/system/user',
+    'component/iconplus/master/acuanprosedurenjinir',
+    'component/iconplus/master/qa',
+    'component/iconplus/master/vacuanprosedurenjinir2',
+    'component/iconplus/master/vchargecodepenugasan',
+    'component/proyek/vwbsproyeklistpegawai',
+    'component/proyek/inputrab',
+    'component/iconplus/master/vmanmonthall',
+    'component/iconplus/master/rmpqa',
+    'component/iconplus/master/rmpptl',
+    'component/iconplus/master/vdurasiproyek'
+], function(moment, accounting){
+    alt.module('ui.select');
+    return ['$scope', '$auth', '$window', '$routeParams', '$log', '$button', '$popup', '$alert','$validate','Activiti_Task', 'System_User','Iconplus_Master_Unit','Iconplus_Master_Kategori',
+        'Iconplus_Master_Customer', 'Iconplus_Master_Pegawai','Master_Contact_Person','Master_Qa',"Chargecode_Penugasan",'Iconplus_Durasi_Proyek',
+        'Proyek_View_Wbs_List_Pegawai','Proyek_Input_Rab','VManmonth_All','Iconplus_Master_Penugasan','Iconplus_Master_Kontrak',
+        'Iconplus_Master_Prosedur_Enjiniring', 'Iconplus_Master_Vacuan_Prosedur_Enjinir', 'Iconplus_Master_Pe','Iconplus_Generatedoc','Iconplus_Master_Acuan_Prosedur_Enjinir','Master_Vacuanprosedurenjinir2',
+        'Master_RMPQA','Master_RMPPTL',
+        function($scope, $auth, $window, $routeParams, $log, $button, $popup, $alert, $validate, Activiti_Task, System_User, Iconplus_Master_Unit, Iconplus_Master_Kategori,
+                 Iconplus_Master_Customer, Iconplus_Master_Pegawai,Master_Contact_Person,Master_Qa,Chargecode_Penugasan,Iconplus_Durasi_Proyek,
+                 Proyek_View_Wbs_List_Pegawai,Proyek_Input_Rab,VManmonth_All,Iconplus_Master_Penugasan,Iconplus_Master_Kontrak,
+                 Iconplus_Master_Prosedur_Enjiniring,
+                 Iconplus_Master_Vacuan_Prosedur_Enjinir, Iconplus_Master_Pe,Iconplus_Generatedoc,Iconplus_Master_Acuan_Prosedur_Enjinir,Master_Vacuanprosedurenjinir2,Master_RMPQA,
+                 Master_RMPPTL){
+            $scope.action = $routeParams.action;
+            $scope.title = $scope.action == 'add' ? 'Tambah' : $scope.action == 'edit' ? 'Edit' : 'Lihat';
+            $scope.table = [];
+            $scope.notabuku = [];
+            $scope.tablepe = [];
+            $scope.tableqa = [];
+            $scope.tablelingkupkerja = [];
+            $scope.moment = moment;
+            $scope.accounting = accounting;
+            $scope.showfiles = 0;
+            $scope.pushdokumen = $button('add', {
+                title: 'Tambah',
+                class: 'btn btn-default',
+                onclick: function(){
+                    $scope.showfiles++;
+                }
+            });
+
+            $scope.penugasan = {
+                dokumenpenugasan: {
+                    isupload: false
+                }, data: {}
+            };
+
+            // pills step
+            $scope.pills = {
+                steps: [{
+                    title: 'Penyusunan RMP',
+                    title2: '(Project Team Leader)',
+                    isactive: true
+                }, {
+                    title: 'Persetujuan RMP',
+                    title2: '(Manajer Enjiniring)'
+                }, {
+                    // title: 'Persetujuan Penetapan Prosedur Enjiniring (Manajer Senior)'
+                    title: 'Persetujuan RMP',
+                    title2: '(Manajer Senior Enjiniring)'
+                },{
+                    // title: 'Persetujuan Penetapan Prosedur Enjiniring (Manajer Senior)'
+                    title: 'Pemeriksaan RMP',
+                    title2: '(Tim QA)'
+                }],
+                current: 0,
+                select: function(stepid){
+                    var previd = $scope.pills.current;
+                    angular.forEach($scope.pills.steps, function(value, key){
+                        value.isactive = false;
+                    });
+                    $scope.pills.steps[stepid].isactive = true;
+                    $scope.pills.current = stepid;
+                    if($scope.pills.current >= 0 && $scope.pills.current <= 2 ) $scope.label = 'Penentuan WBS dan RAB';
+                    else $scope.label = '';
+                    // call onselect
+                    $scope.pills.onselect(stepid, previd);
+                },
+                onselect: function(currentid, previousid){
+
+                }
+            };
+
+            $scope.getpicpemberikerja = {selected : undefined};
+            $scope.listpicpemberikerja = [];
+
+            // console.log($scope.datapenugasan.data.usrPenugasan_unitasalid);
+
+            $scope.id = $routeParams.id;
+
+            $scope.data = {
+                id : $routeParams.id
+            };
+            $scope.info = {
+                id : $routeParams.id
+            };
+            $scope.datapermohonan = {
+                data : {
+                    usrPenugasanSurvey_dari : ''
+                },
+                file : {
+                    isupload: false,
+                    isview: true,
+                    accept:'application/pdf',
+                    data: []
+                }
+            };
+            $scope.infopermohonan = {};
+            // WBS
+            Proyek_View_Wbs_List_Pegawai.list({
+                where: "proc_inst_id_=" + $routeParams.processInstanceId
+            }).then(function (response) {
+                $scope.tableWbs = response.data;
+            });
+// RAB
+            $scope.totalrab = 0;
+            Proyek_Input_Rab.list({
+                where: "proc_inst_id_=" + $routeParams.processInstanceId
+            }).then(function (response) {
+                $scope.tableRab = response.data;
+                angular.forEach($scope.tableRab, function(val, key){
+                    if(val.subtotal_harga_satuan){
+                        $scope.totalrab = parseInt($scope.totalrab) + parseInt(val.subtotal_harga_satuan);
+
+                    }
+                });
+                $scope.data.totalrbp = $scope.totalrab;
+            });
+
+            $scope.dataevaluasi = {};
+            $scope.dataproduk = {};
+            $scope.dataqa = {};
+            $scope.datapenugasan = {};
+            $scope.dataprosedur = {};
+
+            $scope.dokumenprosedur = {
+                isupload: false,
+                isview: true,
+                data: {}
+            };
+
+
+            $scope.ref = {
+                status: [],
+                // prosedur: {},
+                prosedur: [],
+                prosedur2: {},
+                kategori: [],
+                customer: [],
+                pegawai:[]
+            };
+
+            Iconplus_Master_Penugasan.retrieve({
+                id : $routeParams.penugasanid
+            }).then(function(response){
+                $scope.info.nosurat = response.data.nosurat;
+                $scope.info.tglsurat = response.data.tglsurat;
+                $scope.info.perihal = response.data.perihal;
+            });
+            Iconplus_Master_Kontrak.retrieve({
+                penugasanid : $routeParams.penugasanid
+            }).then(function(response){
+                $scope.info.nokontrak = response.data.nokontrak;
+                $scope.info.tglkontrak = response.data.tglkontrak;
+                $scope.info.judulkontrak = response.data.judulkontrak;
+                $scope.info.tglmulai = response.data.tglmulai;
+                $scope.info.tglselesai = response.data.tglselesai;
+            });
+            Iconplus_Durasi_Proyek.retrieve({
+                proc_inst_id_: "= "+$routeParams.processInstanceId,
+            }).then(function(responserkp){
+                $scope.data.durasirkp = responserkp.data.durasirkp;
+                $scope.data.tglmulai = responserkp.data.tglawal;
+                $scope.data.tglselesai = responserkp.data.tglakhir;
+            });
+            VManmonth_All.retrieve({
+                proc_inst_id_: "= "+$routeParams.processInstanceId,
+            }).then(function(response){
+                $scope.data.manmonth = response.data.mm;
+            });
+            $scope.getpe = {selected : undefined};
+            $scope.pilih_pe = function (val) {
+                Iconplus_Master_Prosedur_Enjiniring.retrieve({id_prosedur: val.id_prosedur}).then(function(response){
+                    $scope.dokumenprosedur.data = response.data.dokumenprosedur;
+                    $scope.modal.data.id_prosedur = val.id_prosedur;
+                    $scope.modal.data.nomor_prosedur = val.nomor_prosedur;
+                    $scope.modal.data.judul_prosedur = val.judul_prosedur;
+                });
+            };
+            Iconplus_Master_Prosedur_Enjiniring.list().then(function(response){
+                $scope.ref.prosedur = response.data;
+                // angular.forEach(response.data, function(val, key){
+                //     $scope.ref.prosedur[val.nomor_prosedur] = val;
+                // });
+            });
+            Iconplus_Master_Prosedur_Enjiniring.list().then(function(response){
+                angular.forEach(response.data, function(val, key){
+                    $scope.ref.prosedur2[val.id_prosedur] = val;
+                });
+            });
+
+            Master_Qa.list().then(function (response) {
+                Master_RMPQA.list({
+                    select:"*",
+                    where:"proc_inst_id_ = "+$routeParams.processInstanceId,
+                    order:"id_qa"}).then(function (responsermpqa) {
+                    $scope.tableqa = response.data;
+                    if(responsermpqa.data.length > 0){
+                        $scope.tableqa = responsermpqa.data;
+                    }
+                });
+            });
+            $scope.penugasan = {
+                dokumenpenugasan: {
+                    isupload: false
+                }, data: {}
+            };
+            if($scope.pills.current == 0){
+                $scope.table_nota = [];
+                $scope.getAcuan = function() {
+                    /*
+                     Iconplus_Master_Pe.list().then(function (response) {
+                     for (i = 0; i < $scope.notabuku.length; i++) {
+                     angular.forEach(response.data, function (val, key) {
+                     //$scope.ref.prosedur[val.id_prosedur] = val;
+                     if (val.jenis_produk == $scope.notabuku[i].nama_produk) {
+                     //$scope.ref.acuan = response.data;
+                     $scope.table_nota.push(val);
+                     }
+                     });
+                     }
+                     $scope.table = $scope.table_nota;
+                     });
+                     */
+                    // Iconplus_Master_Vacuan_Prosedur_Enjinir.list().then(function (response) {
+                    //     for (i = 0; i < $scope.notabuku.length; i++) {
+                    //         angular.forEach(response.data, function (val, key) {
+                    //             //$scope.ref.prosedur[val.id_prosedur] = val;
+                    //             if (val.chargecodeid == $scope.notabuku[i].chargecodeid) {
+                    //                 //$scope.ref.acuan = response.data;
+                    //                 $scope.table_nota.push(val);
+                    //             }
+                    //         });
+                    //     }
+                    //     $scope.table = $scope.table_nota;
+                    // });
+                };
+            }
+
+            $scope.$watch('modal.data.nope', function(val){
+                if($scope.modal.data.nope){
+                    // $scope.modal.data.nope = $scope.ref.prosedur2[val].nomor_prosedur;
+                    $scope.modal.data.nomor_prosedur = $scope.ref.prosedur[val].nomor_prosedur;
+                    $scope.modal.data.judul_prosedur = $scope.ref.prosedur[val].judul_prosedur;
+                    $scope.modal.data.keterangan = $scope.ref.prosedur[val].keterangan;
+                }
+            });
+
+            $scope.retrieve = function(){
+                Activiti_Task.retrieve({id: $scope.id}).then(function(response) {
+                    // if($scope.action != 'edit') $scope.showfiles = 5;
+                    $scope.usr = response.data.definitionKey;
+                    $scope.evaluasi = response.data.processVariable.usrKoordinasiEvaluasi_nonotadinas ? true : false;
+
+                    $scope.chargecode = response.data.processVariable.usrPermohonan_chargecode;
+                    $scope.pekerjaan = response.data.processVariable.usrPermohonan_pekerjaan;
+
+                    if($scope.pills.current == 0) {
+                        // $scope.table = angular.fromJson(response.data.processVariable.usrProsedurPTL_data);
+                        $scope.data.perihal = response.data.processVariable.usrProsedurPTL_perihal;
+                        $scope.data.pic = response.data.processVariable.usrProsedurPTL_pic;
+                        $scope.data.alamat = response.data.processVariable.usrProsedurPTL_alamat;
+                        $scope.data.telpon = response.data.processVariable.usrProsedurPTL_telpon;
+                        $scope.data.fax = response.data.processVariable.usrProsedurPTL_fax;
+                        $scope.data.lokasi = response.data.processVariable.usrProsedurPTL_lokasi;
+                        $scope.data.koordinat_x = response.data.processVariable.usrProsedurPTL_koordinat_x;
+                        $scope.data.koordinat_y = response.data.processVariable.usrProsedurPTL_koordinat_y;
+                        $scope.data.acuanmutu = 'Jadwal Pemeriksaan Mutu untuk proyek ini dapat dilihat pada lampiran 5 Daftar Pemeriksaan Desain.';
+                        $scope.data.acuanmutu = response.data.processVariable.usrProsedurPTL_acuanmutu;
+                        $scope.data.pemeriksaanmutu = response.data.processVariable.usrProsedurPTL_pemeriksaanmutu;
+                        $scope.data.pengecualian = response.data.processVariable.usrProsedurPTL_pengecualian;
+
+                    };
+
+                    $scope.taskprev = response.data.processVariable.usrProsedurQA_tglproses ? true : false;
+                    alt.initComponentAll($scope, response);
+                    angular.forEach(response.data.processVariable, function(val, key){
+                        if(key.indexOf('usrPermohonan_') == 0) {
+                            $scope.datapermohonan.data[key] = val;
+                        }
+                        if(key.indexOf('usrProsedurMS_') == 0) {
+                            // if($scope.usr == 'usrProsedurMS')$scope.data[key] = val;
+                            $scope.dataprosedur[key] = val;
+                        }
+                        if(key.indexOf('usrProsedurQA_') == 0) {
+                            if($scope.usr == 'usrProsedurQA')$scope.data[key] = val;
+                            $scope.dataqa[key] = val;
+                        }
+                        if(key.indexOf('usrProsedurPTL_') == 0) {
+                            if($scope.usr == 'usrProsedurPTL')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        /*if(key.indexOf('usrPermohonan_prosedur_enjiniring') == 0) {
+                            if($scope.usr == 'usrPermohonan')$scope.data[key] = val;
+                            // $scope.datapersetujuansurvey[key] = val;
+                            $scope.table = angular.fromJson(eval(val));
+                            // console.log(angular.fromJson(eval(val)));
+                        }*/
+                        if(key.indexOf('usrUsulanTimpro_data') == 0) {
+                            if($scope.usr == 'usrUsulanTimpro')$scope.data[key] = val;
+                            $scope.tabletim = angular.fromJson(eval(val));
+                        }
+                        // if(key.indexOf('usrProsedurPTL_data') == 0) {
+                        //     if($scope.usr == 'usrProsedurPTL')$scope.data[key] = val;
+                        //     $scope.tablepe = angular.fromJson(eval(val));
+                        //     // $scope.table = angular.fromJson(eval(val));
+                        //     // debugger;
+                        // }
+                        // $scope.tablepe = angular.fromJson(response.data.processVariable.usrProsedurPTL_data);
+                        if(key.indexOf('usrProsedurPTL_datalingkup') == 0) {
+                            if($scope.usr == 'usrProsedurPTL')$scope.data[key] = val;
+                            $scope.tablelingkupkerja = angular.fromJson(eval(val));
+                        }
+                        // $scope.usrPengesahanTimpro_dokumen.data = response.data.usrPengesahanTimpro_dokumen;
+                        if($scope.action == 'correct') {
+                            $scope.data[key] = angular.copy(val);
+                        }
+                    });
+
+                    // ambil dari tabel
+                    if(!$scope.taskprev){
+                        // console.log("init data awal");
+                        var chargecode = response.data.processVariable.usrPermohonan_chargecode;
+                        // Master_Vacuanprosedurenjinir2.list({where:"chargecodeid = '"+chargecode+"' "}).then(function (responseprosedur) {
+                        //     $scope.table = responseprosedur.data;
+                        // });
+
+                        // var listsubpekerjaan = response.data.processVariable.usrPermohonan_subpekerjaan;
+                        // var arraysubpekerjaan =[];
+                        // for (var i = 0; i < listsubpekerjaan.length; i++) {
+                        //     var subpekerjaan =  listsubpekerjaan[i].split(":");
+                        //     arraysubpekerjaan.push("'"+subpekerjaan[1]+"'");
+                        // }
+                        //
+                        // // Iconplus_Master_Prosedur_Enjiniring.list({where:"kode_produk in ("+arraysubpekerjaan.join(",")+")"}).then(function (response) {
+                        // Iconplus_Master_Acuan_Prosedur_Enjinir.list({
+                        //     select:"id_prosedur",
+                        //     group:"id_prosedur",
+                        //     where:"kode_produk in ("+arraysubpekerjaan.join(",")+")"
+                        // }).then(function (response) {
+                        //     //console.log(response.data);
+                        //     var listacuan = response.data;
+                        //     var arrayidprosedur = [];
+                        //     for(var i = 0; i < listacuan.length; i++){
+                        //         arrayidprosedur.push(listacuan[i].id_prosedur);
+                        //     }
+                        //     Iconplus_Master_Prosedur_Enjiniring.list({where:"id_prosedur in ("+arrayidprosedur.join(",")+")"}).then(function (responseprosedur) {
+                        //         $scope.table = responseprosedur.data;
+                        //     });
+                        // });
+                    }
+
+                    if($scope.action == 'correct'){
+                        $auth.set_permission(1);
+                        $scope.data.definitionKey = $routeParams.definitionKey;
+                    }else{
+                        $scope.data.definitionKey = response.data.definitionKey;
+                        // if($scope.data.definitionKey == 'usrProsedurKSMMR') $auth.set_permission(5);
+                        // else if($scope.data.definitionKey == 'usrProsedurMS') $auth.set_permission(9);
+                        // else if($scope.data.definitionKey == 'usrProsedurQA') $auth.set_permission(8201);
+                        // else $auth.set_permission(73);
+                    }
+
+                    switch ($scope.data.definitionKey) {
+                        case 'usrProsedurQA' :
+                            $scope.pills.select(3);
+                            break;
+                        case 'usrProsedurMS' :
+                            $scope.pills.select(2);
+                            break;
+                        case 'usrProsedurMan' :
+                            $scope.pills.select(1);
+                            break;
+                        case 'usrProsedurPTL' :
+                        default :
+                            break;
+                    }
+
+                    $scope.datapermohonan.file.data = response.data.usrPermohonan_dokumen;
+                });
+
+            };
+            $scope.retrieve();
+
+            $scope.$watch('info.tglsurat', function (val) {
+                if (val) {
+                    $scope.info.tglsurat2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('info.tglsurat2', function (val) {
+                if (val) {
+                    $scope.info.tglsurat = moment(val).format('YYYYMMDD');
+                }
+            });
+            $scope.$watch('info.tglkontrak', function (val) {
+                if (val) {
+                    $scope.info.tglkontrak2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('info.tglkontrak2', function (val) {
+                if (val) {
+                    $scope.info.tglkontrak = moment(val).format('YYYYMMDD');
+                }
+            });
+            $scope.$watch('info.tglmulai', function (val) {
+                if (val) {
+                    $scope.info.tglmulai2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('info.tglmulai2', function (val) {
+                if (val) {
+                    $scope.info.tglmulai = moment(val).format('YYYYMMDD');
+                }
+            });
+
+            $scope.$watch('info.tglselesai', function (val) {
+                if (val) {
+                    $scope.info.tglselesai2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('info.tglselesai2', function (val) {
+                if (val) {
+                    $scope.info.tglselesai = moment(val).format('YYYYMMDD');
+                }
+            });
+
+            $scope.$watch('data.tglmulai', function (val) {
+                if (val) {
+                    $scope.data.tglmulai2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('data.tglmulai2', function (val) {
+                if (val) {
+                    $scope.data.tglmulai = moment(val).format('YYYYMMDD');
+                }
+            });
+
+            $scope.$watch('data.tglselesai', function (val) {
+                if (val) {
+                    $scope.data.tglselesai2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('data.tglselesai2', function (val) {
+                if (val) {
+                    $scope.data.tglselesai = moment(val).format('YYYYMMDD');
+                }
+            });
+
+
+            $scope.checkgtzero=function(i){
+                if(i == 0) return false;
+                return true;
+            }
+
+            $scope.isvalid = function(isneeddocument){
+                isneeddocument = (typeof isneeddocument === 'undefined' && $scope.action != 'correct');
+                // $scope.data.usrPersetujuanSurvey_dokumen = $scope.usrPersetujuanSurvey_dokumen.model;
+
+                var isvalid = $validate();
+                if($scope.pills.current == 0){
+                    isvalid
+                    // .rule($validate.required($scope.data.nosuratpersetujuan), 'Nomor Surat Tugas harus diisi!')
+                    // .rule($validate.required($scope.data.tglsuratpersetujuan), 'Tanggal Surat Tugas harus diisi!')
+                    // .rule($scope.data.usrPersetujuanSurvey_tglsuratpersetujuan >= $scope.datapermohonansurvey.usrPermohonanSurvey_tglsurat, 'Tanggal persetujuan tidak boleh sebelum tanggal permohonan survey!')
+                    // .rule($validate.required($scope.data.usrPersetujuanSurvey_dokumen || !isneeddocument), 'Dokumen harus diupload!');
+                }
+
+                if($scope.pills.current == 1){
+                    if ($scope.data.hasilevaluasi == "tidak") {
+                        isvalid
+                        // .rule($validate.required($scope.data.tglsurat), 'Tanggal Approve harus diisi!')
+                            .rule($validate.required($scope.data.perihal), 'Catatan harus diisi!')
+                    }
+                }
+
+                if($scope.pills.current == 2){
+                    isvalid
+                    // .rule($validate.required($scope.data.tglsah), 'Tanggal Pengesahan harus diisi!')
+                }
+
+                if($scope.pills.current == 3){
+                    if ($scope.data.hasilevaluasi == "tidak") {
+                        isvalid
+                        // .rule($validate.required($scope.data.tglsurat), 'Tanggal Approve harus diisi!')
+                            .rule($validate.required($scope.data.perihal), 'Catatan harus diisi!')
+                    }
+                }
+
+                return isvalid.check();
+            };
+
+            $scope.dokumendetail = {
+                isupload: $scope.action != 'view',
+                isview: $scope.action != 'add',
+                accept:'application/pdf',
+                data: {}
+            };
+
+
+            $scope.btnadd = $button('add', {
+                //class : 'btn btn-success',
+                title: 'Tambah Prosedur Enjiniring',
+                class:'btn btn-default',
+                onclick: function(){
+                    $scope.getpe = {selected : undefined};
+                    $scope.modal.data = {};
+                    $scope.modal.action = 'add';
+                    $scope.modal.buttons = [$scope.btnsavemodal, $scope.btnclose];
+                    $scope.modal.open();
+                }
+            });
+            $scope.btnaddlingkup = $button('add', {
+                //class : 'btn btn-success',
+                title: 'Tambah Lingkup Kerja',
+                class:'btn btn-default',
+                onclick: function(){
+                    $scope.modallingkup.data = {};
+                    $scope.modallingkup.action = 'add';
+                    $scope.modallingkup.buttons = [$scope.btnsavemodallingkup, $scope.btncloselingkup];
+                    $scope.modallingkup.open();
+                }
+            });
+            $scope.editTransaksi = function(index,item){
+                Iconplus_Master_Prosedur_Enjiniring.retrieve({id_prosedur: item.id_prosedur}).then(function(response){
+                    $scope.dokumenprosedur.data = response.data.dokumenprosedur;
+                    $scope.modal.data = angular.copy(item);
+                    $scope.getpe.selected = response.data;
+                    $scope.modal.index = index;
+                    $scope.modal.buttons = [$scope.btnsavemodal, $scope.btnclose];
+                    $scope.modal.action = 'edit';
+                    $scope.modal.open();
+                });
+            };
+
+            $scope.editCatatanQA = function(index,item){
+                $scope.modal2.data = angular.copy(item);
+                $scope.modal2.index = index;
+                $scope.modal2.buttons = [$scope.btnsavemodal2, $scope.btnclose2];
+                $scope.modal2.action = 'edit';
+                $scope.modal2.open();
+            };
+
+            $scope.btnsavemodal2 = $button('save', {
+                onclick: function(index,item){
+
+                    // var isvalid = $validate()
+                    //     .rule($validate.required($scope.modal.data.nomor_prosedur), 'Nomor PE harus diisi!');
+
+                    // if (!isvalid2) return false;
+
+                    var data = angular.copy($scope.modal2.data);
+                    $scope.tableqa[$scope.modal2.index] = data;
+                    $scope.modal2.close();
+                    // Master_Qa.update(data).then(function (response) {
+                    //     Master_Qa.list().then(function (response) {
+                    //         $scope.tableqa = response.data;
+                    //         $scope.modal2.close();
+                    //     });
+                    // });
+                }
+            });
+            $scope.btnclose2 = $button('close', {
+                title: 'Batal',
+                onclick: function(){
+                    $scope.modal2.close();
+                    // $scope.dokumendetail.clear();
+                }
+            });
+
+            $scope.btnsavemodallingkup = $button('save', {
+                onclick: function(index,item){
+                  var data = angular.copy($scope.modallingkup.data);
+                    if($scope.modallingkup.action == 'add') {
+                        $scope.tablelingkupkerja.push(data);
+                    }
+                    else{
+                        $scope.tablelingkupkerja[$scope.modallingkup.index] = data;
+                    }
+                    $scope.modallingkup.close();
+
+                }
+            });
+            $scope.btncloselingkup = $button('close', {
+                title: 'Batal',
+                onclick: function(){
+                    $scope.modallingkup.close();
+                    // $scope.dokumendetail.clear();
+                }
+            });
+
+            $scope.editTransaksilingkup = function(index,item){
+                $scope.modallingkup.data = angular.copy(item);
+                $scope.modallingkup.index = index;
+                $scope.modallingkup.buttons = [$scope.btnsavemodallingkup, $scope.btncloselingkup];
+                $scope.modallingkup.action = 'edit';
+                $scope.modallingkup.open();
+            };
+
+            $scope.removeTransaksilingkup = function(index,item){
+                $popup.confirm({
+                    caption: 'Apakah anda yakin?',
+                    buttons: [
+                        $button('yes', {
+                            onclick: function () {
+                                if($scope.taskprev == false) {
+                                    $scope.tablelingkupkerja.splice(index,1);}
+                                else {
+                                    $scope.tablelingkupkerja.splice(index,1);}
+                                $popup.close(true);
+                            }
+                        }),
+                        $button('no', {
+                            onclick: function () {
+                                $popup.close(false);
+                            }
+                        })
+                    ]
+                });
+            };
+
+            $scope.viewTransaksi = function(index,item){
+                Iconplus_Master_Prosedur_Enjiniring.retrieve({id_prosedur: item.id_prosedur}).then(function(response){
+                    $scope.dokumenprosedur.data = response.data.dokumenprosedur;
+                    $scope.modal.data = angular.copy(item);
+                    $scope.modal.index = index;
+                    $scope.modal.buttons = [$scope.btnclose];
+                    $scope.modal.action = 'view';
+                    $scope.modal.open();
+                });
+            };
+
+            $scope.removeTransaksi = function(index,item){
+                $popup.confirm({
+                    caption: "Anda yakin akan menghapus data : " + item.judul_prosedur + " ?",
+                    buttons: [
+                        $button('yes', {
+                            onclick: function () {
+                                Master_RMPPTL.remove({id_rmp: item.id_rmp}).then(function (response) {
+                                    $scope.inittable();
+                                    // $alert.add('Data berhasil dihapus!', $alert.success);
+                                });
+                                $popup.close(true);
+                            }
+                        }),
+                        $button('no', {
+                            onclick: function () {
+                                $popup.close(false);
+                            }
+                        })
+                    ]
+                });
+                /*$popup.confirm({
+                    caption: 'Apakah anda yakin?',
+                    buttons: [
+                        $button('yes', {
+                            onclick: function () {
+                                if($scope.taskprev == false) {
+                                    $scope.table.splice(index,1);}
+                                else {
+                                    $scope.tablepe.splice(index,1);}
+                                $popup.close(true);
+                            }
+                        }),
+                        $button('no', {
+                            onclick: function () {
+                                $popup.close(false);
+                            }
+                        })
+                    ]
+                });*/
+            };
+
+            $scope.btnsavemodal = $button('save', {
+                onclick: function(){
+                    // $scope.modal.data.dokumendetail = $scope.dokumendetail.model;
+                    var isvalid = $validate()
+                        .rule($validate.required($scope.modal.data.nomor_prosedur), 'Nomor PE harus diisi!')
+                    // .rule($validate.required($scope.modal.data.crosscc), 'Judul PE harus diisi!')
+
+                    var isvalid2 = isvalid.check();
+
+                    if (!isvalid2) return false;
+
+                    var datape = angular.copy($scope.modal.data);
+                    if($scope.taskprev == false) {
+                        datape.proc_inst_id_ = $routeParams.processInstanceId;
+                        datape.task_id_ = $routeParams.id;
+                        datape.chargecode = $scope.chargecode;
+                        datape.pekerjaan = $scope.pekerjaan;
+                        if($scope.modal.action == 'add') {
+                            // $scope.table.push(datape);
+
+
+                            Master_RMPPTL.insert(datape).then(function(response){
+                                // $alert.add('Data berhasil disimpan!', $alert.success);
+                                $scope.inittable();
+                            });
+
+                        }
+                        else{
+                            // $scope.table[$scope.modal.index] = datape;
+                            Master_RMPPTL.update(datape).then(function(response){
+                                // $alert.add('Data berhasil diEdit!', $alert.success);
+                                $scope.inittable();
+                            });
+
+                        }
+                        $scope.modal.close(); }
+                    else {
+                        datape.proc_inst_id_ = $routeParams.processInstanceId;
+                        datape.task_id_ = $routeParams.id;
+                        datape.chargecode = $scope.chargecode;
+                        datape.pekerjaan = $scope.pekerjaan;
+                        if($scope.modal.action == 'add') {
+                            // $scope.tablepe.push(datape);
+
+                            Master_RMPPTL.insert(datape).then(function(response){
+                                // $alert.add('Data berhasil disimpan!', $alert.success);
+                                $scope.inittable();
+                            });
+                        }
+                        else{
+                            // $scope.tablepe[$scope.modal.index] = datape;
+                            Master_RMPPTL.update(datape).then(function(response){
+                                // $alert.add('Data berhasil diEdit!', $alert.success);
+                                $scope.inittable();
+                            });
+                        }
+                        $scope.modal.close(); }
+                    }
+            });
+
+            $scope.inittable = function () {
+                Master_RMPPTL.list({
+                    select:"id_rmp, chargecode,pekerjaan,proc_inst_id_,nomor_prosedur,judul_prosedur,keterangan",
+                    where:"proc_inst_id_ = "+$routeParams.processInstanceId,
+                    order:"nomor_prosedur"
+                }).then(function (responsermpptl) {
+                    $scope.table = responsermpptl.data;
+                    if(responsermpptl.data.length > 0){
+                        $scope.table = responsermpptl.data;
+                        $scope.tablepe = responsermpptl.data;
+                    }
+                });
+            };
+
+            Master_RMPPTL.list({
+                select:"id_rmp, chargecode,pekerjaan,proc_inst_id_,nomor_prosedur,judul_prosedur,keterangan",
+                where:"proc_inst_id_ = "+$routeParams.processInstanceId,
+                order:"nomor_prosedur"}).then(function (responsermpptl) {
+                $scope.table = responsermpptl.data;
+                $scope.tablepe = responsermpptl.data;
+                if(responsermpptl.data.length > 0){
+                    $scope.table = responsermpptl.data;
+                    $scope.tablepe = responsermpptl.data;
+                }
+            });
+
+            $scope.btnclose = $button('close', {
+                title: 'Batal',
+                onclick: function(){
+                    $scope.modal.close();
+                    // $scope.dokumendetail.clear();
+                }
+            });
+
+
+            $scope.modal = {
+                header: 'Prosedur Enjiniring',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+
+            $scope.modal2 = {
+                header: 'Checklist QA',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+
+            $scope.modallingkup = {
+                header: 'Lingkup Kerja',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+            $scope.btnprint = $button('print', {
+                class : 'btn btn-info',
+                title: 'Draft RMP',
+                ondblclick: function(){
+                    if($scope.pills.current == 0){
+                        $scope.data.data = angular.toJson($scope.table);
+                        Activiti_Task.save($scope.data).then(function (response2) {
+                            $alert.add('Data berhasil disimpan!', $alert.success);
+                        });
+                    }
+                    // Iconplus_Generatedoc.draftpenugasan($scope.data).then(function(response){
+                    Iconplus_Generatedoc.rmp($scope.data).then(function(response) {
+                        $window.location.href = alt.serverUrl + response.data;
+                    });
+                }});
+            $scope.btnprintqa = $button('print', {
+                class : 'btn btn-info',
+                title: 'Lamp Pemeriksaan QA',
+                ondblclick: function(){
+                    Iconplus_Generatedoc.pemeriksaanqa($scope.data).then(function(response) {
+                        $window.location.href = alt.serverUrl + response.data;
+                    });
+                }});
+
+            $scope.btnsave = $button('save', {
+                title: 'Simpan Sementara',
+                description: "Simpan Sementara",
+                class: "btn btn-sm btn-primary",
+                onclick: function(){
+                    if (!$scope.isvalid()) return;
+
+                    $popup.confirm({
+                        caption: 'Apakah semua data sudah benar? Data yang sudah disimpan tidak dapat diubah.',
+                        buttons: [
+                            $button('yes', {
+                                onclick: function () {
+                                    // $scope.data.usrPersetujuanSurvey_dokumen = $scope.usrPersetujuanSurvey_dokumen.model;
+
+                                    //tabel
+
+                                    if($scope.pills.current == 0){
+                                        $scope.data.datalingkup = angular.toJson($scope.tablelingkupkerja);
+
+                                        if($scope.taskprev == false) {
+                                            $scope.data.data = angular.toJson($scope.table);
+                                        }
+                                        else {
+                                            $scope.data.data = angular.toJson($scope.tablepe);}
+                                    }
+
+                                    if(angular.equals($scope.data.data,"[]")){
+                                        $alert.add('Harap isi PE!', $alert.danger);
+                                        $popup.close(true);
+                                        return;
+                                    }
+
+                                    if($scope.data.definitionKey == 'usrProsedurQA' || $scope.data.definitionKey == 'usrProsedurPTL'){
+                                        var data = {};
+                                        data.proc_inst_id_ = $routeParams.processInstanceId;
+                                        data.task_id_ = $routeParams.id;
+                                        data.chargecode = $scope.chargecode;
+                                        data.pekerjaan = $scope.pekerjaan;
+                                        data.tableqa = angular.toJson($scope.tableqa);
+                                        Master_RMPQA.insert(data);
+                                    }
+
+                                    if($scope.action == 'correct'){
+                                        Activiti_Task.correct($scope.data).then(function(response){
+                                            $alert.add('Data berhasil diperbaiki!', $alert.success);
+                                            $window.location.href = alt.baseUrl + alt.correctionUrl;
+                                        });
+                                    }else {
+                                        Activiti_Task.save($scope.data).then(function (response) {
+                                            $window.location.href = alt.baseUrl + 'rmp/list?id=' + $routeParams.id;
+                                            $alert.add('Data berhasil disimpan!', $alert.success);
+                                        });
+                                    }
+                                    $popup.close(true);
+                                }
+                            }),
+                            $button('no', {
+                                onclick: function () {
+                                    $popup.close(false);
+                                }
+                            })
+                        ]
+                    });
+                }
+            });
+            $scope.btncomplete = $button('save', {
+                onclick: function(){
+                    if (!$scope.isvalid()) return;
+
+                    $popup.confirm({
+                        caption: 'Apakah semua data sudah benar? Data yang sudah disimpan tidak dapat diubah.',
+                        buttons: [
+                            $button('yes', {
+                                onclick: function () {
+                                    // $scope.data.usrPersetujuanSurvey_dokumen = $scope.usrPersetujuanSurvey_dokumen.model;
+
+                                    //tabel
+
+                                    if($scope.pills.current == 0){
+                                        $scope.data.datalingkup = angular.toJson($scope.tablelingkupkerja);
+
+                                        if($scope.taskprev == false) {
+                                            $scope.data.data = angular.toJson($scope.table);
+                                        }
+                                        else {
+                                            $scope.data.data = angular.toJson($scope.tablepe);}
+                                    }
+
+                                    if(angular.equals($scope.data.data,"[]")){
+                                        $alert.add('Harap isi PE!', $alert.danger);
+                                        $popup.close(true);
+                                        return;
+                                    }
+
+                                    if($scope.data.definitionKey == 'usrProsedurQA' || $scope.data.definitionKey == 'usrProsedurPTL'){
+                                        var data = {};
+                                        data.proc_inst_id_ = $routeParams.processInstanceId;
+                                        data.task_id_ = $routeParams.id;
+                                        data.chargecode = $scope.chargecode;
+                                        data.pekerjaan = $scope.pekerjaan;
+                                        data.tableqa = angular.toJson($scope.tableqa);
+                                        Master_RMPQA.insert(data);
+                                    }
+
+                                    if($scope.action == 'correct'){
+                                        Activiti_Task.correct($scope.data).then(function(response){
+                                            $alert.add('Data berhasil diperbaiki!', $alert.success);
+                                            $window.location.href = alt.baseUrl + alt.correctionUrl;
+                                        });
+                                    }else {
+                                        Activiti_Task.complete($scope.data).then(function (response) {
+                                            $window.location.href = alt.baseUrl + 'rmp/list?id=' + $routeParams.id;
+                                            $alert.add('Data berhasil disimpan!', $alert.success);
+                                        });
+                                    }
+                                    $popup.close(true);
+                                }
+                            }),
+                            $button('no', {
+                                onclick: function () {
+                                    $popup.close(false);
+                                }
+                            })
+                        ]
+                    });
+                }
+            });
+
+            $scope.btncancel = $button($scope.action == 'view' ? 'back' : 'cancel', {
+                href: alt.baseUrl + ($scope.action == 'correct' ? alt.correctionUrl :  ('rmp/list'))
+            });
+
+            $scope.up = function(index,table){
+                var temp = table;
+                var newTable = [];
+                var newIndex = index - 1;
+                if(newIndex >= 0 ){
+                    for (var key in temp)
+                    {
+                        if(newIndex == key){
+                            newTable.push(temp[index]);
+                        }
+
+                        if(index != key){
+                            newTable.push(temp[key]);
+                        }
+                    }
+
+                    if($scope.taskprev == false) {
+                        $scope.table = newTable;
+                    }
+                    else {
+                        $scope.tablepe = newTable;
+                    }
+                }
+            };
+
+            $scope.down = function(index,table){
+                var temp = table;
+                var newTable = [];
+                var newIndex = index + 1;
+                var length = table.length - 1;
+                if(newIndex <= length ){
+                    for (var key in temp)
+                    {
+                        if(index != key){
+                            newTable.push(temp[key]);
+                        }
+
+                        if(newIndex == key){
+                            newTable.push(temp[index]);
+                        }
+                    }
+                    if($scope.taskprev == false) {
+                        $scope.table = newTable;
+                    }
+                    else {
+                        $scope.tablepe = newTable;
+                    }
+                }
+            };
+
+        }];
+});

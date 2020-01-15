@@ -1,0 +1,11 @@
+define([
+    'component/system/index'
+], function(){
+    alt.factory('Master_Temp_Pemeriksaan_QC', ['System', '$log', '$q', function(System, $log, $q){
+        var api = System('master/temppemeriksaanqc');
+        api.insert_excel = function(data){
+            return this.connect('insert_excel', data);
+        };
+        return api;
+    }]);
+});

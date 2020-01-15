@@ -1,0 +1,46 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'component/alt/button/service',
+    'asset/js/accounting.min',
+    'component/iconplus/master/vmonitoringimplementasi',
+], function(moment,accounting){
+    return ['$scope', '$timeout', '$routeParams', '$button', '$log', '$auth', "V_monitoring_implementasi",
+        function($scope, $timeout, $routeParams, $button, $log, $auth, V_monitoring_implementasi){
+
+        $scope.accounting = accounting;
+        $scope.moment = moment;
+        
+        $scope.toolbar = {
+            title: 'Dashboard'
+        };
+
+        $scope.filter = {};
+        $scope.btnsearch = $button('search', {
+            class: 'btn btn-primary',
+            onclick: function(){
+                /*for(var i = 1; i <= 8; i++){
+                    if($scope['chart' + i].reload) $scope['chart' + i].reload();
+                }*/
+                $scope.reload();
+            }
+        });
+
+        $scope.reload = function(){
+            var filter = $scope.filter.tahun ? {tahunperjanjian: moment($scope.filter.tahun).format('YYYY')} : {}
+            // Iconplus_Master_Act_Process.list(filter).then(function(response){
+            V_monitoring_implementasi.list(filter).then(function(response){
+                for(var i = 1; i <= 7; i++){
+                    if(!$scope['chart' + i]) $scope['chart' + i] = {
+                        data: response.data
+                    };
+                    else if($scope['chart' + i].reload){
+                        $scope['chart' + i].data = response.data;
+                        $scope['chart' + i].reload();
+                    }
+                }
+            });
+        };
+
+        $scope.reload();
+    }];
+});

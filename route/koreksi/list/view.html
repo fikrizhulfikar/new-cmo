@@ -1,0 +1,83 @@
+<div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div>
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+            <div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa icon-energy"></i>Koreksi
+                    </div>                    
+                </div>
+                <div class="portlet-body">
+                    <div class="row" style="margin-bottom: 5px">
+                        <div style="padding:0; margin-bottom: 5px; padding-right: 10px;" class="col-lg-2 col-lg-offset-6 col-md-2 col-md-offset-6 col-sm-12 col-xs-12">
+							<select class="form-control" data-ng-model="filter.key">
+								<option value="" selected="selected" disabled="disabled">- Jenis Pencarian -</option>
+								<option value="nosurat">Nomor Surat</option>
+								<option value="namaunit">Nama Unit Pemohon</option>
+								<option value="pekerjaan">Perihal Pekerjaan</option>
+							</select>
+						</div>
+						<div style="padding:0" class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+							<input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+						</div>
+					</div>
+					
+					<div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+						<div style="overflow-x: auto">
+							<table class="table table-hover table-responsive table-bordered table-condensed" id="fixTable">
+								<thead>
+								<tr>
+									<th style="white-space:nowrap;width: 80px;">No</th>
+									<th style="white-space:nowrap;width: 100px;">Nomor Surat</th>
+									<th style="white-space:nowrap;width: 100px;">Tanggal Surat</th>
+									<th style="white-space:nowrap;width: 250px;">Unit Pemohon</th>
+									<th style="white-space:nowrap;width: 350px;">Perihal Pekerjaan</th>
+									<th style="white-space:nowrap;width: 180px;">Status</th>
+									<th class="text-center" style="white-space:nowrap;min-width: 75px;">Aksi</th>
+								</tr>
+								</thead>
+								<tr data-ng-repeat="item in table.data" data-ng-init="rowCreated()">
+									<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+									<td style="white-space:nowrap;">{{ item.nosurat }}</td>
+									<td style="white-space:nowrap">{{ moment(item.tglsurat, 'YYYYMMDD').isValid() ? moment(item.tglsurat, 'YYYYMMDD').format('DD MMM YYYY') : '' }}</td>
+									<td>{{ item.namaunit }}</td>
+									<td>{{ item.pekerjaan }}</td>
+									<td>{{ item.status }}</td>
+									<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">
+										<div data-ng-repeat="button in buttons" style="display: inline;">
+											<div data-alt-component="alt/button" data-scope="button"></div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <table class="table table-hover table-responsive table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>Form</th>
+            <!--<th>Pilih</th>-->
+        </tr>
+        </thead>
+        <tr data-ng-repeat="d in modal.data.table | orderBy:'id'">
+            <td style="text-align: center;">{{$index+1}}</td>
+            <td><a data-ng-href="{{alt.baseUrl + d.url}}">{{d.nama}}</a></td>
+            <!--<td data-ng-init="buttons = buttonsmodal($index, d);" style="text-align: center;">-->
+                <!--<div data-ng-repeat="button in buttons" style="display: inline;">-->
+                    <!--<div data-alt-component="alt/button" data-scope="button"></div>-->
+                <!--</div>-->
+            <!--</td>-->
+        </tr>
+    </table>
+</div>

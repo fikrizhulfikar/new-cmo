@@ -1,0 +1,49 @@
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">Implementasi Fitur pada Pilot Project Desain Review</div>
+        <div class="actions pull-right">
+            <button class="btn btn-sm btn-default" data-ng-click="toggleCollapse('dr')">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row" id="dr">
+        <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+            <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                <thead>
+                <!--CHARGECODE, PEKERJAAN, UNITASALNAMA, ID_BIDANG, NAMA_BIDANG, ID_PTL, NAMA_PTL, STATUS							-->
+                <tr>
+                    <th style="white-space:nowrap;width: 120px;">Charge Code</th>
+                    <th style="white-space:nowrap;width: 120px;">Sudah SK Tim</th>
+                    <th style="white-space:nowrap;width: 120px;">Sudah RMP</th>
+                    <th style="white-space:nowrap;width: 120px;">Sudah RKP & RAB</th>
+                    <th style="white-space:nowrap;width: 120px;">Setup Desain Review</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh BAPP</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah Transaksi Biaya</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh Surat masuk DR</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh Surat keluar DR</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah Berkas di DM</th>
+                    <th style="white-space:nowrap;width: 120px;">Sudah BAST Final</th>
+                    <th style="white-space:nowrap;width: 120px;">Sudah Penutupan Proyek</th>
+                </tr>
+                </thead>
+                <tr data-ng-repeat="item in table.data | filter:table.filter">
+                    <td style="white-space: nowrap">{{ item.pekerjaan}}</td>
+                    <td>{{ item.sktimcomplete || 0 }}</td>
+                    <td>{{ item.rmpcomplete || 0 }}</td>
+                    <td>{{ item.rabcomplete || 0 }}</td>
+                    <td>{{ item.jmlsetupdr || 0 }}</td>
+                    <td>{{ item.rabcomplete || 0 }}</td>
+                    <td>{{ item.jmltransaksibiaya || 0 }}</td>
+                    <td>{{ item.jmlsuratmasuk || 0 }}</td>
+                    <td>{{ item.jmlsuratkelluar || 0 }}</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>

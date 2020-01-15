@@ -1,0 +1,64 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="row">
+				<div class="col-md-12 filter">
+					<div class="col-lg-3 col-sm-12 col-lg-offset-5 col-sm-offset-12">
+						 <select class="form-control" data-ng-model="filter.key">
+							<option value="" selected="selected" disabled="disabled">- Jenis Pencarian -</option>
+							 <option value="chargecode">Nomor Proyek</option>
+							 <option value="pekerjaan">Pekerjaan</option>
+							 <option value="unitasalnama">Unit Pemberi Kerja</option>
+							 <option value="nama_bidang">Bidang/Satuan</option>
+							 <option value="nama_ptl">Project Tim Leader</option>
+							<!--<option value="location">Lokasi</option>-->
+						</select>
+					</div>
+					<div class="col-lg-4 col-sm-12">
+						<input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+					</div>
+				</div>
+			</div>
+			<div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+				<table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+					<thead>
+					<!--CHARGECODE, PEKERJAAN, UNITASALNAMA, ID_BIDANG, NAMA_BIDANG, ID_PTL, NAMA_PTL, STATUS							-->
+					<tr>
+						<th style="white-space:nowrap;">No</th>
+						<th style="white-space:nowrap;">Nomor Proyek</th>
+						<th style="white-space:nowrap;">Nama Pekerjaan               </th>
+						<th style="white-space:nowrap;">Nama Produk               	 </th>
+						<th style="white-space:nowrap;width: 200px;">Unit Pemberi Kerja           </th>
+						<th style="white-space:nowrap;width: 120px;">Bidang/Satuan</th>
+						<th style="white-space:nowrap;width: 120px;">Project Tim Leader</th>
+						<th style="white-space:nowrap;width: 100px;">Status Sebelumnya</th>
+						<th class="text-center" style="white-space:nowrap;min-width: 135px;">Aksi</th>
+					</tr>
+					</thead>
+					<tr data-ng-repeat="item in table.data | filter:table.filter" data-ng-init="btnedit = btnedit(index, item);
+						btnremove = btnremove(index, item);
+						btnview = btnview(index, item);">
+						<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+						<td style="white-space:nowrap;">{{ item.chargecode }}</td>
+						<td>{{ item.pekerjaan }}</td>
+						<td>{{ item.nama_produk }}</td>
+						<td>{{ item.unitasalnama }}</td>
+						<td>{{ item.nama_bidang }}</td>
+						<td>{{ item.nama_ptl }}</td>
+						<td>{{ item.status }}</td>
+						<!--<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">-->
+							<!--<div data-ng-repeat="button in buttons" style="display: inline;">-->
+								<!--<div data-alt-component="alt/button" data-scope="button"></div>-->
+							<!--</div>-->
+						<!--</td>-->
+						<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">
+							<div data-ng-repeat="button in buttons" style="display: inline;">
+								<div data-alt-component="alt/button" data-scope="button"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

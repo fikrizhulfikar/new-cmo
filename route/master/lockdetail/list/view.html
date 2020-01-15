@@ -1,0 +1,78 @@
+<!-- <div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div> -->
+<!-- <div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div> -->
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+            <div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa icon-energy"></i>Lock Detail
+                    </div>
+                    <!--<div class="actions">-->
+                    <!--<div data-alt-component="alt/button" data-scope="btnadd" class="pull-right"></div>-->
+                    <!--</div>-->
+                </div>
+                <div class="portlet-body">
+                    <!--<div class="row">-->
+                        <!--<div style="margin-bottom:10px;padding-right:0" class="col-lg-2 col-lg-offset-6">-->
+                            <!--<select class="form-control" data-ng-model="filter.key">-->
+                                <!--<option value="">Jenis Pencarian</option>-->
+                                <!--<option value="kode_wilayah">Kode Unit</option>-->
+                                <!--<option value="name">Nama Unit</option>-->
+                                <!--<option value="regional">Regional</option>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                        <!--<div style="margin-bottom:10px;padding-right:0" class="col-lg-4" data-ng-if="filter.key != 'id_regional'">-->
+                            <!--<input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>-->
+                        <!--</div>-->
+                        <!--<div style="margin-bottom:10px;padding-right:0" class="col-lg-4" data-ng-if="filter.key == 'id_regional'">-->
+                            <!--<select class="form-control" data-ng-model="filter.value">-->
+                                <!--<option value="">Semua Regional</option>-->
+                                <!--<option data-ng-repeat="(key,val) in refregional" value="{{key}}">{{val.regional}}</option>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+                        <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                            <thead>
+                            <tr>
+                                <th style="width: 40px;">No</th>
+                                <!--<th style="">ID</th>-->
+                                <th style="">Periode</th>
+                                <th style="">Target</th>
+                                <th style="">Realisasi</th>
+								<!--<th style="">Aksi</th>-->
+                                <!--<th class="text-center" style="width: 120px;">Aksi</th>-->
+                            </tr>
+                            </thead>
+                            <tr data-ng-repeat="item in table.data | filter:table.filter" data-ng-init="btnedit = btnedit(index, item);
+					            btnremove = btnremove(index, item);
+					            btnview = btnview(index, item);
+								btnenabled_r=btnenabled_r(index, item);
+								btnenabled_t=btnenabled_t(index, item);">
+                                <td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+                                <!--<td>{{ item.id_lock_d }}</td>-->
+                                <td style="white-space:nowrap">
+                                    {{ moment(item.thbl, 'YYYYMM').isValid() ? moment(item.thbl, 'YYYYMM').format('MMM-YYYY') : '' }}
+                                </td>
+
+								<td class="text-center" style="white-space:nowrap">
+									<div data-alt-component="alt/button" data-scope="btnenabled_t"></div>
+								</td>
+                                <td class="text-center" style="white-space:nowrap">
+                                    <div data-alt-component="alt/button" data-scope="btnenabled_r"></div>
+                                </td>
+                                <!--<td class="text-center" style="white-space:nowrap">-->
+                                    <!--<div data-alt-component="alt/button" data-scope="btnview" ></div>-->
+                                    <!--<div data-alt-component="alt/button" data-scope="btnedit" ></div>-->
+                                    <!--<div data-alt-component="alt/button" data-scope="btnremove"></div>-->
+                                <!--</td>-->
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

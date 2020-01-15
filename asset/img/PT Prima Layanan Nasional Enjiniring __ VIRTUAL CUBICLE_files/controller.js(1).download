@@ -1,0 +1,772 @@
+define([
+    'asset/lib/jquery/jquery.min',
+    'component/iconplus/master/notifikasi'
+], function(){
+    return ['$scope', '$rootScope', '$log', '$auth', '$notification', 'Master_Notifikasi', "$routeParams",
+        function($scope, $rootScope, $log, $auth, $notification, Master_Notifikasi, $routeParams){
+            $scope.$notification = $notification;
+            $scope.$notification.isfinished = false;
+            $scope.usergroupid = $auth.userdata.usergroupid;
+            $scope.closeMenu = function(){
+                $rootScope.closeMenu();
+            };
+            $scope.setting = {
+                reminder:{
+                    reminderkontrak:{
+                        usergroups: [1,5,10],
+                        label: "Kontrak sudah mau berakhir",
+                        url: alt.baseUrl + 'kontrak/list'
+                    },
+                    reminderchargecodekontrak:{
+                        usergroups: [1,10],
+                        label: "Chargecode belum Terkontrak",
+                        url: alt.baseUrl + 'chargecode/penerbitanchargecode/list'
+                    },
+                    reminderrbp:{
+                        usergroups: [1,2,3,4,7],
+                        label: "Realisasi Biaya sudah >= 40% dari RBP",
+                        url: alt.baseUrl + 'rbp/list'
+                    }
+                },
+                informasi:{
+                    usrPenugasan:{
+                            usergroups: [1,19],
+                        label: "Evaluasi Penugasan",
+                        url: alt.baseUrl + 'penugasan/penugasan/list'
+                    },
+                    usrPenugasanEvaluasi:{
+                        usergroups: [1,5,10],
+                        label: "Evaluasi Penugasan",
+                        url: alt.baseUrl + 'penugasan/penugasan/list'
+                    },
+                    usrPermohonan:{
+                        usergroups: [1,10],
+                        label: "Penerbitan Chargecode",
+                        url: alt.baseUrl + 'chargecode/penerbitanchargecode/list'
+                    },
+                    usrPenawaran:{
+                        usergroups: [1,10],
+                        label: "Penawaran Harga",
+                        url: alt.baseUrl + 'praproyek/penawaranharga/list'
+                    },
+                    usrKontrak:{
+                        usergroups: [1,10],
+                        label: "Input Kontrak",
+                        url: alt.baseUrl + 'kontrak/list'
+                    },
+                    usrUsulanTimpro:{
+                        usergroups: [1,4],
+                        label: "Penentuan Tim Proyek (Manajer Enjiniring)",
+                        url: alt.baseUrl + 'timpro/list'
+                    },
+                    usrWaktuPTL:{
+                        usergroups: [1,7],
+                        label: "Penyusunan RBP (PTL)",
+                        url: alt.baseUrl + 'rbp/list'
+                    },
+                    usrProsedurPTL:{
+                        usergroups: [1,7],
+                        label: "Input RMP(PTL)",
+                        url: alt.baseUrl + 'rmp/list'
+                    },
+                    usrKualitasPTL:{
+                        usergroups: [1,7],
+                        label: "Daftar Pemeriksaan Desain  (PTL)",
+                        url: alt.baseUrl + 'dpd/list'
+                    },
+                    usrKualitasQC:{
+                        usergroups: [1,6],
+                        label: "Persetujuan DPD (Oleh QC)",
+                        url: alt.baseUrl + 'dpd_approve/list'
+                    },
+                    usrTeknisQC:{
+                        usergroups: [1,6],
+                        label: "Pemeriksaan Produk oleh Tim QC",
+                        url: alt.baseUrl + 'qc/list'
+                    },
+                    usrTeknisRevisi:{
+                        usergroups: [1,7],
+                        label: "Revisi Draft Dokumen Catatan hasil QC (PTL)",
+                        url: alt.baseUrl + 'qcrev/list'
+                    }
+                },
+                aktivasi:{
+                    usrPenugasan:{
+                        usergroups: [1,19],
+                        label: "Revisi Penugasan",
+                        url: alt.baseUrl + 'penugasan/penugasan/list'
+                    },
+                    usrPenugasanEvaluasi:{
+                        usergroups: [1,5,10],
+                        label: "Evaluasi Penugasan",
+                        url: alt.baseUrl + 'penugasan/penugasan/list'
+                    },
+                    usrPenugasanMS:{
+                        usergroups: [1,14],
+                        label: "Review Penugasan",
+                        url: alt.baseUrl + 'penugasan/penugasan/list'
+                    },
+                    usrPenugasanDir:{
+                        usergroups: [1,15],
+                        label: "Verifikasi Penugasan",
+                        url: alt.baseUrl + 'penugasan/penugasan/list'
+                    },
+                    usrPermohonan:{
+                        usergroups: [1,10],
+                        label: "Penerbitan Chargecode",
+                        url: alt.baseUrl + 'chargecode/penerbitanchargecode/list'
+                    },
+                    usrApprovalPermohonan:{
+                        usergroups: [1,5],
+                        label: "Persetujuan Penerbitan Chargecode MAN",
+                        url: alt.baseUrl + 'chargecode/approvalchargecode/list'
+                    },
+                    usrApprovalPermohonanMS:{
+                        usergroups: [1,14],
+                        label: "Persetujuan Penerbitan Chargecode MS",
+                        url: alt.baseUrl + 'chargecode/approvalchargecodems/list'
+                    },
+                    usrPermohonanPlus:{
+                        usergroups: [1,10],
+                        label: "Penambahan Chargecode",
+                        url: alt.baseUrl + 'chargecodetambah/penerbitanchargecode/list'
+                    },
+                    usrApprovalPermohonanPlus:{
+                        usergroups: [1,5],
+                        label: "Persetujuan Penambahan Chargecode MAN",
+                        url: alt.baseUrl + 'chargecodetambah/approvalchargecode/list'
+                    },
+                    usrApprovalPermohonanMSPlus:{
+                        usergroups: [1,14],
+                        label: "Persetujuan Penambahan Chargecode MS",
+                        url: alt.baseUrl + 'chargecodetambah/approvalchargecodems/list'
+                    },
+                    usrChargecodeBatalAdmin:{
+                        usergroups: [1,19],
+                        label: "Revisi Penutupan Chargecode",
+                        url: alt.baseUrl + 'chargecodetutup/list'
+                    },
+                    usrChargecodeBatalMan:{
+                        usergroups: [1,5],
+                        label: "Persetujuan Penutupan Chargecode MAN",
+                        url: alt.baseUrl + 'chargecodetutup/list'
+                    },
+                    usrChargecodeBatalMS:{
+                        usergroups: [1,14],
+                        label: "Persetujuan Penutupan Chargecode MS",
+                        url: alt.baseUrl + 'chargecodetutup/list'
+                    },
+                    usrPenutupanKontrakAdmin:{
+                        usergroups: [1,19],
+                        label: "Revisi Penutupan Kontrak",
+                        url: alt.baseUrl + 'penutupan/kontrak/list'
+                    },
+                    usrPenutupanKontrakMan:{
+                        usergroups: [1,5],
+                        label: "Persetujuan Penutupan Kontrak MAN",
+                        url: alt.baseUrl + 'penutupan/kontrak/list'
+                    },
+                    usrPenutupanKontrakMS:{
+                        usergroups: [1,14],
+                        label: "Persetujuan Penutupan Kontrak MS",
+                        url: alt.baseUrl + 'penutupan/kontrak/list'
+                    },
+                    usrPenawaranLingkup:{
+                        usergroups: [1,10],
+                        label: "Input Rencana Kerja Proyek (RKP)",
+                        url: alt.baseUrl + 'praproyek/rkplevel1/list'
+                    },
+                    usrPenawaranLingkupMan:{
+                        usergroups: [1,5],
+                        label: "Persetujuan Rencana Kerja Proyek (RKP)",
+                        url: alt.baseUrl + 'praproyek/rkplevel1/list'
+                    },
+                    usrPenawaranLingkupMS:{
+                        usergroups: [1,14],
+                        label: "Persetujuan Rencana Kerja Proyek (RKP)",
+                        url: alt.baseUrl + 'praproyek/rkplevel1/list'
+                    },
+                    usrPenawaran:{
+                        usergroups: [1,10],
+                        label: "Penawaran Harga",
+                        url: alt.baseUrl + 'praproyek/penawaranharga/list'
+                    },
+                    usrPenawaranMan:{
+                        usergroups: [1,5],
+                        label: "Persetujuan Penawaran Harga MAN",
+                        url: alt.baseUrl + 'praproyek/penawaranharga/list'
+                    },
+                    usrPenawaranMS:{
+                        usergroups: [1,14],
+                        label: "Persetujuan Penawaran Harga MS",
+                        url: alt.baseUrl + 'praproyek/penawaranharga/list'
+                    },
+                    usrPenawaranValidasi:{
+                        usergroups: [1,15],
+                        label: "Persetujuan Penawaran Harga Dirsar",
+                        url: alt.baseUrl + 'praproyek/penawaranharga/list'
+                    },
+                    usrPenawaranUpload:{
+                        usergroups: [1,10],
+                        label: "Upload Penawaran Harga",
+                        url: alt.baseUrl + 'praproyek/penawaranharga/listupload'
+                    },
+                    usrKontrak:{
+                        usergroups: [1,10],
+                        label: "Input Kontrak",
+                        url: alt.baseUrl + 'kontrak/list'
+                    },
+                    usrProdukAsman:{ // Belum Fix
+                        usergroups: [1,10],
+                        label: "Termin Pembayaran (Staff Pemasaran)",
+                        url: alt.baseUrl + 'termin/list'
+                    },
+                    usrProdukMAdkon:{ // Belum Fix
+                        usergroups: [1,5],
+                        label: "Approval Kontrak & Termin Pembayaran (Manajer Pemasaran)",
+                        url: alt.baseUrl + 'termin/list'
+                    },
+                    usrProdukMS:{ // Belum Fix
+                        usergroups: [1,14],
+                        label: "Approval Kontrak & Termin Pembayaran (MS Pemasaran)",
+                        url: alt.baseUrl + 'termin/list'
+                    },
+                    usrProdukDir:{ // Belum Fix
+                        usergroups: [1,15],
+                        label: "Approval Kontrak & Termin Pembayaran (Dir Pemasaran)",
+                        url: alt.baseUrl + 'termin/list'
+                    }
+                },
+                rmp:{
+                    usrUsulanTimpro:{
+                        usergroups: [1,4],
+                        label: "Penyusunan Tim Proyek (Manajer Enjiniring)",
+                        url: alt.baseUrl + 'timpro/list'
+                    },
+                    // usrSetujuTimpro:{
+                    //     usergroups: [1,4],
+                    //     label: "Approve Tim Proyek(Manajer Enjiniring)",
+                    //     url: alt.baseUrl + 'praproyek/timpro/list'
+                    // },
+                    usrSahTimpro:{
+                        usergroups: [1,3],
+                        label: "Persetujuan Tim Proyek (Manajer Senior)",
+                        url: alt.baseUrl + 'timpro/list'
+                    },
+                    usrPengesahanTimpro:{
+                        usergroups: [1,9],
+                        label: "Monitoring & Print SK Tim Proyek (Admin MEng)",
+                        url: alt.baseUrl + 'timpro/list'
+                    },
+                    usrValidasiTimpro:{
+                        usergroups: [1,2],
+                        label: "Persetujuan Tim Proyek (Dir Eng)",
+                        url: alt.baseUrl + 'timpro/list'
+                    },
+                    usrWaktuPTL:{
+                        usergroups: [1,7],
+                        label: "Penyusunan RKP lvl 2 & RBP (PTL)",
+                        url: alt.baseUrl + 'rbp/list'
+                    },
+                    usrWaktuMan:{
+                        usergroups: [1,4],
+                        label: "Verifikasi RKP lvl 2 & RBP (Manajer Enjiniring)",
+                        url: alt.baseUrl + 'rbp/list'
+                    },
+                    usrWaktuAdkon:{
+                        usergroups: [1,3],
+                        label: "Persetujuan RKP lvl 2 & RBP (Manajer Senior)",
+                        url: alt.baseUrl + 'rbp/list'
+                    },
+                    // usrUploadRAB:{
+                    //     usergroups: [1,7],
+                    //     label: "Persetujuan RKP lvl 2 & RBP (Direng)",
+                    //     url: alt.baseUrl + 'rbp/list'
+                    // },
+                    // usrWaktuValidasi:{
+                    //     usergroups: [1,2],
+                    //     label: "Persetujuan RKP lvl 2 & RBP (Direktur Enjiniring)",
+                    //     url: alt.baseUrl + 'rbp/list'
+                    // },
+                    usrWaktuDir:{
+                        usergroups: [1,2],
+                        label: "Persetujuan RKP lvl 2 & RBP (Direktur Enjiniring)",
+                        url: alt.baseUrl + 'rbp/list'
+                    },
+                    usrProsedurPTL:{
+                        usergroups: [1,7],
+                        label: "Input RMP (PTL)",
+                        url: alt.baseUrl + 'rmp/list'
+                    },
+                    usrProsedurMan: {
+                        usergroups: [1,4],
+                        label: "Approval RMP (Man Enjiniring)",
+                        url: alt.baseUrl + 'rmp/list'
+                    },
+                    usrProsedurMS: {
+                        usergroups: [1,3],
+                        label: "Approval RMP (MS Enjiniring)",
+                        url: alt.baseUrl + 'rmp/list'
+                    },
+                    usrProsedurKSMMR:{
+                        usergroups: [1,7],
+                        label: "Upload RMP (PTL)",
+                        url: alt.baseUrl + 'uploadrmp/list'
+                    },
+                    usrProsedurQA:{
+                        usergroups: [1,20],
+                        label: "Review RMP (QA)",
+                        url: alt.baseUrl + 'rmp/list'
+                    },
+
+                    usrRevProsedurPTL:{
+                        usergroups: [1,7],
+                        label: "Input Revisi RMP (PTL)",
+                        url: alt.baseUrl + 'revisirmp/list'
+                    },
+                    usrRevProsedurMan: {
+                        usergroups: [1,4],
+                        label: "Approval Revisi RMP (Man Enjiniring)",
+                        url: alt.baseUrl + 'revisirmp/list'
+                    },
+                    usrRevProsedurMS: {
+                        usergroups: [1,3],
+                        label: "Approval Revisi RMP (MS Enjiniring)",
+                        url: alt.baseUrl + 'revisirmp/list'
+                    },
+                    usrRevProsedurKSMMR:{
+                        usergroups: [1,7],
+                        label: "Upload Revisi RMP (PTL)",
+                        url: alt.baseUrl + 'revisirmp/listuploadrmp'
+                    },
+                    usrRevProsedurQA:{
+                        usergroups: [1,20],
+                        label: "Review Revisi RMP (QA)",
+                        url: alt.baseUrl + 'revisirmp/list'
+                    },
+                    // usrWaktuMS:{
+                    //     usergroups: [1,3],
+                    //     label: "Validasi Dok SKTim (MS)",
+                    //     url: alt.baseUrl + 'praproyek/validasims/list'
+                    // },
+                    revisiRabWbsPTL:{
+                        usergroups: [1,7],
+                        label: "Revisi RKP lvl 2 & RBP (PTL)",
+                        url: alt.baseUrl + 'revisirbp/list'
+                    },
+                    revisiRabWbsMan:{
+                        usergroups: [1,4],
+                        label: "Verifikasi Revisi RKP lvl 2 & RBP (Manajer Enjiniring)",
+                        url: alt.baseUrl + 'revisirbp/list'
+                    },
+                    revisiRabWbsMadkon:{
+                        usergroups: [1,3],
+                        label: "Persetujuan Revisi RKP lvl 2 & RBP (Manajer Senior)",
+                        url: alt.baseUrl + 'revisirbp/list'
+                    },
+                    revisiRabWbsDir:{
+                        usergroups: [1,2],
+                        label: "Persetujuan Revisi RKP lvl 2 & RBP (Direng)",
+                        url: alt.baseUrl + 'revisirbp/list'
+                    },
+                    revisiRabWbsUploadPTL:{
+                        usergroups: [1,7],
+                        label: "Upload Revisi RAB (PTL)",
+                        url: alt.baseUrl + 'revisirbp/list'
+                    },
+                    usrPembubaranTimproMan:{
+                        usergroups: [1,4],
+                        label: "Pembubaran Tim Proyek (Manajer Enjiniring)",
+                        url: alt.baseUrl + 'timpro/pembubarantimpro'
+                    },
+                    usrPembubaranTimproMS:{
+                        usergroups: [1,3],
+                        label: "Persetujuan Pembubaran Tim Proyek (Manajer Senior)",
+                        url: alt.baseUrl + 'timpro/pembubarantimpro'
+                    },
+                    usrPembubaranTimproDir:{
+                        usergroups: [1,2],
+                        label: "Persetujuan Pembubaran Tim Proyek (Dir Eng)",
+                        url: alt.baseUrl + 'timpro/pembubarantimpro'
+                    }
+                },
+                /*aktivasi:{
+                 usrAktivasi:{
+                 usergroups: [1,4,9],
+                 label: "Pengesahan aktivasi cubicle",
+                 url: alt.baseUrl + 'praproyek/aktivasi/list'
+                 }
+                 },*/
+                dpd:{
+                    usrKualitasTimpro:{
+                        usergroups: [1,7],
+                        label: "Daftar Pemeriksaan Desain  (Enjinir)",
+                        url: alt.baseUrl + 'dpd/list'
+                    },
+                    usrKualitasPTL:{
+                        usergroups: [1,7],
+                        label: "Daftar Pemeriksaan Desain  (PTL)",
+                        url: alt.baseUrl + 'dpd/list'
+                    },
+                    usrKualitasMan:{
+                        usergroups: [1,4],
+                        label: "Persetujuan DPD (Manajer Eng)",
+                        url: alt.baseUrl + 'dpd_approve/list'
+                    },
+
+                    usrKualitasQC:{
+                        usergroups: [1,6],
+                        label: "Persetujuan DPD (Oleh QC)",
+                        url: alt.baseUrl + 'dpd_approve/list'
+                    },
+                    usrKualitasMS:{
+                        usergroups: [1,3],
+                        label: "Approval DPD (MS)",
+                        url: alt.baseUrl + 'dpd_approve/list'
+                    },
+                    usrKualitasUpload:{
+                        usergroups: [1,7],
+                        label: "Upload Daftar Pemeriksaan Desain  (PTL)",
+                        url: alt.baseUrl + 'uploaddpd/list'
+                    },
+                    usrRevKualitasTimpro:{
+                        usergroups: [1,7],
+                        label: "Revisi Daftar Pemeriksaan Desain  (Enjinir)",
+                        url: alt.baseUrl + 'revisidpd/list'
+                    },
+                    usrRevKualitasPTL:{
+                        usergroups: [1,7],
+                        label: "Revisi Daftar Pemeriksaan Desain  (PTL)",
+                        url: alt.baseUrl + 'revisidpd/list'
+                    },
+                    usrRevKualitasMan:{
+                        usergroups: [1,4],
+                        label: "Persetujuan Revisi DPD (Manajer Eng)",
+                        url: alt.baseUrl + 'revisidpd_approve/list'
+                    },
+                    usrRevKualitasUpload:{
+                        usergroups: [1,7],
+                        label: "Upload Revisi Daftar Pemeriksaan Desain  (PTL)",
+                        url: alt.baseUrl + 'revisidpdupload/list'
+                    },
+                    usrRevKualitasQC:{
+                        usergroups: [1,6],
+                        label: "Persetujuan Revisi DPD (Oleh QC)",
+                        url: alt.baseUrl + 'revisidpd_approve/list'
+                    },
+                    usrRevKualitasMS:{
+                        usergroups: [1,3],
+                        label: "Approval Revisi  DPD (MS)",
+                        url: alt.baseUrl + 'revisidpd_approve/list'
+                    }
+
+                },
+                pekerjaan:{
+                    pekerjaanTemplate:{
+                        usergroups: [1,7],
+                        label: "Pembuatan Produk (Pilih Template)",
+                        url: alt.baseUrl + 'draftproduk/list'
+                    },
+                    pekerjaanReview:{
+                        usergroups: [1,7],
+                        label: "Pembuatan Produk (Review & Input Variable)",
+                        url: alt.baseUrl + 'draftproduk/list'
+                    },
+                    pekerjaanFinalisasi:{
+                        usergroups: [1,7],
+                        label: "Pembuatan Produk (Finalisasi DM)",
+                        url: alt.baseUrl + 'draftproduk/list'
+                    },
+                    pekerjaanProgress:{
+                        usergroups: [1,7],
+                        label: "Upload Draft Produk",
+                        url: alt.baseUrl + 'draftproduk/list'
+                    },
+                    rencanamingguanMan:{
+                        usergroups: [1,4],
+                        label: "Persetujuan Rencana Kerja Mingguan Enjinir (Manajer Eng)",
+                        url: alt.baseUrl + 'rencanamingguan/approval'
+                    },
+                    usrLUPPTL:{
+                        usergroups: [1,7],
+                        label: "Input / Revisi LUP",
+                        url: alt.baseUrl + 'lup/list'
+                    },
+                    usrLUPMan:{
+                        usergroups: [1,4],
+                        label: "Approve LUP (Man)",
+                        url: alt.baseUrl + 'lup/list'
+                    },
+                    usrLUPMS:{
+                        usergroups: [1,3],
+                        label: "Approve LUP (MS)",
+                        url: alt.baseUrl + 'lup/list'
+                    },
+                    timesheet_approve_ptl:{
+                        usergroups: [1,7],
+                        label: "Approval Timesheet (PTL)",
+                        url: alt.baseUrl + 'timesheet/approval'
+                    },
+                    timesheet_approve_man:{
+                        usergroups: [1,4],
+                        label: "Approval Timesheet (Man Enj)",
+                        url: alt.baseUrl + 'timesheet/approvalman'
+                    },
+                    timesheet_approve_nonproject:{
+                        usergroups: [1,3],
+                        label: "Approval Timesheet Non Project (Man/MS)",
+                        url: alt.baseUrl + 'timesheet/approvalman'
+                    }
+                },
+                // pekerjaanTemplate
+                // pekerjaanReview
+                // pekerjaanFinalisasi
+                // pekerjaanProgress'
+                pemeriksaan:{
+                    usrTeknisMan:{
+                        usergroups: [1,4],
+                        label: "Verifikasi Teknis (Man)",
+                        url: alt.baseUrl + 'teknis/list'
+                    },
+                    usrTeknisMS:{
+                        usergroups: [1,3],
+                        label: "Verifikasi Teknis (MS)",
+                        url: alt.baseUrl + 'teknis/list'
+                    },
+                    usrTeknisUpload:{
+                        usergroups: [1,7],
+                        label: "Print & Upload Lembar Pengesahan Produk Enjiniring",
+                        url: alt.baseUrl + 'teknis/list'
+                    },
+                    usrTeknisQC:{
+                        usergroups: [1,6],
+                        label: "Pemeriksaan Produk oleh Tim QC",
+                        url: alt.baseUrl + 'qc/list'
+                    },
+                    usrTeknisRevisi:{
+                        usergroups: [1,7],
+                        label: "Revisi Draft Dokumen Catatan hasil QC (PTL)",
+                        url: alt.baseUrl + 'qcrev/list'
+                    },
+                    usrTeknisQCPass:{
+                        usergroups: [1,6],
+                        label: "Penerbitan QC Pas (QC)",
+                        url: alt.baseUrl + 'qcpass/list'
+                    },
+                    usrTeknisMSLap:{
+                        usergroups: [1,3],
+                        label: "Penerbitan/Approval Laporan Pemeriksaan Teknis (MS)",
+                        url: alt.baseUrl + 'qcpass/list'
+                    },
+                    usrTeknisUploadMS:{
+                        usergroups: [1,7],
+                        label: "Upload Penerbitan/Approval Laporan Pemeriksaan Teknis (MS)",
+                        url: alt.baseUrl + 'uploadteknis/list'
+                    }
+                },
+                final:{
+                    usrFinalCovering:{
+                        usergroups: [1,7],
+                        label: "Penyiapan &  Upload Covering Letter -> Penyerahan Produk (PTL)",
+                        url: alt.baseUrl + 'delivery/list'
+                    },
+                    usrFinalUser:{
+                        usergroups: [1,7],
+                        label: "Input Hasil Pemeriksaan Produk oleh Pemberi Kerja (PTL)",
+                        url: alt.baseUrl + 'delivery/list'
+                    }
+                },
+                ba:{
+                    usrBAPP:{
+                        usergroups: [13],
+                        label: "Penyiapan BAPP",
+                        url: alt.baseUrl + 'bapp/list'
+                    },
+                    usrBAPPPTL:{
+                        usergroups: [7],
+                        label: "Persetujuan BAPP (PTL)",
+                        url: alt.baseUrl + 'bapp/list'
+                    },
+                    usrBAPPAdkon:{
+                        usergroups: [17],
+                        label: "Pemberitahuan BAPP Terbit",
+                        url: alt.baseUrl + 'bapp/list'
+                    }
+                },
+                casubmission:{
+                    casubmissionMAN:{
+                        usergroups: [17],
+                        label: "Cash Advance Submission Persetujuan Man Adkon",
+                        url: alt.baseUrl + 'purchasing/list'
+                    },
+                    casubmissionMS:{
+                        usergroups: [3],
+                        label: "Cash Advance Submission Persetujuan MS",
+                        url: alt.baseUrl + 'purchasing/list'
+                    },
+                    casubmissionDIR:{
+                        usergroups: [2],
+                        label: "Cash Advance Submission Persetujuan DIR",
+                        url: alt.baseUrl + 'purchasing/list'
+                    },
+                    casubmissionRejectPTL:{
+                        usergroups: [7],
+                        label: "Cash Advance Submission Reject",
+                        url: alt.baseUrl + 'purchasing/list'
+                    }
+                },
+                casettlement:{
+                    casettlementPTL:{
+                        usergroups: [7],
+                        label: "Cash Advance Settlement Submit PTL",
+                        url: alt.baseUrl + 'settlement/list'
+                    },
+                    casettlementMAN:{
+                        usergroups: [17],
+                        label: "Cash Advance Settlement Persetujuan Man Adkon",
+                        url: alt.baseUrl + 'settlement/list'
+                    },
+                    casettlementMS:{
+                        usergroups: [3],
+                        label: "Cash Advance Settlement Persetujuan MS",
+                        url: alt.baseUrl + 'settlement/list'
+                    },
+                    casettlementDIR:{
+                        usergroups: [2],
+                        label: "Cash Advance Settlement Persetujuan DIR",
+                        url: alt.baseUrl + 'settlement/list'
+                    },
+                    casettlementRejectPTL:{
+                        usergroups: [7],
+                        label: "Cash Advance Settlement Reject",
+                        url: alt.baseUrl + 'settlement/list'
+                    }
+                },
+                expense:{
+                    expenseMAN:{
+                        usergroups: [17],
+                        label: "Expense Persetujuan Man Adkon",
+                        url: alt.baseUrl + 'expense/list'
+                    },
+                    expenseMS:{
+                        usergroups: [3,22],
+                        label: "Expense Persetujuan MS",
+                        url: alt.baseUrl + 'expense/list'
+                    },
+                    expenseDIR:{
+                        usergroups: [2],
+                        label: "Expense Persetujuan DIR",
+                        url: alt.baseUrl + 'expense/list'
+                    },
+                    expenseRejectPTL:{
+                        usergroups: [7],
+                        label: "Expense Reject",
+                        url: alt.baseUrl + 'expense/list'
+                    }
+                },
+                timesheet:{
+                    approvalPTL:{
+                        usergroups: [7],
+                        label: "Timesheet Persetujuan PTL",
+                        url: alt.baseUrl + 'timesheet/approval'
+                    },
+                    approvalMadkon:{
+                        usergroups: [17],
+                        label: "Timesheet Persetujuan MAdkon",
+                        url: alt.baseUrl + 'timesheet/approval'
+                    },
+                    approvalMEng:{
+                        usergroups: [4],
+                        label: "Timesheet Persetujuan Man Eng",
+                        url: alt.baseUrl + 'timesheet/approval'
+                    }
+                },
+                desainreview:{
+                    projectadmin:{
+                        usergroups: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+                        label: "Desain Review Project Admin",
+                        url: alt.baseUrl + 'setupdr/list'
+                    },
+                    PTL:{
+                        usergroups: [7],
+                        label: "Desain Review PTL",
+                        url: alt.baseUrl + 'setupdr/list'
+                    },
+                    Enjinir:{
+                        usergroups: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+                        label: "Desain Review Enjiniir",
+                        url: alt.baseUrl + 'setupdr/list'
+                    }
+                },
+                revisiTimPro:{
+                    approvalMan:{
+                        usergroups: [1,4],
+                        label: "Persetujuan Revisi Tim Proyek (Manajer Enjiniring)",
+                        url: alt.baseUrl + 'timpro/revisitimpro'
+                    },
+                    approvalMS:{
+                        usergroups: [1,3],
+                        label: "Persetujuan Revisi Tim Proyek (Manajer Senior)",
+                        url: alt.baseUrl + 'timpro/revisitimpro'
+                    },
+                    uploadRevSkTim:{
+                        usergroups: [1,9],
+                        label: "Monitoring & Print SK Revisi Tim Proyek",
+                        url: alt.baseUrl + 'timpro/skrevisitimpro'
+                    },
+                    approvalDir:{
+                        usergroups: [1,2],
+                        label: "Persetujuan Revisi Tim Proyek",
+                        url: alt.baseUrl + 'timpro/revisitimpro'
+                    }
+                }
+            };
+
+            $notification.get = function () {
+                $notification.isgetnotif = true;
+                $notification.count = 0;
+                $notification.notif = {};
+
+                var data = {};
+                if ($auth.userdata.usergroupid == 7 || $auth.userdata.usergroupid == 10 )
+                {
+                    var unitid = $auth.userdata.unitid;
+                    var ptlid = $auth.userdata.userid;
+                    data.unitid = unitid;
+                    data.ptlid = ptlid;
+                }else if($auth.userdata.usergroupid == 6){
+                    data.subjenis = '%%QC%%';
+                }else {
+                    var unitid = $auth.userdata.unitid ;
+                    var ptlid = '';
+                    data.unitid = unitid;
+                    data.ptlid = '';
+                }
+                Master_Notifikasi.list(data).then(function (response) {
+                    $notification.isgetnotif = false;
+                    angular.forEach(response.data, function (jenis, kj) {
+                        if ($scope.setting.hasOwnProperty(kj)) {
+                            if (!$notification.notif[kj]) $notification.notif[kj] = {};
+                            angular.forEach(jenis, function (subjenis, ksj) {
+                                var key = ksj;
+                                if (kj == 'permohonan' && ksj == 'ULG') key = 'NEW';
+
+                                if ($scope.setting[kj].hasOwnProperty(key)) {
+                                    if ($scope.setting[kj][key]['usergroups'].indexOf(parseInt($auth.userdata.usergroupid)) > -1) {
+                                        $notification.notif[kj][key] = subjenis;
+                                        $notification.count += parseInt(subjenis);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    $scope.$notification.isfinished = true;
+                });
+                // }
+            };
+
+            if($routeParams.altcontroller !== "auth")
+                $notification.get();
+        }
+    ];
+});

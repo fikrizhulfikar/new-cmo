@@ -1,0 +1,74 @@
+requirejs.s.contexts._.config.shim['asset/lib/pivot/dist/plotly-basic-latest.min'] = {
+    deps: ['asset/lib/jquery/jquery.min', 'asset/lib/jquery-ui/jquery-ui.min', ]
+};
+// requirejs.s.contexts._.config.shim['asset/lib/pivot/dist/plotly-latest.min'] = {
+//     deps: ['asset/lib/jquery/jquery.min', 'asset/lib/jquery-ui/jquery-ui.min', ]
+// };
+requirejs.s.contexts._.config.shim['asset/lib/pivot/dist/pivot'] = {
+    deps: ['asset/lib/jquery/jquery.min', 'asset/lib/jquery-ui/jquery-ui.min', ]
+};
+requirejs.s.contexts._.config.shim['asset/lib/pivot/dist/plotly_renderers'] = {
+    deps: ['asset/lib/jquery/jquery.min', 'asset/lib/jquery-ui/jquery-ui.min', ]
+};
+define([
+    // 'asset/lib/pivot/dist/plotly-latest.min',
+    'asset/lib/pivot/dist/plotly-basic-latest.min',
+    'asset/lib/pivot/dist/pivot',
+    'asset/lib/pivot/dist/plotly_renderers',
+    'component/iconplus/master/vwbsweekpivot',
+], function(){
+    return ['$scope', '$routeParams', '$log', '$button', '$auth', '$popup', 'Master_vwbsweekpivot',
+        function($scope, $routeParams, $log, $button, $auth, $popup, Master_vwbsweekpivot
+        ){
+            // toolbar
+            $scope.toolbar = {
+                title: 'Monitoring RKP',
+                description: ''
+            };
+
+            // breadcrumb
+            $scope.breadcrumb = {
+                data: [{
+                    title: 'Monitoring'
+                }, {
+                    title: 'RKP',
+                    url: alt.baseUrl + 'monitoring/rkp',
+                    isactive: true
+                }]
+            };
+
+            // $(function(){
+            //
+            //     var derivers = $.pivotUtilities.derivers;
+            //     var renderers = $.extend($.pivotUtilities.renderers,
+            //         $.pivotUtilities.plotly_renderers);
+            //
+            //     $.getJSON("mps.json", function(mps) {
+            //         $("#output").pivotUI(mps, {
+            //             renderers: renderers,
+            //             cols: ["Party"], rows: ["Province"],
+            //             rendererName: "Horizontal Stacked Bar Chart",
+            //             rowOrder: "value_a_to_z", colOrder: "value_z_to_a",
+            //         });
+            //     });
+            // });
+
+
+            Master_vwbsweekpivot.list({proc_inst_id_:$routeParams.processInstanceId}).then(function(response){
+                var data = response.data;
+                $(function(){
+                    $("#output").pivotUI(
+                        data, {
+                            rows: ["chargecode","kegiatan"],
+                            cols: ["bulan", "week"],
+                            vals: ["duration"],
+                            aggregatorName: "Sum",
+                            rendererName: "Table Barchart",
+                            renderers: $.extend(
+                                $.pivotUtilities.renderers,$.pivotUtilities.plotly_renderers,
+                                $.pivotUtilities.export_renderers)
+                        });
+                });
+            });
+        }];
+});

@@ -1,0 +1,69 @@
+requirejs.s.contexts._.config.shim['asset/js/tableHeadFixer'] = {
+    deps: ['asset/lib/jquery/jquery.min']
+};
+
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'asset/js/accounting.min',
+    'asset/lib/jquery/jquery.min',
+    'asset/js/tableHeadFixer',
+    'component/alt/button/service',
+    'component/activiti/task',
+    'component/iconplus/master/kelompokbidang',
+    'component/iconplus/master/vpenugasankontrak',
+    'component/iconplus/master/penugasan',
+    'component/iconplus/master/kontrak'
+], function(moment, accounting){
+    return ['$scope', '$routeParams', '$auth', '$log', '$button', 'Activiti_Task', 'Iconplus_Master_Kelompok_Bidang', "Iconplus_Master_Kontrak",
+        function($scope, $routeParams, $auth, $log, $button, Activiti_Task, Iconplus_Master_Kelompok_Bidang, Iconplus_Master_Kontrak){
+            moment.locale('id');
+            $scope.moment = moment;
+            $scope.accounting = accounting;
+            $scope.usergroupid = $auth.userdata.usergroupid;
+
+            $scope.filter = {};
+            $scope.ref = {
+                bidang : {}
+            };
+
+            Iconplus_Master_Kelompok_Bidang.list().then(function(response){
+                angular.forEach(response.data, function(val, key){
+                    $scope.ref.bidang[val.unitid] = val;
+                });
+            });
+
+            Iconplus_Master_Kontrak.retrieve({id: $routeParams.kontrakid, ismonitoringkontrak: 1}).then(function(response){
+                if(response.data.amandemen.length > 0 && response.data.amandemen[0].amandemenke == 0){
+                    $scope.data = response.data.amandemen[0];
+                    $scope.data.amandemen = response.data.amandemen;
+                }else {
+                    $scope.data = response.data;
+                    $scope.data.amandemen = [];
+                    $scope.data.amandemen.push(response.data);
+                }
+
+                // var tempSubPekerjaan = [];
+                // angular.forEach($scope.data.subpekerjaan, function(item){
+                //     tempSubPekerjaan = tempSubPekerjaan.concat(angular.fromJson(item.subpekerjaan));
+                // });
+                // $scope.data.subpekerjaan = [];
+                // angular.forEach(tempSubPekerjaan, function(val, key){
+                //     $scope.data.subpekerjaan.push(val.jenis_produk);
+                // });
+                // $scope.data.subpekerjaan = $scope.data.subpekerjaan.join(", ");
+            });
+
+            $scope.btncancel = $button('back',{
+                href: alt.baseUrl + 'monitoring/amandemenkontrak/list'
+            });
+
+            // $scope.createComponentFile = function(amd){
+            //     return dokumenkontrak = {
+            //         isupload: false,
+            //         isview: true,
+            //         accept:'application/pdf',
+            //         data: amd.dokumenkontrak
+            //     };
+            // }
+        }];
+});

@@ -1,0 +1,53 @@
+<style>
+    .no-border-top {
+        border-top: 0 !important;
+    }
+
+    .no-border-bottom {
+        border-bottom: 0 !important;
+    }
+
+    th {
+        background-color: rgb(238, 238, 238)
+    }
+</style>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div style="overflow-x: auto" class="table-responsive">
+            <table class="table table-responsive table-bordered table-condensed" id="fixTable">
+                <thead>
+                <tr>
+                    <th style="white-space:nowrap; text-align:center; vertical-align: middle;" rowspan="2">Nama Pekerjaan</th>
+                    <th style="white-space:nowrap; text-align:center; vertical-align: middle;" colspan="2">Tanggal</th>
+                    <th style="white-space:nowrap; text-align:center" colspan="{{config.weekNo}}">Minggu Ke-</th>
+                </tr>
+                <tr>
+                    <th style="text-align: center">Awal</th>
+                    <th style="text-align: center">Akhir</th>
+                    <th style="white-space:nowrap;text-align: center; min-width: 50px;" data-ng-repeat="week in config.weeks">
+                        <div class="col-xs-12" data-ng-mouseover="tooltip($event)"
+                             title="{{moment(week.start, 'YYYYMMDD').format('DD MMM YYYY') + ' - ' + moment(week.end, 'YYYYMMDD').format('DD MMM YYYY')}}" id="week{{week.weekno}}">
+                            {{week.weekno}}
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat-start="p in pekerjaan | orderBy: '+tglawal'">
+                    <td style="white-space:nowrap; vertical-align: middle" rowspan="3">{{p.namapekerjaan}}</td>
+                    <td style="white-space:nowrap; vertical-align: middle" rowspan="3">{{moment(p.tglawal, 'YYYYMMDD').format('DD MMM YYYY')}}</td>
+                    <td style="white-space:nowrap; vertical-align: middle" rowspan="3">{{moment(p.tglakhir, 'YYYYMMDD').format('DD MMM YYYY')}}</td>
+                    <td class="no-border-bottom" data-ng-repeat="(key, week) in config.weeks"></td>
+                </tr>
+                <tr>
+                    <td class="no-border-top no-border-bottom" style="height: 20px;white-space:nowrap;text-align: center;{{p.week.indexOf(key)>=0?'background-color:#6DED6D':''}}" data-ng-repeat="(key, week) in config.weeks"></td>
+                </tr>
+                <tr data-ng-repeat-end>
+                    <td class="no-border-top" data-ng-repeat="(key, week) in config.weeks"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

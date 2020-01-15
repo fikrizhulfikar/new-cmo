@@ -1,0 +1,214 @@
+<link rel="stylesheet" href="asset/lib/select2/css/select2.min.css">
+<form class="form-horizontal" name="form" autocomplete="off">
+    <div class="form-group" data-ng-show="action == 'add'">
+        <label class="col-lg-2 col-md-3 col-sm-2 control-label">Unit Pemohon</label>
+        <div class="col-lg-10 col-md-6 col-sm-10">
+            <!--<ui-select ng-model="data.usrPermohonan_unitid"-->
+                       <!--on-select="pilih_unit($select.selected.name)" limit="10"  theme="bootstrap" ng-disabled="disabled" style="min-height:29px">-->
+                <!--<ui-select-match placeholder="Unit Pemohon">{{$select.selected.name}}</ui-select-match>-->
+                <!--<ui-select-choices repeat="c in ref.unit | filter: $select.search  | limitTo: 10">-->
+                    <!--<small ng-bind-html="c.name | highlight: $select.search"></small></br>-->
+                <!--</ui-select-choices>-->
+            <!--</ui-select>-->
+            <!--<select class="form-control" name="usrPermohonan_unitid" data-ng-model="data.usrPermohonan_unitid" data-ng-options="k as v.name for (k,v) in ref.unit" disabled/>-->
+            <input type="hidden" class="form-control" name="namaunit" placeholder="{{action == 'view' ? '' : 'Nama Unit'}}" data-ng-model="data.usrPermohonan_unitid" data-ng-disabled="action== 'view'"/>
+            <input type="text" class="form-control" name="namaunit" placeholder="{{action == 'view' ? '' : 'Nama Unit'}}" data-ng-model="data.usrPermohonan_namaunit" data-ng-disabled="action== 'view'"/>
+        </div>
+    </div>
+    <!--<div class="form-group" data-ng-show="action == 'add'&&$auth.userdata.unitid!=0">-->
+        <!--<label class="col-lg-2 col-md-3 col-sm-2 control-label">Unit Pemohon</label>-->
+        <!--<div class="col-lg-10 col-md-6 col-sm-10">-->
+            <!--&lt;!&ndash;<input type="text" class="form-control" name="namaunit" placeholder="{{action == 'view' ? '' : 'Nama Unit'}}" data-ng-model="data.usrPermohonan_unitid" data-ng-disabled="action== 'view'"/>&ndash;&gt;-->
+            <!--<select class="form-control" name="unitasal" data-ng-model="data.usrPermohonan_unitid" data-ng-options="k as v.name for (k,v) in ref.unit" disabled></select>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="form-group" data-ng-show="action == 'view'">
+        <label class="col-lg-2 col-md-3 col-sm-2 control-label">Unit Pemohon</label>
+        <div class="col-lg-10 col-md-6 col-sm-10">
+            <input type="text" class="form-control" name="UnitPemohon" placeholder="{{action == 'view' ? '' : 'Unit Pemohon'}}" data-ng-model="data.usrPermohonan_namaunit" disabled/>
+        </div>
+    </div>
+    <div class="form-group" data-ng-show="action == 'correct'">
+        <label class="col-lg-2 col-md-3 col-sm-2 control-label">Unit Pemohon</label>
+        <div class="col-lg-10 col-md-6 col-sm-10">
+            <select class="form-control" name="unitasal" data-ng-model="data.usrPermohonan_unitid" data-ng-options="k as v.name for (k,v) in ref.unit"></select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor Surat</label>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Nomor Surat'}}" data-ng-model="data.usrPermohonan_nomorsurat" data-ng-disabled="action== 'view'"/>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Tanggal Surat</label>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <input type="text" date-time auto-close="true" view="date" min-view="date" max-view="year" format="dd MMMM yyyy" watch-direct-changes class="form-control" name="tglsurat" placeholder="{{action == 'view' ? '' : 'Tanggal Surat'}}" data-ng-model="data.usrPermohonan_tglsurat2" data-ng-disabled="action== 'view'"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Perihal Pekerjaan</label>
+        <div class="col-lg-10 col-md-6 col-sm-10">
+            <textarea rows="2" class="form-control" name="perihal" placeholder="{{action == 'view' ? '' : 'Perihal'}}" data-ng-model="data.usrPermohonan_pekerjaan" data-ng-disabled="action== 'view'"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Detail Permohonan</label>
+        <div class="col-lg-8 col-md-8 col-sm-8">
+            <table class="table table-hover table-responsive table-bordered table-condensed">
+                <thead style="background-color: #eee; ">
+                <tr>
+                    <th>No</th>
+                    <th>Jenis Permohonan</th>
+                    <th>Jenis Layanan</th>
+                    <th>Keterangan Layanan</th>
+                    <th>Originating</th>
+                    <th>Terminating</th>
+                    <!--<th>Jumlah</th>-->
+                    <th>Kapasitas</th>
+                    <th>Catatan</th>
+                    <th class="text-center" >Aksi</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="item in table">
+                    <td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+                    <td style=""> {{ item.jenispermohonan }} </td>
+                    <td style=""> {{ item.jenislayanan }} </td>
+                    <td style=""> {{ item.keteranganlayanan }} </td>
+                    <td style=""> {{ item.originating }} </td>
+                    <td style=""> {{ item.terminating }} </td>
+                    <!--<td style=""> {{ item.jumlah }} </td>-->
+                    <td style=""> {{ item.kapasitas }} </td>
+                    <td style=""> {{ item.catatan }} </td>
+                    <!--<td class="text-right">Rp. {{ accounting.formatNumber(item.nilai, 0, '.', ',') }}</td>-->
+                    <td class="text-center" style="white-space: nowrap">
+                        <a class="btn btn-sm btn-info" type="button" data-ng-click="viewTransaksi($index,item)" style="background-color:#45b6af;border-color:#3ea49d;margin-right: 0" data-ng-show="action == 'view'"><i class="fa fa-eye"></i></a>
+                        <a class="btn btn-sm btn-warning" type="button" data-ng-click="editTransaksi($index,item)" style="margin-right: 0" data-ng-show="action != 'view'"><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-sm btn-danger" type="button" data-ng-click="removeTransaksi($index,item)" style="margin-right: 0" data-ng-show="action != 'view'"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div data-ng-show="action != 'view'" data-alt-component="alt/button" data-scope="btnadd"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Dokumen</label>
+        <div class="col-lg-8 col-md-8 col-sm-10">
+            <div id="dokumen" data-alt-component="alt/file" data-scope="file"></div>
+        </div>
+    </div>
+</form>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" name="form">
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 col-sm-2 control-label">Jenis Permohonan</label>
+                    <div class="col-lg-4 col-md-6 col-sm-10">
+                        <select class="form-control" name="category" data-ng-model="modal.data.jenispermohonan" data-ng-disabled="action== 'view'">
+                            <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" data-ng-disabled="action== 'view'">-->
+                            <option value="aktivasi">Aktivasi</option>
+                            <option value="deaktivasi">Deaktivasi</option>
+                            <option value="upgrade">Upgrade</option>
+                            <option value="downgrade">Downgrade</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 col-sm-2 control-label">Jenis Layanan</label>
+                    <div class="col-lg-4 col-md-6 col-sm-10">
+                        <select class="form-control" name="category" data-ng-model="modal.data.jenislayanan" data-ng-disabled="action== 'view'">
+                            <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" data-ng-disabled="action== 'view'">-->
+                            <option value="ipvpn">IPVPN</option>
+                            <option value="metronet">METRONET</option>
+                            <option value="internet">Internet</option>
+                            <option value="clearchannel">Clear Channel</option>
+                            <option value="vsat">VSAT</option>
+                        </select>
+                    </div>
+                    <!--<div class="portlet light bordered" data-ng-show="tipepengadaan == 'kontrak'">-->
+                    <label class="col-lg-2 col-md-3 col-sm-2 control-label">Keterangan Layanan</label>
+                    <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == ''">
+                        <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" data-ng-disabled="action== 'view'">
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'ipvpn'">
+                        <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" data-ng-disabled="action== 'view'">
+                            <option value="ipvpnbasic">IPVPN Basic</option>
+                            <option value="ipvpnscada">IPVPN Scada</option>
+                            <option value="ipvpnpremium">IPVPN Premium</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'clearchannel'">
+                        <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" data-ng-disabled="action== 'view'">
+                            <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" data-ng-disabled="action== 'view'">-->
+                            <option value="clearchannelbasic">Clear Channel Basic</option>
+                            <option value="clearchannelscada">Clear Channel Scada</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'metronet'">
+                        <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" data-ng-disabled="action== 'view'">
+                            <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" data-ng-disabled="action== 'view'">-->
+                            <option value="aktivasi">MetroNet Basic</option>
+                            <option value="deaktivasi">MetroNet QinQ</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'internet'">
+                        <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" data-ng-disabled="action== 'view'">
+                            <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" data-ng-disabled="action== 'view'">-->
+                            <option value="aktivasi">Akses Internet</option>
+                            <option value="deaktivasi">Internet on Demand</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'vsat'">
+                        <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" data-ng-disabled="action== 'view'">
+                            <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" data-ng-disabled="action== 'view'">-->
+                            <option value="">VSAT</option>
+                            <option value="vsatip+akselerator">VSAT IP + AKSELERATOR</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-10" data-ng-show="modal.data.jenislayanan == 'vicon'">
+                        <select class="form-control" name="category" data-ng-model="modal.data.keteranganlayanan" data-ng-disabled="action== 'view'">
+                            <!--<select class="form-control" name="hasil" data-ng-model="data.hasilevaluasi" data-ng-disabled="action== 'view'">-->
+                            <option value="iviplite">i-VIP Lite Mobile</option>
+                            <option value="ivipoffice">i-VIP Office Premium</option>
+                            <option value="ivipondemand">i-VIP on Demand</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Originating</label>
+                    <div class="col-lg-4 col-md-6 col-sm-10">
+                        <input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Originating'}}" data-ng-model="modal.data.originating" data-ng-disabled="action== 'view'"/>
+                    </div>
+                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Terminanting</label>
+                    <div class="col-lg-4 col-md-6 col-sm-10">
+                        <input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Terminanting'}}" data-ng-model="modal.data.terminating" data-ng-disabled="action== 'view'"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <!--<label class="col-lg-2 col-md-2 col-sm-2 control-label">Jumlah</label>-->
+                    <!--<div class="col-lg-4 col-md-6 col-sm-10">-->
+                        <!--<input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Jumlah'}}" data-ng-model="modal.data.jumlah" data-ng-disabled="action== 'view'"/>-->
+                    <!--</div>-->
+                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Kapasitas</label>
+                    <div class="col-lg-4 col-md-6 col-sm-10">
+                        <select class="form-control" name="nomorsurat" data-ng-model="modal.data.kapasitas" data-ng-disabled="action == 'view'" data-ng-options="u.bandwith as u.bandwith for u in ref.bandwith">
+                            <option></option>
+                        </select>
+                        <!--<input type="text" class="form-control" name="nomorsurat" placeholder="{{action == 'view' ? '' : 'Kapasitas'}}" data-ng-model="modal.data.kapasitas" data-ng-disabled="action== 'view'"/>-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-2 col-sm-2 control-label">Catatan</label>
+                    <div class="col-lg-10 col-md-6 col-sm-10">
+                        <textarea rows="2" class="form-control" name="catatan" placeholder="{{action == 'view' ? '' : 'Catatan'}}" data-ng-model="modal.data.catatan" data-ng-disabled="action== 'view'"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

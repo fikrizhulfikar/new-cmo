@@ -1,0 +1,32 @@
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">Monitoring PTL</div>
+    </div>
+    <div class="portlet-body">
+        <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+            <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                <thead>
+                <!--CHARGECODE, PEKERJAAN, UNITASALNAMA, ID_BIDANG, NAMA_BIDANG, ID_PTL, NAMA_PTL, STATUS							-->
+                <tr>
+                    <th style="white-space:nowrap;width: 120px;">Nama PTL</th>
+                    <th style="white-space:nowrap;width: 120px;">Jml Proyek</th>
+                    <!--<th style="white-space:nowrap;width: 120px;">Jml SK Tim</th>-->
+                    <!--<th style="white-space:nowrap;width: 120px;">Jml Produk</th>-->
+                    <th style="white-space:nowrap;width: 120px;">Jml Waktu</th>
+                    <th style="white-space:nowrap;width: 120px;">Jml RMP</th>
+                    <th style="white-space:nowrap;width: 120px;">Jml DPD</th>
+                </tr>
+                </thead>
+                <tr data-ng-repeat="item in table.data | filter:table.filter">
+                    <td>{{ item.nama_ptl }}</td>
+                    <td>{{ item.aktivasi }}</td>
+                    <!--<td>{{ item.sktim }}</td>-->
+                    <!--<td>{{ item.produk }}</td>-->
+                    <td>{{ item.waktu }}</td>
+                    <td>{{ item.rmp }}</td>
+                    <td>{{ item.dpd }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

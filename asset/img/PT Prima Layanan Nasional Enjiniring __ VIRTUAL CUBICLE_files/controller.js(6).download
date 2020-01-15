@@ -1,0 +1,235 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'asset/js/accounting.min',
+    'component/alt/button/service',
+    'component/activiti/task',
+    'component/activiti/process',
+    'component/iconplus/master/sla',
+    'component/system/user',
+    'component/iconplus/master/actprocess',
+    'component/iconplus/master/customer',
+    'component/iconplus/master/unit',
+    'component/iconplus/master/penugasan',
+    'component/iconplus/master/kontrak',
+    'component/iconplus/dashboard/dashboardmonitoring',
+    'component/produkbobot/produkbobot',
+    'component/iconplus/master/penugasan',
+    'component/iconplus/master/kontrak'
+], function(moment, accounting){
+    return [
+        '$scope', '$routeParams', '$log', '$button', '$validate', '$alert', '$window', 'Activiti_Task', 'Activiti_Process', 'Iconplus_Master_Sla','Iconplus_Master_Customer', 'System_User', 'Iconplus_Master_Unit', "Master_Produk_Bobot", "Iconplus_Master_Penugasan", "Iconplus_Master_Kontrak",
+        'Dashboard_Monitoring','Iconplus_Master_Act_Process','Iconplus_Master_Penugasan','Iconplus_Master_Kontrak',
+        function($scope, $routeParams, $log, $button, $validate, $alert, $window, Activiti_Task, Activiti_Process, Iconplus_Master_Sla,Iconplus_Master_Customer, System_User, Iconplus_Master_Unit, Master_Produk_Bobot, Iconplus_Master_Penugasan, Iconplus_Master_Kontrak,
+                 Dashboard_Monitoring, Iconplus_Master_Act_Process,Iconplus_Master_Penugasan,Iconplus_Master_Kontrak){
+            $scope.action = $routeParams.action;
+            $scope.title = $scope.action == 'add' ? 'Tambah' : $scope.action == 'edit' ? 'Edit' : 'Lihat';
+            $scope.moment = moment;
+            $scope.accounting = accounting;
+            // pills step
+            $scope.pills = {
+                steps: [
+                    { title: "List Monitoring" },
+                    { title: "Manajemen Kontrak" },
+                    { title: "Persiapan Pekerjaan" },
+                    { title: "Pelaksanaan Pekerjaan" },
+                    { title: "Pelaporan & Monitoring Proyek" },
+                    { title: "Penutupan Proyek"}
+                ],
+                onselect: function(currentid, previousid){}
+            };
+
+            Dashboard_Monitoring.table().then(function (response) {
+                $scope.monitor = response.data.list;
+            });
+
+
+            Iconplus_Master_Act_Process.retrieve({
+                where: "proc_inst_id_ = "+$routeParams.processInstanceId
+            }).then(function (response) {
+                $scope.info = response.data;
+                // $scope.getchargecode = {selected: response.data};
+            });
+
+            $scope.indikator = {};
+            $scope.monitoring = {};
+            $scope.informasi = {};
+            $scope.informasiamandemen = {};
+            $scope.informasitimpro = {};
+            $scope.informasiinputrkp = {};
+            $scope.informasirkp = {};
+            $scope.informasimm = {};
+            $scope.informasirbp = {};
+            $scope.informasidpd = {};
+            $scope.informasirmp = {};
+            $scope.informasiqc = {};
+            $scope.penugasan = {
+                dokumenpenugasan: {
+                    isupload: false
+                }, data: {}
+            };
+            $scope.kontrak = {
+                data:{},
+                dokumenkontrakview:{
+                    isupload:false
+                }
+            };
+            $scope.btnviewtab = function (index, item) {
+                return $button('', {
+                    title: '',
+                    icon:'fa fa-hand-o-right',
+                    class: 'btn btn-sm btn-warning',
+                    description: "Info "+item.monitoring,
+                    onclick: function () {
+                        $scope.indikator = item.indikator;
+                        $scope.monitoring = item.monitoring;
+                        $scope.informasi = {};
+                        $scope.actionmodal = 'add';
+                        if  (item.kode == 1) {
+                            $scope.pills.steps[1].isactive = true;
+                            $scope.pills.steps[0].isactive = false;
+                            // Iconplus_Master_Penugasan.retrieve({
+                            //     id :  $routeParams.penugasanid
+                            // }).then(function(response){
+                            //     $scope.info.nosurat = response.data.nosurat;
+                            //     $scope.info.tglsurat = response.data.tglsurat;
+                            //     $scope.info.perihal = response.data.perihal;
+                            //     $scope.info.estimasibiayapenugasan = response.data.estimasibiayapenugasan;
+                            //     $scope.info.rprabpenawaran = response.data.rprabpenawaran;
+                            //     $scope.penugasan.data = response.data;
+                            // });
+                        }
+                        else if  (item.kode == 2) {
+                            $scope.pills.steps[2].isactive = true;
+                            $scope.pills.steps[0].isactive = false;
+                        }
+                        else if  (item.kode == 3) {
+                            $scope.pills.steps[3].isactive = true;
+                            $scope.pills.steps[0].isactive = false;
+                        }
+                        else if  (item.kode == 4) {
+                            $scope.pills.steps[4].isactive = true;
+                            $scope.pills.steps[0].isactive = false;
+                        }
+                        else if  (item.kode == 5) {
+                            $scope.pills.steps[5].isactive = true;
+                            $scope.pills.steps[0].isactive = false;
+                        }
+                    }
+                });
+            };
+            $scope.btnview = function (index, item) {
+                return $button('view', {
+                    title: '',
+                    icon:'fa fa-eye',
+                    class: 'btn btn-sm btn-info',
+                    description: "Info "+item.monitoring,
+                        onclick: function () {
+                            $scope.indikator = item.indikator;
+                            $scope.monitoring = item.monitoring;
+                            $scope.informasi = {};
+                            $scope.actionmodal = 'add';
+                            if  (item.indikator == 'PENUGASAN' || item.indikator == 'KONTRAK') {
+                                $scope.modalinfo.data = {};
+                                $scope.modalinfo.action = 'view';
+                                $scope.modalinfo.open();
+                            }
+                            else if  (item.indikator == 'AMANDEMEN') {
+                                $scope.modalinformasi.data = {};
+                                $scope.modalinformasi.action = 'view';
+                                $scope.modalinformasi.open();
+                            }
+                            else if  (item.indikator == 'TIMPRO') {
+                                // $scope.modalinformasitimpro.data = {};
+                                // $scope.modalinformasitimpro.action = 'view';
+                                // $scope.modalinformasitimpro.open();
+                                $scope.pills.steps[2].isactive = true;
+                                $scope.pills.steps[0].isactive = false;
+                            }
+                        }
+                });
+            };
+
+
+            // Iconplus_Master_Kontrak.retrieve({
+            //     penugasanid : $routeParams.penugasanid
+            // }).then(function(response){
+            //     $scope.info.nokontrak = response.data.nokontrak;
+            //     $scope.info.tglkontrak = response.data.tglkontrak;
+            //     $scope.info.judulkontrak = response.data.judulkontrak;
+            //     $scope.info.tglmulai = response.data.tglmulai;
+            //     $scope.info.tglselesai = response.data.tglselesai;
+            //     $scope.info.nilaikontrak = response.data.nilaikontrak;
+            // });
+
+
+            $scope.modalinfo = {
+                header: '',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+            $scope.modalinformasi = {
+                header: '',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+            $scope.modalinformasitimpro = {
+                header: '',
+                class: 'modal-lg',
+                data: {},
+                buttons: []
+            };
+
+            $scope.btncancel = $button('back',{
+                href: alt.baseUrl + 'monitoring/status/list'
+            });
+            $scope.$watch('info.tglsurat', function (val) {
+                if (val) {
+                    $scope.info.tglsurat2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('info.tglsurat2', function (val) {
+                if (val) {
+                    $scope.info.tglsurat = moment(val).format('YYYYMMDD');
+                }
+            });
+            $scope.$watch('info.tglkontrak', function (val) {
+                if (val) {
+                    $scope.info.tglkontrak2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('info.tglkontrak2', function (val) {
+                if (val) {
+                    $scope.info.tglkontrak = moment(val).format('YYYYMMDD');
+                }
+            });
+            $scope.$watch('info.tglmulai', function (val) {
+                if (val) {
+                    $scope.info.tglmulai2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('info.tglmulai2', function (val) {
+                if (val) {
+                    $scope.info.tglmulai = moment(val).format('YYYYMMDD');
+                }
+            });
+
+            $scope.$watch('info.tglselesai', function (val) {
+                if (val) {
+                    $scope.info.tglselesai2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('info.tglselesai2', function (val) {
+                if (val) {
+                    $scope.info.tglselesai = moment(val).format('YYYYMMDD');
+                }
+            });
+            $scope.ref = {
+                customer : {},
+                prosedur : {}
+            };
+
+        }
+    ];
+});

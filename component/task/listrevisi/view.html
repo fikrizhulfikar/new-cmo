@@ -1,0 +1,50 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="row">
+				<div class="col-md-12 filter">
+					<div class="col-lg-3 col-sm-12 col-lg-offset-5 col-sm-offset-12">
+						 <select class="form-control" data-ng-model="filter.key">
+							<option value="" selected="selected" disabled="disabled">- Jenis Pencarian -</option>
+							 <option value="nama">Nama Pegawai</option>
+							<!--<option value="location">Lokasi</option>-->
+						</select>
+					</div>
+					<div class="col-lg-4 col-sm-12">
+						<input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+					</div>
+				</div>
+			</div>
+			<div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+				<table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+					<thead>
+					<tr>
+						<th style="white-space:nowrap;width: 80px;">No</th>
+						<th style="white-space:nowrap;width: 100px;">Nomor Surat</th>
+						<th style="white-space:nowrap;width: 100px;">Tanggal Surat</th>
+						<th style="white-space:nowrap;width: 250px;">Unit Pemohon</th>
+						<th style="white-space:nowrap;width: 350px;">Perihal Pekerjaan</th>
+						<!--<th style="white-space:nowrap;width: 350px;">Jenis Layanan</th>-->
+						<th style="white-space:nowrap;width: 180px;">Status</th>
+						<th class="text-center" style="white-space:nowrap;min-width: 30px;">Aksi</th>
+					</tr>
+					</thead>
+					<tr data-ng-repeat="item in table.data" data-ng-init="rowCreated()">
+						<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+						<td style="white-space:nowrap;">{{ item.nosurat }}</td>
+						<td style="white-space:nowrap">{{ moment(item.tglsurat, 'YYYYMMDD').isValid() ? moment(item.tglsurat, 'YYYYMMDD').format('DD MMM YYYY') : '' }}</td>
+						<td>{{ item.namaunit }}</td>
+						<td>{{ item.pekerjaan }}</td>
+						<!--<td>{{ item.jenislayanan }}</td>-->
+						<td>{{ item.status }}</td>
+						<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">
+							<div data-ng-repeat="button in buttons" style="display: inline;">
+								<div data-alt-component="alt/button" data-scope="button"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

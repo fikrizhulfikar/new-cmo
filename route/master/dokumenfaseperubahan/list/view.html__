@@ -1,0 +1,185 @@
+<style type="text/css">
+    .header-alfa{
+        background-color: #24a9e1;
+
+        text-align: center;
+    }
+
+    td .progress{
+        border-radius:20px !important;
+    }
+
+    .progress-bar {
+        vertical-align: top;
+        border-radius:20px !important;
+        width: 0;
+        animation: progress 1.5s ease-in-out forwards;
+
+    .title {
+        opacity: 0;
+        animation: show 0.35s forwards ease-in-out 0.5s;
+    }
+    }
+
+    @keyframes progress {
+        from {
+            width: 0;
+        }
+        to {
+            width: 100%;
+        }
+    }
+    @keyframes show  {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    progress[value]::-webkit-progress-value::before {
+        content: '80%';
+        position: absolute;
+        right: 0;
+        top: -125%;
+    }
+    @mediaprint {
+        thead {display: table-header-group;}
+    } 
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <img class="pull-left" src="asset/img/plnlogo2.png" height="60">
+            </div>
+        </div>
+        <br>
+        <br>
+ <div class="panel panel-default" style="border: 0 !important; border-radius: 9px !important; box-shadow: 0px 0px 20px -12px rgba(41,41,41,1) !important;">
+            <table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+                <tbody><tr>
+                    <th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt=""></th>
+                    <th class="topleft"></th>
+                    <!--<td id="tbl-border-top">&nbsp;</td>-->
+                    <th class="topright"></th>
+                    <th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt=""></th>
+                </tr>
+                <tr>
+                    <td id="tbl-border-left"></td>
+                    <td>
+
+                        <div class="portlet-body">
+
+                            <form class="form-horizontal" name="form">
+                                <!--<hr>-->
+                                <div class="row">
+                                    <div class="col-lg-12" style="text-align: center;">
+                                        <h3><b>Master Dokumen Fase Perubahan</b></h3>
+                                        <hr>
+                                    </div>
+                                </div>
+
+                   <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                        </div>
+                        <div class="col-lg-12">
+                            <span data-alt-component="alt/button" data-scope="btnadd" class="pull-left"></span>
+                            <div style="margin-bottom:10px;padding-right:0" class="col-lg-2 col-lg-offset-6">
+                            <select class="form-control" data-ng-model="filter.key">
+                                <option value="">Jenis Pencarian</option>
+                                <option value="item_nama">Nama Aspek</option>
+                                <option value="item_nama_lvl1">Nama Indikator</option>
+                                <option value="item_bobot_lvl1">Bobot</option>
+                            </select>
+                        </div>
+                       <div style="margin-bottom:10px;padding-right:0" class="col-lg-3" data-ng-if="filter.key != 'item_id_lvl1'">
+                            <input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+                        </div>
+                        <div style="margin-bottom:10px;padding-right:0" class="col-lg-3" data-ng-if="filter.key == 'item_id_lvl1'">
+                            <select class="form-control" data-ng-model="filter.value">
+                                <option value="">Semua Indikator</option>
+                                <option data-ng-repeat="(key,val) in refindikator" value="{{key}}">{{val.item_nama}}</option>
+                            </select>
+                        </div>
+                        </div>
+                        <br><br>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+                                <div class="table-responsive">
+                                     <div id="datatargetform">
+                                        <table style="width: 100%; max-width: 100%;" id="fixTable" class="table table-bordered table-fixed">
+                                            <thead class="header-alfa">
+                                                <tr style="color: white;">
+                                                    <th class="text-center" style="width:1%; vertical-align: middle;">No</th>
+                                                    <th class="text-center" style="width:3%;vertical-align: middle;">Nama Aspek</th>
+                                                    <th class="text-center" style="width:3%;vertical-align: middle;">Sub Menu</th>
+                                                    <th class="text-center" style="width:3%;vertical-align: middle;">Nama Indikator</th>
+                                                    <th class="text-center" style="width:3%;vertical-align: middle;">Bobot Indikator</th>
+                                                    <th class="text-center" style="width:2%; vertical-align: middle;">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-ng-repeat="item in table.data" data-ng-init="btnedit = btnedit(index, item);btnremove = btnremove(index, item);">
+                                                    <td style="text-align: center; vertical-align: middle;">{{ $index + table.offset + 1 }}</td>
+                                                    <td style="text-align: left; vertical-align: left;">{{ item.item_nama }}</td>
+                                                    <td style="text-align: center; vertical-align: middle;">{{ item.gcg_kode_lvl1 }}</td>
+                                                     <td style="text-align: left; vertical-align: left;">{{ item.item_nama_lvl1 }}</td>
+                                                    <td style="text-align: center; vertical-align: middle;">{{ item.item_bobot_lvl1 }}</td>
+                                                    <td class="text-center" style="white-space:nowrap">
+                                                        <div data-alt-component="alt/button" data-scope="btnedit" ></div>
+                                                        <div data-alt-component="alt/button" data-scope="btnremove" ></div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>   
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-sm-12">
+            <form>
+                <div class="form-group">
+                                     <label class="label" style="color: black;">Nama Aspek *)</label>
+                                    <ui-select ng-model="getchargecode.selected" on-select="pilih_aspek($select.selected)"  theme="bootstrap" style="min-height:29px">
+                                        <ui-select-match   placeholder="{{indikator.item_id +' '+  indikator.item_nama}}">{{$select.selected.item_id   + ' - ' + $select.selected.item_nama}}</ui-select-match>
+                                        <ui-select-choices repeat="c in listaspek | filter: $select.search  | limitTo: 60">
+                                            <small ng-bind-html="c.item_id   + ' - ' + c.item_nama | highlight: $select.search"></small></br>
+                                        </ui-select-choices>
+                                    </ui-select>
+                </div> 
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Sub Menu *)</label>
+                    <input type="text" id="gcg_kode_lvl1" data-ng-model="indikator.gcg_kode_lvl1" class="form-control">
+                </div>
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Nama Indikator *)</label>
+                    <input type="text" id="item_nama_lvl1" data-ng-model="indikator.item_nama_lvl1" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="label" style="color: black;">Bobot Indikator *)</label>
+                    <input type="text" id="item_bobot_lvl1" data-ng-model="indikator.item_bobot_lvl1" class="form-control">
+                </div>
+                 
+                <hr>
+            <div class="col-lg-offset-9">
+                <div data-alt-component="alt/button" data-scope="btnsave"></div>
+                <div data-alt-component="alt/button" data-scope="btnclose"></div>
+                
+       
+             </div>
+            </form>
+        </div>
+    </div>
+</div>

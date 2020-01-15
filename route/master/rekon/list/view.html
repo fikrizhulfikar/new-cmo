@@ -1,0 +1,187 @@
+<!-- <div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div> -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-industry"></i>Master Data Rekon
+					</div>
+					<div class="actions">
+						<div data-alt-component="alt/button" data-scope="btnprint" class="pull-right"></div>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<!--<hr class="background-color:rgba(0,0,0,.40)">-->
+					<div class="row">
+						<div class="col-md-12">
+							<form class="form-horizontal" name="form">
+								<div>
+									<div class="form-group">
+										<label class="col-lg-2 col-sm-4 control-label">Nama Unit</label>
+										<div class="col-lg-4 col-sm-4"
+											data-ng-show="action!='view' && usergroupid != 2 ">
+											<ui-select ng-model="cari.unit" on-select="pilih_unit($select.selected)"
+												theme="bootstrap" style="min-height:29px">
+												<ui-select-match placeholder="Pilih Nama Unit">
+													{{$select.selected.unit_id + ' - ' + $select.selected.nama_unit}}
+												</ui-select-match>
+												<ui-select-choices
+													repeat="c in listunit | filter: $select.search  | limitTo: 60">
+													<small
+														ng-bind-html="c.unit_id   + ' - ' + c.nama_unit | highlight: $select.search"></small></br>
+												</ui-select-choices>
+											</ui-select>
+										</div>
+										<div class="col-lg-4 col-sm-4"
+											data-ng-show="action=='view' || usergroupid == 2">
+											<input type="text" class="form-control" name="nama_wilayah"
+												placeholder="{{action == 'view' ? '' : 'Nama Wilayah'}}"
+												data-ng-model="cari.nama_unit" disabled />
+										</div>
+
+										<label class="col-lg-2 col-sm-4 control-label">Jenis Layanan</label>
+										<div class="col-lg-4 col-sm-4">
+											<select class="form-control" name="cari.jenis_layanan"
+												data-ng-model="cari.jenis_layanan"
+												data-ng-options="v.jenis_layanan for v in listlayanan">
+												<option value="">Pilih Jenis Layanan</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-lg-2 col-sm-4 control-label">Periode</label>
+										<div class="col-lg-4 col-sm-4">
+											<input type="text" date-time auto-close="true" min-view="month"
+												max-view="month" format="MMMM yyyy" class="form-control"
+												placeholder="Pilih Periode" data-ng-model="cari.tahun"
+												data-ng-disabled="action == 'view'" />
+										</div>	
+									</div>
+									<hr>
+									<!-- div class="form-group">
+										<div class="col-sm-12 col-md-12 col-lg-12">
+											<div class="caption pull-left" data-ng-show="action =='view'">
+												<div data-alt-component="alt/button" data-scope="btncancel"></div>
+											</div>
+											<div class="caption pull-right">
+												<div data-alt-component="alt/button" data-scope="btnupload"></div>
+												<div data-alt-component="alt/button" data-scope="btnadd"></div>
+											</div>
+										</div>
+									</div> -->
+								</div>
+								<div class="row">
+									<div style="margin-bottom:10px;padding-right:0" class="col-lg-2 col-lg-offset-6">
+										<select class="form-control" data-ng-model="filter.key">
+											<option value="">Jenis Pencarian</option>
+											<option value="nomor_so">Nomor SO</option>
+											<option value="nomor_sid">Nomor SID</option>
+											<option value="keterangan">Keterangan</option>
+										</select>
+									</div>
+									<div style="margin-bottom:10px;padding-right:0" class="col-lg-4">
+										<input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+									</div>
+								</div>
+							</form>
+							<div class="clearfix"></div>
+							<div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+								<div id="datatargetform">
+									<table
+										class="table table-hover table-responsive table-bordered table-condensed table-striped">
+										<thead>
+											<tr>
+												<th width="1%" align="left" style="vertical-align: middle;">
+													<div align="center">No </div>
+												</th>
+												<th width="1%" align="left"
+													style="vertical-align: middle;">
+													<div align="center">Nama Unit </div>
+												</th>
+												<th width="3%" align="left"
+													style="vertical-align: middle;">
+													<div align="center">No SO </div>
+												</th>
+												<th width="5%" align="left" style="vertical-align: middle;">
+													<div align="center">Tanggal Proses</div>
+												</th>
+												<th width="5%" align="left" style="vertical-align: middle;">
+													<div align="center">No SID </div>
+												</th>
+												<th width="5%" align="left" style="vertical-align: middle;">
+													<div align="center">Jenis Layanan</div>
+												</th>
+												<th width="40%" align="left" style="vertical-align: middle;">
+													<div align="center">Keterangan</div>
+												</th>
+												<th align="left" style="vertical-align: middle;">
+													<div align="center">Jumlah</div>
+												</th>
+												<th align="left" style="vertical-align: middle;">
+													<div align="center"> Kapasitas</div>
+												</th>
+												<th width="5%" align="left" style="vertical-align: middle;">
+													<div align="center">Harga Satuan</div>
+												</th>
+												<th align="left" style="vertical-align: middle;">
+													<div align="center">Total</div>
+												</th>
+											</tr>
+										</thead>
+										<tr data-ng-repeat="item in table.data | orderBy : 'thbllap'" data-ng-init="btnedit = btnedit(index, item);
+								btnremove = btnremove(index, item); btnlogged = btnlogged(index, item); btnenabled = btnenabled(index, item);
+								btnpassword = btnpassword(index, item);">
+											<td align="center" style="line-height: 2.3;>
+												<div align="center"></div>{{$index + table.offset + 1}}
+											</td>
+											<td align="left" style="line-height: 2.3">
+												<div align="left" style="white-space: nowrap;">{{ item.nama_unit }} -
+													{{ item.wilayah }}</div>
+											</td>
+											<!-- <td style="white-space:nowrap">
+												{{ moment(item.thbllap, 'YYYYMM').isValid() ? moment(item.thbllap, 'YYYYMM').format('MMM-YYYY') : '' }}
+											</td> -->
+											<td align="left" style="line-height: 2.3">
+												<div align="center" style="white-space:nowrap">
+													<strong>{{ item.nomor_so }}</strong></div>
+											</td>
+											<td align="left" style="line-height: 2.3">
+												<div align="left" style="white-space: nowrap">{{ item.tanggal_proses |date }}
+												</div>
+											</td>
+											<td align="left" style="white-space: nowrap; line-height: 2.3">
+												<strong>{{item.nomor_sid}}</strong>
+											</td>
+											<!-- <td style="text-align: right;">
+												{{item.wilayah}}
+											</td> -->
+											<td style="text-align: right; white-space: nowrap; line-height: 2.3">
+												{{item.jenis_layanan}}
+											</td>
+											<td style="text-align: left; white-space: nowrap; line-height: 2.3">
+												{{item.keterangan}}
+											</td>
+											<td style="text-align: center; line-height: 2.3">
+												{{item.jumlah}}
+											</td>
+											<td style="text-align: left; line-height: 2.3">
+												{{item.kapasitas}}
+											</td>
+											<td style="text-align: right; white-space: nowrap; line-height: 2.3">
+												{{item.harga_satuan | number}}
+											</td>
+											<td style="text-align: right; line-height: 2.3">
+												{{item.total | number}}
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<!--<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto">-->
+							<!--</div>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>

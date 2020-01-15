@@ -1,0 +1,70 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto">
+				<table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+					<thead>
+					<!--CHARGECODE, PEKERJAAN, UNITASALNAMA, ID_BIDANG, NAMA_BIDANG, ID_PTL, NAMA_PTL, STATUS							-->
+					<tr>
+						<th style="white-space:nowrap;width: 40px;">No</th>
+						<th style="white-space:nowrap;width: 80px;">Nomor CRM</th>
+						<th>Jenis Permohonan</th>
+						<th>Jenis Layanan</th>
+						<th>Keterangan Layanan</th>
+						<th>Originating</th>
+						<th>Terminating</th>
+						<!--<th>Jumlah</th>-->
+						<th>Kapasitas</th>
+						<th style="white-space:nowrap;width: 200px;">Catatan</th>
+						<th class="text-center" style="white-space:nowrap;min-width: 135px;">Aksi</th>
+					</tr>
+					</thead>
+					<!--TASK_ID_, PROC_INST_ID_, EXECUTION_ID_, DEF_KEY, DEFINITIONKEY, COMPANYCODE, NAMA_VENDOR, KATEGORI, NOMOR_PO, PEKERJAAN, NOMOR_INVOICE, NOMOR_FAKTURPAJAK, TGL_INVOICE, DPP, TGLPROSES, TGLVERIFIKASI, STATUS-->
+					<tr data-ng-repeat="item in table.data" data-ng-init="btnedit = btnedit(index, item);
+						btnview = btnview(index, item);">
+						<td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+						<td style=""> {{ item.nomorcrm }} </td>
+						<td style=""> {{ item.jenispermohonan }} </td>
+						<td style=""> {{ item.jenislayanan }} </td>
+						<td style=""> {{ item.keteranganlayanan }} </td>
+						<td style=""> {{ item.originating }} </td>
+						<td style=""> {{ item.terminating }} </td>
+						<!--<td style=""> {{ item.jumlah }} </td>-->
+						<td style=""> {{ item.kapasitas }} </td>
+						<td style=""> {{ item.catatan }} </td>
+						<td class="text-center" style="white-space:nowrap" data-ng-init="buttons = buttons($index, item);">
+							<div data-ng-repeat="button in buttons" style="display: inline;">
+								<div data-alt-component="alt/button" data-scope="button"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div data-alt-transclude="alt/modal" data-scope="modal">
+	<button class="pull-right btn btn-info" data-ng-click="modal.data.statusproses.push({})">Tambah Data</button>
+	<table class="table table-hover table-responsive table-bordered table-condensed">
+		<thead>
+		<tr>
+			<th>No.</th>
+			<th>Status</th>
+			<th>Tanggal</th>
+		</tr>
+		</thead>
+		<tr data-ng-repeat="d in modal.data.statusproses">
+			<td style="text-align: center;">{{$index+1}}</td>
+			<td>
+				<select class="form-control" data-ng-model="d.s">
+					<option value="1.0">Start Proses</option>
+					<option value="1.1">On Progress</option>
+					<option value="1.2">Proses Selesai</option>
+				</select>
+			</td>
+			<td>
+				<input type="text" date-time auto-close="true" min-view="date" max-view="date" format="dd MMMM yyyy" watch-direct-changes class="form-control" data-ng-model="d.tgl"/>
+			</td>
+		</tr>
+	</table>
+</div>

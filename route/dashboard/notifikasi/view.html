@@ -1,0 +1,132 @@
+<!-- <div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div> -->
+<div class="row">
+    <div class="col-md-12 col-lg-4">
+        <div class="portlet box red-flamingo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-bell fa-fw"></i> Notifikasi Task
+                </div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="list-group" data-ng-if="$notification.notif.aktivasi">
+                    <div data-ng-repeat="(key, val) in $notification.notif.aktivasi">
+                        <a href="#" class="list-group-item" data-ng-href="{{setting.aktivasi[key]['url']}}" data-ng-click="closeMenu()">
+                            <i class="fa fa-comment fa-fw"></i> {{setting.aktivasi[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group" data-ng-if="$notification.notif.disposisi">
+                    <div data-ng-repeat="(key, val) in $notification.notif.disposisi">
+                        <a href="#" class="list-group-item" data-ng-href="{{setting.disposisi[key]['url']}}" data-ng-click="closeMenu()">
+                            <i class="fa fa-comment fa-fw"></i> {{setting.disposisi[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group" data-ng-if="$notification.notif.dpd">
+                    <div data-ng-repeat="(key, val) in $notification.notif.dpd">
+                        <a href="#" class="list-group-item" data-ng-href="{{setting.dpd[key]['url']}}" data-ng-click="closeMenu()">
+                            <i class="fa fa-comment fa-fw"></i> {{setting.dpd[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                        </a>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-4">
+        <div class="portlet box green">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-bell fa-fw"></i> Notifikasi Informasi
+            </div>
+        </div>
+
+        <div class="portlet-body">
+            <div class="list-group" data-ng-if="$notification.notif.aktivasi">
+                <div data-ng-repeat="(key, val) in $notification.notif.aktivasi">
+                    <a href="#" class="list-group-item" data-ng-href="{{setting.aktivasi[key]['url']}}" data-ng-click="closeMenu()">
+                        <i class="fa fa-comment fa-fw"></i> {{setting.aktivasi[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                    </a>
+                </div>
+            </div>
+            <div class="list-group" data-ng-if="$notification.notif.disposisi">
+                <div data-ng-repeat="(key, val) in $notification.notif.disposisi">
+                    <a href="#" class="list-group-item" data-ng-href="{{setting.disposisi[key]['url']}}" data-ng-click="closeMenu()">
+                        <i class="fa fa-comment fa-fw"></i> {{setting.disposisi[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                    </a>
+                </div>
+            </div>
+            <div class="list-group" data-ng-if="$notification.notif.dpd">
+                <div data-ng-repeat="(key, val) in $notification.notif.dpd">
+                    <a href="#" class="list-group-item" data-ng-href="{{setting.dpd[key]['url']}}" data-ng-click="closeMenu()">
+                        <i class="fa fa-comment fa-fw"></i> {{setting.dpd[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                    </a>
+                </div>
+            </div>
+            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+        </div>
+    </div>
+    </div>
+    <div class="col-md-12 col-lg-4">
+        <div class="portlet box yellow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-bell fa-fw"></i> Notifikasi Reminder
+                </div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="list-group" data-ng-if="$notification.notif.aktivasi">
+                    <div data-ng-repeat="(key, val) in $notification.notif.aktivasi">
+                        <a href="#" class="list-group-item" data-ng-href="{{setting.aktivasi[key]['url']}}" data-ng-click="closeMenu()">
+                            <i class="fa fa-comment fa-fw"></i> {{setting.aktivasi[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group" data-ng-if="$notification.notif.disposisi">
+                    <div data-ng-repeat="(key, val) in $notification.notif.disposisi">
+                        <a href="#" class="list-group-item" data-ng-href="{{setting.disposisi[key]['url']}}" data-ng-click="closeMenu()">
+                            <i class="fa fa-comment fa-fw"></i> {{setting.disposisi[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group" data-ng-if="$notification.notif.dpd">
+                    <div data-ng-repeat="(key, val) in $notification.notif.dpd">
+                        <a href="#" class="list-group-item" data-ng-href="{{setting.dpd[key]['url']}}" data-ng-click="closeMenu()">
+                            <i class="fa fa-comment fa-fw"></i> {{setting.dpd[key]['label']}}
+                                    <span class="pull-right text-muted small"><em>{{val}}</em>
+                                    </span>
+                        </a>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

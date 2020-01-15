@@ -1,0 +1,76 @@
+<style>
+    .no-border-top {
+        border-top: 0 !important;
+    }
+
+    .no-border-bottom {
+        border-bottom: 0 !important;
+    }
+
+    th {
+        background-color: rgb(238, 238, 238)
+    }
+</style>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div style="overflow-x: auto" class="table-responsive">
+            <table class="table table-responsive table-bordered table-condensed" id="fixTable">
+                <thead>
+                <tr>
+                    <th style="white-space:nowrap; text-align:center; vertical-align: middle;" rowspan="2">Nama Pekerjaan</th>
+                    <th style="white-space:nowrap; text-align:center; vertical-align: middle;" colspan="2">Tanggal</th>
+                    <th style="white-space:nowrap; text-align:center" colspan="{{config.weekNo}}">Minggu Ke-</th>
+                </tr>
+                <tr>
+                    <th style="text-align: center">Awal</th>
+                    <th style="text-align: center">Akhir</th>
+                    <th style="white-space:nowrap;text-align: center; min-width: 50px;" data-ng-repeat="week in config.weeks">
+                        <div class="col-xs-12" data-ng-mouseover="tooltip($event)"
+                             title="{{moment(week.start, 'YYYYMMDD').format('DD MMM YYYY') + ' - ' + moment(week.end, 'YYYYMMDD').format('DD MMM YYYY')}}" id="week{{week.weekno}}">
+                            {{week.weekno - (startWeek - 1)}}
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat-start="(k, p) in pekerjaan_keyval | orderBy: '+tglawal'">
+                    <td style="white-space:nowrap; vertical-align: middle" rowspan="4">{{p.namapekerjaan}}</td>
+                    <td style="white-space:nowrap; vertical-align: middle" rowspan="4">{{moment(p.tglawal, 'YYYYMMDD').format('DD MMM YYYY')}}</td>
+                    <td style="white-space:nowrap; vertical-align: middle" rowspan="4">{{moment(p.tglakhir, 'YYYYMMDD').format('DD MMM YYYY')}}</td>
+                    <td class="no-border-bottom" data-ng-repeat="(key, week) in config.weeks"></td>
+                </tr>
+                <tr>
+                    <td class="no-border-top no-border-bottom" style="height: 20px;white-space:nowrap;text-align: center;{{p.week.indexOf(key)>=0?'background-color:#03a9f4':''}}" data-ng-repeat="(key, week) in config.weeks"></td>
+                </tr>
+                <tr>
+                    <td class="no-border-top no-border-bottom" style="height: 20px;white-space:nowrap;text-align: center;{{realisasi_keyval[k]['progress'][key].isProgress?'background-color:#6DED6D':''}}" data-ng-repeat="(key, week) in config.weeks">
+                    </td>
+                </tr>
+                <tr data-ng-repeat-end>
+                    <td class="no-border-top" data-ng-repeat="(key, week) in config.weeks"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">Keterangan</div>
+            <div class="panel-body" style="text-align: center">
+                <table style="margin: auto">
+                    <tr>
+                        <td style="color: #03a9f4"><i class="fa fa-square"></i></td>
+                        <td style="width: 20px">:</td>
+                        <td>Rencana Pekerjaan</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #6DED6D"><i class="fa fa-square"></i></td>
+                        <td style="width: 20px">:</td>
+                        <td>Realisasi Pekerjaan</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

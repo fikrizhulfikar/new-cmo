@@ -1,0 +1,33 @@
+alt.application = 'Virtual Cubicle PLNE';
+alt.title = 'PT Prima Layanan Nasional Enjiniring';
+alt.description = 'VIRTUAL CUBICLE';
+alt.version = '1.0.0';
+alt.environment = 'development';
+//String ldap_host = "103.56.233.178";
+// alt.cmisUrl = "http://localhost:8123/"
+alt.serverUrl = 'http://localhost:9292/';
+// alt.serverUrl = 'http://192.168.1.16:9090/';
+// alt.serverUrl = 'https://103.94.3.10/cubicle_v2beta/';
+// alt.serverUrl = 'https://vc.plne.co.id/newplne-webservice/';
+// alt.serverUrl = 'http://103.94.3.10:9070/newcubicle-webservice/';
+alt.cmisUrl = "http://10.14.153.168:8080/";
+alt.urlArgs = alt.environment == 'production' ? '_v=' + alt.version : '_t=' + (+new Date());
+// alt.urlArgs = '_v=' + alt.version;
+// alt.serverUrl = 'http://10.14.153.169:8080/devplne-webservice/';
+// alt.cmisUrl = "http://localhost:9090/";
+alt.defaultRoute = 'auth/login';
+alt.secure = {};
+alt.correctionUrl = 'koreksi/list';
+alt.timeout = 600000;
+alt.isCmisEnabled = true;
+
+var isCleansing = false;
+alt.routeFolder += (isCleansing ? '_clean' : '');
+alt.componentFolder += (isCleansing ? '_clean' : '');
+alt.menuFolder = "menu" + (isCleansing ? '_clean' : '');
+
+alt.module('ngSanitize'); 
+alt.module('ui.select');
+alt.module('datePicker');
+
+document.title = alt.title + ' :: ' + alt.description;

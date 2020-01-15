@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="asset/lib/ui-select/dist/select.min.css">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4 col-sm-8 col-md-6 col-md-offset-3 col-lg-offset-4 col-sm-offset-2">
+            <div class="account-wall">
+                <h1 class="text-center login-title">Ganti Password</h1>
+                <form class="form-signin" data-ng-submit="login()">
+                    <div class="form-group">
+                        <label>Password Lama</label>
+                        <input type="password" class="form-control" placeholder="Password Lama" name="passwordlama" data-ng-model="data.passwordlama">
+                    </div>
+                    <div class="form-group">
+                        <label>Password Baru</label>
+                        <input type="password" class="form-control" placeholder="Password Baru" name="passwordbaru" data-ng-model="data.passwordbaru">
+                    </div>
+                    <div class="form-group">
+                        <label>Konfirmasi Password Baru</label>
+                        <input type="password" class="form-control" placeholder="Konfirmasi Password Baru" name="passwordconf" data-ng-model="data.passwordconf">
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">
+                        Ganti Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+define([
+    'component/system/index'
+], function(){
+    alt.factory('Proyek_Input_Wbs', ['System', '$log', '$q', function(System, $log, $q){
+        var api = System('master/wbsproyek');
+
+        api.table = function(data){
+            return this.connect('table', data);
+        };
+
+        api.retrieve = function(data){
+            return this.connect('retrieve', data);
+        };
+
+        api.insert = function(data){
+            return this.connect('insert', data);
+        };
+        
+        api.list = function(data){
+            return this.connect('list', data);
+        };
+
+        api.listwbsperpegawai = function(data){
+            return this.connect('listwbsperpegawai', data);
+        };
+
+        api.count = function(data){
+            return this.connect('count', data);
+        };
+        
+        api.max = function(data){
+            return this.connect('max', data);
+        };
+
+        api.maxRecord = function(data){
+            return this.connect('maxRecord', data);
+        };
+        
+        api.delete = function(data) {
+            return this.connect('delete', data);  
+        };
+
+        api.insertdatastatic = function(data) {
+            return this.connect('insertdatastatic', data);
+        };
+
+        api.updatetglrkpbaru = function(data) {
+            return this.connect('updatetglrkpbaru', data);
+        };
+
+        api.isiwbsdaritemplate = function(data) {
+            return this.connect('isiwbsdaritemplate', data);
+        };
+
+        return api;
+    }]);
+});

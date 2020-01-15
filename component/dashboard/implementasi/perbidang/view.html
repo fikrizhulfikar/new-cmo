@@ -1,0 +1,46 @@
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">Implementasi Fitur Per Bidang</div>
+    </div>
+    <div class="portlet-body">
+        <div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+            <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+                <thead>
+                <!--CHARGECODE, PEKERJAAN, UNITASALNAMA, ID_BIDANG, NAMA_BIDANG, ID_PTL, NAMA_PTL, STATUS							-->
+                <tr>
+                    <th style="white-space:nowrap;width: 120px;">Bidang </th>
+                    <!--<th style="white-space:nowrap;width: 120px;">Jumlah ChargeCode Aktif (Prima) </th>-->
+                    <th style="white-space:nowrap;width: 100px;">Jumlah Charge Code Aktif</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah SK Tim</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah RMP</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah DPD</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh RKP & RAB</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh Timesheet</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah Transaksi Biaya</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh BAPP</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah Amd. Kontrak</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah Berkas di DM</th>
+                    <th style="white-space:nowrap;width: 120px;">Jmlh BAST Final</th>
+                    <th style="white-space:nowrap;width: 120px;">Jumlah Penutupan Proyek</th>
+                </tr>
+                </thead>
+                <tr data-ng-repeat="item in table.data | filter:table.filter">
+                    <td>{{ converttobidang(item.id_bidang) }}</td>
+                    <!--<td>{{ jmlahchargecode(item.id_bidang) || 0 }}</td>-->
+                    <td>{{ item.jmlchargecode || 0 }}</td>
+                    <td>{{ item.jmlsktim || 0 }}</td>
+                    <td>{{ item.jmlrmp || 0 }}</td>
+                    <td>{{ item.jmldpd || 0 }}</td>
+                    <td>{{ item.jmlwbs || 0 }}</td>
+                    <td>{{ item.jmltimesheet || 0}}</td>
+                    <td>{{ item.jmltransaksibiaya || 0 }}</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+<link type="text/css" rel="stylesheet" media="all" href="asset/lib/pivot/dist/pivot.min.css">
+<div class="portlet box red-flamingo">
+    <div class="portlet-title">
+        <div class="caption">Realisasi Program Penurunan BPP</div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <form class="form-horizontal" name="form">
+                        <div class="form-group">
+                            <label class="col-lg-2 col-sm-4 control-label">Periode</label>
+                            <div class="col-lg-2 col-sm-2">
+                                <input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Bulan Awal" data-ng-model="cari.tahun"/>
+                            </div>
+                            <div class="col-lg-2 col-sm-2">
+                                <input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Bulan Akhir" data-ng-model="cari.tahun2"/>
+                            </div>
+                            <label class="col-lg-2 col-sm-4 control-label">Nama Regional</label>
+                            <div class="col-lg-3 col-sm-3">
+                                <ui-select ng-model="getchargecode.selected" on-select="pilih_regional($select.selected)"  theme="bootstrap" style="min-height:29px">
+                                    <ui-select-match placeholder="Pilih Regional">{{$select.selected.nama_regional}}</ui-select-match>
+                                    <ui-select-choices repeat="c in listregional | filter: $select.search  | limitTo: 60">
+                                        <small ng-bind-html="c.nama_regional | highlight: $select.search"></small></br>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                        <hr>
+                        <div data-alt-component="dashboard/unit" data-scope="chart1"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="portlet box red-flamingo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-television"></i>Monitoring Realisasi Program Penurunan BPP
+                </div>
+
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                </div>
+                <div data-alt-transclude="alt/table" style="overflow-x: scroll">
+                    <!--<div id="output"> </div>-->
+                    <div id="output">
+                        <table class="pvtUi" cellpadding="5">
+
+                        </table>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

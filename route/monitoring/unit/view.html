@@ -1,0 +1,93 @@
+<!-- <div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div> -->
+<!-- <div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div> -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <b><i class="fa fa-television"></i> Monitoring Realisasi Program Penurunan BPP</b>
+                    </div>
+                    <div class="actions">
+                        <div data-alt-component="alt/button" data-scope="btnprint" class="pull-right"></div>
+                    </div>
+                </div>
+				<div class="portlet-body">
+					<div class="row">
+						<form class="form-horizontal" name="form">
+							<div class="form-group">
+								<label class="col-lg-2 col-sm-4 control-label">Periode</label>
+								<div class="col-lg-2 col-sm-2">
+									<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Pilih Periode" data-ng-model="cari.tahun"/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<!--<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto" id="datatarget">-->
+					<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto" id="datatarget">
+						<!--<table class="table table-hover table-responsive table-bordered table-condensed table-striped">-->
+                        <table class="table table-hover table-responsive table-bordered table-condensed" id="fixTable">
+							<thead>
+							<tr>
+								<th style="width: 40px;">No</th>
+								<th style="width: 120px;">Kode Wilayah</th>
+								<th class="text-center">SFC</th>
+								<th class="text-center">NPHR</th>
+								<th class="text-center">CF</th>
+								<th class="text-center">CF IPP</th>
+								<th class="text-center">Harga Batubara</th>
+								<th class="text-center">Harga Gas</th>
+								<th class="text-center">Harga BBM</th>
+								<th class="text-center">Harga MDU dan MTU</th>
+								<th class="text-center">Biaya Pemeliharaan</th>
+								<th class="text-center">Administrasi</th>
+								<th class="text-center">Sewa</th>
+								<th class="text-center">Susut Distribusi</th>
+								<th class="text-center">Susut Transmisi</th>
+								<th class="text-center">PS GI</th>
+								<th class="text-center">PS Kit</th>
+								<th class="text-center">Persediaan Material</th>
+								<th class="text-center">Persediaan BBM</th>
+								<th class="text-center">Persediaan Batubara</th>
+								<th class="text-center">Piutang</th>
+								<th class="text-center">COD Pembangkit</th>
+								<th class="text-center">COD Transmisi</th>
+								<th class="text-center">COD Gardu Induk</th>
+								<th class="text-center">Indikator Lainnya</th>
+							</tr>
+							</thead>
+                            <tr data-ng-repeat="item in table.data" data-ng-init="rowCreated()">
+								<td style="text-align: right;">{{ $index + table.offset + 1 }}</td>
+								<td align="left"><div align="left" style="white-space:nowrap">{{ item.kode_wilayah+'-'+item.nama_wilayah }}</div></td>
+                                <td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.sfc,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.nphr,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.cf,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.cf_ipp,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.harga_batubara,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.harga_gas,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.harga_bbm,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.harga_mdumtu,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.biaya_pemeliharaan,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.administrasi,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.sewa,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.susut_distribusi,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.susut_transmisi,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.ps_gi,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.ps_kit,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.persediaan_material,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.persediaan_bbm,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.persediaan_batubara,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.piutang,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.cod_pembangkit,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.cod_transmisi,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.cod_gardu_induk,','), 0, '.', ',')}} </td>
+								<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.indikator_lainnya,','), 0, '.', ',')}} </td>
+							</tr>
+
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

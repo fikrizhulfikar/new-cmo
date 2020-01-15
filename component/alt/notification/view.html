@@ -1,0 +1,12 @@
+
+<li class="notification-main"  data-ng-if="$notification.notif.aktivasi">
+    Notifikasi
+</li>
+<li class="notification-sub" data-ng-repeat="(key, val) in $notification.notif.aktivasi">
+    <a class="btn btn-flat" data-ng-href="{{setting.aktivasi[key]['url']}}" data-ng-click="closeMenu()">
+        {{setting.aktivasi[key]['label']}} &nbsp;
+        <span class="badge label-danger">{{val}}</span>
+    </a>
+</li>
+
+

@@ -1,0 +1,125 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'asset/js/accounting.min',
+    'asset/lib/ui-select/dist/select.min',
+    'component/alt/button/service',
+    'component/activiti/task',
+    'component/iconplus/generatedoc',
+    'component/iconplus/master/unit',
+    'component/iconplus/master/customer',
+    'component/iconplus/master/kategori',
+    'component/system/user',
+    'component/iconplus/master/vacttaskqc',
+    'component/iconplus/master/temppemeriksaanqc',
+    'component/iconplus/master/acttaskpekerjaan',
+    'component/iconplus/master/timqc'
+], function(moment, accounting){
+    alt.module('ui.select');
+    return ['$scope', '$auth', '$window', '$routeParams', '$log', '$button', '$popup', '$alert','$validate','Activiti_Task', 'System_User','Iconplus_Master_Unit','Iconplus_Master_Kategori','Iconplus_Master_Customer', 'Iconplus_Generatedoc',
+        'Master_Act_Task_QC','Master_Temp_Pemeriksaan_QC','Master_Tim_QC',"Iconplus_Master_Act_Task_Pekerjaan",
+        function($scope, $auth, $window, $routeParams, $log, $button, $popup, $alert, $validate, Activiti_Task, System_User, Iconplus_Master_Unit, Iconplus_Master_Kategori, Iconplus_Master_Customer, Iconplus_Generatedoc,
+                 Master_Act_Task_QC,Master_Temp_Pemeriksaan_QC,Master_Tim_QC,Iconplus_Master_Act_Task_Pekerjaan){
+            $scope.action = $routeParams.action;
+            $scope.title = $scope.action == 'add' ? 'Tambah' : $scope.action == 'edit' ? 'Edit' : 'Lihat';
+            $scope.tablerevisi = [];
+            $scope.tableqcpass = [];
+            $scope.tableqc = [];
+            $scope.table = [];
+            // toolbar
+            $scope.toolbar = {
+                title: 'REVISI DRAFT PRODUK'
+                //description: $scope.title + ' Surat Keluar Permohonan Survey'
+            };
+
+            // breadcrumb
+            $scope.breadcrumb = {
+                data: [{
+                    title: 'Proyek'
+                }, {
+                    title: 'Pemeriksaan Teknis',
+                    url: alt.baseUrl + 'teknis/list'
+                }, {
+                    title: $scope.title,
+                    isactive: true
+                }]
+            };
+            $scope.datapekerjaan = {};
+
+            $scope.id = $routeParams.id;
+
+            $scope.data = {
+                id : $routeParams.id
+            };
+
+            Master_Temp_Pemeriksaan_QC.list({
+                where : "proc_inst_id_ = "+$routeParams.processInstanceId+""
+            }).then(function(response){
+                $scope.tableqc = response.data;
+                // console.log(response.data);
+                // console.log($scope.table);
+            });
+
+            $scope.usrPenugasanSurvey_dari_label = '';
+            $scope.retrieve = function(){
+
+
+            };
+
+            $scope.retrieve();
+            /*
+             * #Edit
+             * for tanggal
+             */
+            $scope.$watch('data.tgl_nota_dinas', function(val){
+                if(val) {
+                    $scope.data.tgl_nota_dinas2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('data.tgl_nota_dinas2', function(val){
+                if(val) {
+                    $scope.data.tgl_nota_dinas = moment(val).format('YYYYMMDD');
+                }
+            });
+            // -------------
+            $scope.$watch('data.tgl_diterima', function(val){
+                if(val) {
+                    $scope.data.tgl_diterima2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('data.tgl_diterima2', function(val){
+                if(val) {
+                    $scope.data.tgl_diterima = moment(val).format('YYYYMMDD');
+                }
+            });
+            // -------------
+            $scope.$watch('data.tgl_diserahkan', function(val){
+                if(val) {
+                    $scope.data.tgl_diserahkan2 = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('data.tgl_diserahkan2', function(val){
+                if(val) {
+                    $scope.data.tgl_diserahkan = moment(val).format('YYYYMMDD');
+                }
+            });
+
+
+            $scope.checkgtzero=function(i){
+                if(i == 0) return false;
+                return true;
+            }
+
+
+
+            $scope.modal = {
+                header: 'Catatan Hasil Pemeriksaan QC',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+
+
+
+        }];
+});

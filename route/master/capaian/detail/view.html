@@ -1,0 +1,113 @@
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+            <div class="portlet box red-flamingo">
+              <div class="portlet-title">
+                  <div class="caption">
+                      <i class="fa icon-energy"></i>Master Capaian
+                  </div>
+                  <div class="actions">
+                      <div data-alt-component="alt/button" data-scope="btnadd" class="pull-right"></div>
+                  </div>
+              </div>
+              <div class="portlet-body">  
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                      <div class="col-sm-7">
+                        <input type="text" data-ng-model="capaian.nama_project" class="form-control" id="inputEmail3" placeholder="Email">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                      <div class="col-sm-7">
+                        <input type="text" data-ng-model="capaian.nama_stream" class="form-control" id="inputPassword3" placeholder="Password">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                     
+                   <!--  <div>
+                        <span data-alt-component="alt/button" data-scope="btnadd" class="pull-left"></span>
+                    </div>
+ -->                <div style="margin-bottom:10px;padding-right:0" class="col-lg-2 col-lg-offset-6">
+                       
+                    </div>
+                    <div style="margin-bottom:10px;padding-right:0" class="col-lg-3" data-ng-if="filter.key != 'unitid'">
+                        <input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+                    </div>
+                    <div style="margin-bottom:10px;padding-right:0" class="col-lg-3" data-ng-if="filter.key == 'unitid'">
+                        <select class="form-control" data-ng-model="filter.value">
+                            <option value="">Semua Unit</option>
+                            <option data-ng-repeat="(key,val) in refunit" value="{{key}}">{{val.name}}</option>
+                        </select>
+                    </div>
+                  </div>
+                    
+                </div>
+                 
+                <div class="row">
+                  <div class="col">
+                    <div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+                      <div class="table-responsive">
+                        <div id="datatargetform">
+                              <div class="col-lg-12">
+                          <table style="width: 100%; max-width: 100%;" id="fixTable" class="table table-bordered table-fixed table-striped">
+                              <thead>
+                              <tr>
+                                  <th class="text-center" style="width:1%; vertical-align: middle;">No</th>
+                                  <th class="text-center" style="width:4%;vertical-align: middle;">Capaian</th>
+                                  <th class="text-center" style="width:1%; vertical-align: middle;">Aksi</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr data-ng-repeat="item in table.data" data-ng-init="btnedit = btnedit(index, item);btnview = btnview(index, item);btnremove = btnremove(index, item);">
+                                  <td style="text-align: center; vertical-align: middle;">{{ $index + table.offset + 1 }}</td>
+                                  <td style="text-align: left; vertical-align: left;">{{ item.nama_capaian }}</td>
+                                  <td class="text-center" style="white-space:nowrap">
+                                       <div data-alt-component="alt/button" data-scope="btnview" ></div>
+                                      <div data-alt-component="alt/button" data-scope="btnedit" ></div>
+                                      <div data-alt-component="alt/button" data-scope="btnremove" ></div>
+                                  </td>
+                              </tr>
+                              </tbody>
+                          </table>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div> 
+        </div>
+    </div>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <div class="row">
+        <div class="col-sm-12">
+            <form>
+                <!--  <div class="form-group">
+                    <label class="label" style="color: black;">Id Capaian</label>
+                    <input type="id_capaian" data-ng-model="capaian.id_capaian" class="form-control" disabled>
+                </div> -->
+                 <div class="form-group">
+                    <label class="label" style="color: black;">Nama Capaian</label>
+                    <input type="nama_capaian" data-ng-model="capaian.nama_capaian" class="form-control">
+                </div>
+                <hr>
+                <div class="pull-right">
+                    <div data-alt-component="alt/button" data-scope="btnsave"></div>
+                    <div data-alt-component="alt/button" data-scope="btnclose"></div>
+                </div>
+             </div>
+            </form>
+        </div>
+    </div>
+</div>

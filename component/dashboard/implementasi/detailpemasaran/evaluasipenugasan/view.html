@@ -1,0 +1,60 @@
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-building"></i><b data-ng-if="!isinputkontrak">Evaluasi Penugasan</b>
+            <b data-ng-if="isinputkontrak">Input Kontrak</b>
+        </div>
+        <div class="actions">
+            <div data-ng-show="usergroupid == '19'" data-alt-component="alt/button" data-scope="btnadd" class="pull-right"></div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row" style="margin-bottom: 5px">
+            <div style="padding:0; margin-bottom: 5px; padding-right: 10px;" class="col-lg-2 col-lg-offset-6 col-md-2 col-md-offset-6 col-sm-12 col-xs-12">
+                <select class="form-control" data-ng-model="filter.key">
+                    <option value="">Jenis Pencarian</option>
+                    <option value="nosurat">Nomor Surat Penugasan</option>
+                    <option value="perihal">Perihal</option>
+                    <option value="unitasalnama">Unit Asal Pemohon</option>
+                    <option value="pic">PIC Pemasaran</option>
+                </select>
+            </div>
+            <div style="padding:0" class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                <input type="text" class="form-control" placeholder="Pencarian" data-ng-model="filter.value"/>
+            </div>
+        </div>
+
+        <div data-alt-transclude="alt/table" data-scope="table" style="overflow-x: auto">
+            <div class="table-responsive">
+                <table class="table table-hover table-responsive table-bordered table-condensed" id="fixTable">
+                    <thead>
+                    <tr>
+                        <th style="white-space:nowrap;">No</th>
+                        <th style="white-space:nowrap;">Nomor Surat</th>
+                        <th style="white-space:nowrap;">Tanggal Surat</th>
+                        <th style="white-space:nowrap;">Perihal</th>
+                        <th style="white-space:nowrap;width: 200px;">Unit Asal Pemohon</th>
+                        <th style="white-space:nowrap;width: 200px;">PIC Pemasaran</th>
+                        <th class="text-center" style="white-space:nowrap;min-width: 135px;">Aksi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-ng-repeat="item in table.data">
+                        <td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+                        <td>{{ item.nosurat }}</td>
+                        <td style="white-space:nowrap">{{ moment(item.tglsurat, 'YYYYMMDD').isValid() ? moment(item.tglsurat, 'YYYYMMDD').format('DD MMM YYYY') : '' }}</td>
+                        <td>{{ item.perihal }}</td>
+                        <td>{{ item.processVariable.usrPermohonan_unitasalnama || item.unitasalnama}}</td>
+                        <td>{{ item.pic }}</td>
+                        <td class="text-center" style="white-space:nowrap" data-ng-init="buttons = table.buttons($index, item);">
+                            <div data-ng-repeat="button in buttons" style="display: inline;">
+                                <div data-alt-component="alt/button" data-scope="button"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

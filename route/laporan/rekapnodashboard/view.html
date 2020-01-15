@@ -1,0 +1,290 @@
+<!-- <div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div> -->
+<!-- <div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div> -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <b><i class="fa fa-television"></i> Rekap Efisiensi Program Penurunan BPP </b>
+                    </div>
+                    <div class="actions">
+                        <div data-alt-component="alt/button" data-scope="btnprint" class="pull-right"></div>
+                    </div>
+                </div>
+				<div class="portlet-body">
+					<div class="row">
+						<form class="form-horizontal" name="form">
+							<div class="form-group">
+								<label class="col-lg-2 col-sm-4 control-label">Periode</label>
+								<div class="col-lg-2 col-sm-2">
+									<input type="text" date-time auto-close="true" min-view="month" max-view="month" format="MMMM yyyy" watch-direct-changes class="form-control" placeholder="Pilih Periode" data-ng-model="cari.tahun"/>
+								</div>
+								<label class="col-lg-2 col-sm-4 control-label">Nama Unit</label>
+								<div class="col-lg-3 col-sm-3">
+									<ui-select ng-model="cari.wilayah" on-select="pilih_wilayah($select.selected)" theme="bootstrap"
+											   style="min-height:29px">
+										<ui-select-match placeholder="Pilih Nama Unit">{{$select.selected.kode_wilayah + ' - ' + $select.selected.nama}}</ui-select-match>
+										<ui-select-choices repeat="c in listwilayah | filter: $select.search  | limitTo: 60">
+											<small ng-bind-html="c.kode_wilayah   + ' - ' + c.nama | highlight: $select.search"></small></br>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							</div>
+						</form>
+					</div>
+					<!--<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto" id="datatarget">-->
+					<hr>
+					<div data-alt-transclude="alt/table2" data-scope="table"  style="overflow-x: auto" id="datatarget">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+							<div class="col-md-6 col-sm-6">
+							<!--<table class="table table-hover table-responsive table-bordered table-condensed table-striped">-->
+								<table class="table table-hover table-responsive table-bordered table-condensed table-striped" id="fixTable">
+								<thead style="background-color: #eee; ">
+								<tr>
+									<th  class="text-center" colspan="2"  style="width: 40px;">No</th>
+									<th style="width: 250px;">Indikator</th>
+									<th  class="text-center" style="width: 200px;">Realisasi (Rp.) s.d</th>
+									<th  class="text-center" style="width: 200px;">Target (Rp.)</th>
+									<th class="text-center" style="width: 120px;">Detail</th>
+								</tr>
+								</thead>
+								<tr data-ng-repeat="item in table.data" data-ng-init="btnview = btnview(index, item); rowCreated()">
+									<td align="center"><div align="center" style="white-space:nowrap"></div>{{item.kode}}</td>
+									<td align="left"><div align="center" style="white-space:nowrap"></div>{{item.kodeno}}</td>
+									<td align="left"><div align="left" style="white-space:nowrap">{{ item.indikator }}</div></td>
+									<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.penghematan_sd,','), 0, '.', ',')}} </td>
+									<td style="text-align: right;"> {{accounting.formatNumber(accounting.unformat(item.target,','), 0, '.', ',')}} </td>
+									<td class="text-center" style="white-space:nowrap">
+										<div data-alt-component="alt/button" data-scope="btnview" ></div>
+										<!--<div data-alt-component="alt/button" data-scope="btnedit" ></div>-->
+										<!--<div data-alt-component="alt/button" data-scope="btnremove"></div>-->
+									</td>
+								</tr>
+								<tr>
+									<td style="" colspan="3" align="right"> Total</td>
+									<td style="text-align: right;"> <b>{{accounting.formatNumber(accounting.unformat(total_realisasi,','), 0, '.', ',')}}</b> </td>
+									<td style="text-align: right;"> <b>{{accounting.formatNumber(accounting.unformat(total_target,','), 0, '.', ',')}}</b> </td>
+									<td></td>
+								</tr>
+							</table>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<div data-alt-component="dashboard/rekaplaporan" data-scope="chart1"></div>
+								<!--<br>-->
+								<!--<br>-->
+								<label class="col-lg-0 col-sm-6 control-label">*) Rekapitulasi Total</label>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+	<div class="row">
+		<div class="col-md-12">
+			<form class="form-horizontal" name="form">
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-sm-12 control-label">Periode</label>
+					<div class="col-lg-10 col-md-10 col-sm-12">
+						<input type="text" class="form-control" data-ng-model="cari.tahun" ng-disabled="true"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-sm-12 control-label">Nama Unit</label>
+					<div class="col-lg-6 col-md-6 col-sm-12">
+						<input type="text" class="form-control" data-ng-model="cari.nama" ng-disabled="true"/>
+					</div>
+				</div>
+			</form>
+			<div data-alt-transclude="alt/table2" data-scope="table" style="overflow-x: auto" id="datatarget">
+				<table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+					<thead style="background-color: #eee; ">
+					<tr>
+						<th width="1%" rowspan="2" align="left">
+							<div align="center">No </div>
+						</th>
+						<!--<th width="1%" colspan="2" rowspan="2" align="left">-->
+							<!--<div align="center">Edit / Hapus </div>-->
+						<!--</th>-->
+						<th width="50%" rowspan="2" align="left">
+							<div align="center">Kode Wilayah </div>
+						</th>
+						<th width="5%" rowspan="2" align="left">
+							<div align="center">Periode</div>
+						</th>
+						<th width="5%" rowspan="2" align="left">
+							<div align="center">Jenis Pembangkit </div>
+						</th>
+						<th width="5%" rowspan="2" align="left">
+							<div align="center">Nama Pembangkit </div>
+						</th>
+						<th width="5%" rowspan="2" align="left">
+							<div align="center">DTP<br />
+								(MW)</div>
+						</th>
+						<th width="5%" rowspan="2" align="left">
+							<div align="center">DMN<br />
+								(MW)</div>
+						</th>
+						<th colspan="2" align="left">
+							<div align="center">RKAP </div>
+						</th>
+						<th colspan="2" align="left">
+							<div align="center">Realisasi (Rp.)</div>
+						</th>
+						<th width="5%" rowspan="2" align="left">
+							<div align="center">Harga BBM<br />
+								(Rp.)</div>
+						</th>
+						<th colspan="3" align="left">
+							<div align="center">SFC (Liter /kWh)</div>
+						</th>
+						<th colspan="2" align="left">
+							<div align="center">Delta</div>
+						</th>
+						<th colspan="2" align="left">
+							<div align="center">Gain</div>
+						</th>
+					</tr>
+					<tr>
+						<th width="5%" align="left">
+							<div align="center">Produksi<br />
+								(MWh)</div>
+						</th>
+						<th align="left">
+							<div align="center">Volume BBM (Kilo Liter)</div>
+						</th>
+						<th align="left">
+							<div align="center">Produksi<br />
+								(MWh)</div>
+						</th>
+						<th align="left">
+							<div align="center">Volume BBM <br />
+								(Kilo Liter)</div>
+						</th>
+						<th align="left">
+							<div align="center">RKAP </div>
+						</th>
+						<th align="left">
+							<div align="center">Target</div>
+						</th>
+						<th align="left">
+							<div align="center">Realisasi</div>
+						</th>
+						<th align="left">
+							<div align="center">Target</div>
+						</th>
+						<th align="left">
+							<div align="center">Realisasi</div>
+						</th>
+						<th align="left">
+							<div align="center">Target (Rp.) </div>
+						</th>
+						<th align="left">
+							<div align="center">Realisasi (Rp.) </div>
+						</th>
+					</tr>
+					<tr>
+						<th align="left">
+							<div align="center"></div>
+						</th>
+						<th align="left">
+							<div align="center">1</div>
+						</th>
+						<th align="left">
+							<div align="center">2</div>
+						</th>
+						<th align="left">
+							<div align="center">3</div>
+						</th>
+						<th align="left">
+							<div align="center">4</div>
+						</th>
+						<th align="left">
+							<div align="center">5</div>
+						</th>
+						<th align="left">
+							<div align="center">6</div>
+						</th>
+						<th align="left">
+							<div align="center">7</div>
+						</th>
+						<th align="left">
+							<div align="center">8</div>
+						</th>
+						<th align="left" bgcolor="red">
+							<div align="center">9</div>
+						</th>
+						<th align="left" bgcolor="#FF0000">
+							<div align="center">10</div>
+						</th>
+						<th align="left" bgcolor="#61B329">
+							<div align="center">11</div>
+						</th>
+						<th align="left" bgcolor="#FFFF00">
+							<div align="center">12=8/7</div>
+						</th>
+						<th align="left">
+							<div align="center">13</div>
+						</th>
+						<th align="left" bgcolor="#FFFF00">
+							<div align="center">14=10/9</div>
+						</th>
+						<th align="left" bgcolor="#FFFF00">
+							<div align="center">15=12-13</div>
+						</th>
+						<th align="left" bgcolor="#FFFF00">
+							<div align="center">16=12-14</div>
+						</th>
+						<th align="left" bgcolor="#FFFF00">
+							<div align="center">17=(15x7x11)x<font color="red">1000</font>
+							</div>
+						</th>
+						<th align="left" bgcolor="#FFFF00">
+							<div align="center">18=(16x9x11)x<font color="red">1000</font>
+							</div>
+						</th>
+					</tr>
+					</thead>
+					<tr data-ng-repeat="item in modal.data">
+						<td align="left">
+							<div align="center"></div>{{$index + table.offset + 1}}
+						</td>
+						<td align="left">
+							<div align="center" style="white-space:nowrap">{{ item.kode_wilayah }} - {{ item.nama_wilayah }}</div>
+						</td>
+						<td align="left">
+							<div align="center" style="white-space:nowrap">{{ item.thbllap }}</div>
+						</td>
+						<td align="left">
+							<div align="left" style="white-space:nowrap">{{ item.jenis_pembangkit }}</div>
+						</td>
+						<td align="left">
+							<div align="left" style="white-space:nowrap">{{ item.nama_pembangkit }}</div>
+						</td>
+						<td align="right">{{ item.dtp }}</td>
+						<td align="right">{{ item.dmn }}</td>
+						<td align="right">{{ item.target_produksi | number : 3 }}</td>
+						<td align="right">{{ item.target_volume_bbm | number : 3 }}</td>
+						<td align="right">{{ item.realisasi_produksi | number : 3 }}</td>
+						<td align="right">{{ item.realisasi_volume_bbm | number : 3 }}</td>
+						<td align="right">{{ item.harga_bbm | number : 3 }}</td>
+						<td align="right">{{ item.sfc_rkap | number : 3 }}</td>
+						<td align="right">{{ item.sfc_target | number : 3 }}</td>
+						<td align="right">{{ item.sfc_realisasi | number : 3 }}</td>
+						<td align="right">{{ item.delta_target | number : 3 }}</td>
+						<td align="right">{{ item.delta_realisasi | number : 3 }}</td>
+						<td align="right">{{ item.gain_target | number : 3 }}</td>
+						<td align="right">{{ item.gain_realisasi | number : 3 }}</td>
+					</tr>
+
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

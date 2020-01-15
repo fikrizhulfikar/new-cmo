@@ -1,0 +1,26 @@
+<div class="panel panel-danger">
+    <div class="panel-heading" style="min-height: 40px;">
+        <h1 class="panel-title">Jumlah Proyek per UWP</h1>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item" data-ng-repeat="(k,uwp) in data">
+            <a data-ng-click="showdetail(k)">{{ uwp['nama'] }}</a>
+            <span class="badge badge-danger">{{ uwp['jumlah'] }}</span>
+        </li>
+    </ul>
+</div>
+
+<div data-alt-transclude="alt/modal" data-scope="modal">
+    <table class="table table-hover table-responsive table-bordered table-condensed">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>NAMA</th>
+            </tr>
+        </thead>
+        <tr data-ng-repeat="d in modal.data">
+            <td>{{$index+1}}</td>
+            <td>{{d}}</td>
+        </tr>
+    </table>
+</div>

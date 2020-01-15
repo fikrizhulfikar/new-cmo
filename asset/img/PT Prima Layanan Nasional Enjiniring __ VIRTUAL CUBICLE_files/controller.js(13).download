@@ -1,0 +1,43 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'asset/js/accounting.min',
+    'component/alt/button/service',
+    'component/iconplus/master/kontrak'
+], function(moment,accounting){
+    return [
+        '$scope', '$routeParams','Iconplus_Master_Kontrak',
+        function($scope, $routeParams,Iconplus_Master_Kontrak){
+            $scope.action = $routeParams.action;
+            $scope.infokontrak = {};
+
+            $scope.id = $routeParams.id;
+            $scope.dokumenkontrakview = {
+                isupload: false,
+                isview: true,
+                accept:'application/pdf',
+                data:{}
+            };
+            Iconplus_Master_Kontrak.retrieve({id: $routeParams.kontrakid}).then(function(response) {
+                $scope.infokontrak = response.data;
+                $scope.dokumenkontrakview.data = response.data.dokumenkontrak;
+                // console.log(response.data);
+            });
+
+            $scope.$watch('infokontrak.tglkontrak', function(val){
+                if(val) {
+                    $scope.infokontrak.tglkontrak = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('infokontrak.tglmulai', function(val){
+                if(val) {
+                    $scope.infokontrak.tglmulai = moment(val, 'YYYYMMDD').format();
+                }
+            });
+            $scope.$watch('infokontrak.tglselesai', function(val){
+                if(val) {
+                    $scope.infokontrak.tglselesai = moment(val, 'YYYYMMDD').format();
+                }
+            });
+        }
+    ];
+});

@@ -1,0 +1,205 @@
+<form class="form-horizontal" name="form" autocomplete="off">
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">ID Pelanggan</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="nip" placeholder="{{action == 'view' ? '' : 'ID Pelanggan'}}" data-ng-model="data.usrPermohonan_idpel"/>
+        </div>
+        <div data-alt-component="alt/button" data-scope="btnsearch"></div>
+    </div>
+    <hr class="background-color:rgba(0,0,0,.5)">
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nama Pelanggan</label>
+        <div class="col-lg-6 col-md-6 col-sm-10">
+            <input type="text" class="form-control" name="nama" placeholder="{{action == 'view' ? '' : 'Nama Pelanggan'}}" data-ng-model="data.usrPermohonan_nama" disabled/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Alamat Pelanggan</label>
+        <div class="col-lg-10 col-md-10 col-sm-10">
+            <textarea rows="3" class="form-control" name="keterangan" placeholder="{{action=='view'? '' : 'Alamat Pelanggan'}}" data-ng-model="data.usrPermohonan_alamat" disabled></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <!--<div class="col-lg-4 col-md-4 col-sm-4">-->
+            <!--<div class="input-group">-->
+                <!--<input type="text" class="form-control text-right" name="durasi" placeholder="{{action == 'view' ? '' : 'Durasi Penugasan Internal'}}" data-ng-model="data.pngsnPerencanaanProduksi_durasi" disabled/>-->
+                <!--<span class="input-group-addon">hari</span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Tarif</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="tarif" placeholder="{{action == 'view' ? '' : 'Tarif'}}" data-ng-model="data.usrPermohonan_tarif" disabled/>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Daya</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="daya" placeholder="{{action == 'view' ? '' : 'Daya'}}" data-ng-model="data.usrPermohonan_daya" disabled/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nama Gardu</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="namagardu" placeholder="{{action == 'view' ? '' : 'Nama Gardu'}}" data-ng-model="data.usrPermohonan_namagardu" disabled/>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nomor Jurusan Tiang</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="notiang" placeholder="{{action == 'view' ? '' : 'Nomor Jurusan Tiang'}}" data-ng-model="data.usrPermohonan_notiang" disabled/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Jenis Mutasi</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="jenis_mk" placeholder="{{action == 'view' ? '' : 'Jenis Mutasi'}}" data-ng-model="data.usrPermohonan_jenis_mk" disabled/>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Bulan Tahun Mutasi</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="blthmut" placeholder="{{action == 'view' ? '' : 'Bulan Tahun Mutasi'}}" data-ng-model="data.usrPermohonan_blthmut" disabled/>
+        </div>
+    </div>
+    <hr class="background-color:rgba(10,10,10,.40)">
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Nama Gudang</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="gudang" placeholder="{{action == 'view' ? '' : 'Nama Gudang'}}" data-ng-model="data.usrPermohonan_gudang" disabled/>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Lantai</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="lantai" placeholder="{{action == 'view' ? '' : 'Lantai'}}" data-ng-model="data.usrPermohonan_lantai" disabled/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Rak / Lemari</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="rak" placeholder="{{action == 'view' ? '' : 'Rak / Lemari'}}" data-ng-model="data.usrPermohonan_rak" disabled/>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Baris</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="baris" placeholder="{{action == 'view' ? '' : 'Baris'}}" data-ng-model="data.usrPermohonan_baris" disabled/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Kolom</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="kolom" placeholder="{{action == 'view' ? '' : 'Kolom'}}" data-ng-model="data.usrPermohonan_kolom" disabled/>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Pos Nomor</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="posnomor" placeholder="{{action == 'view' ? '' : 'Pos Nomor'}}" data-ng-model="data.usrPermohonan_posnomor" disabled/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Labeling</label>
+        <div class="col-lg-4 col-md-4 col-sm-10">
+            <input type="text" class="form-control" name="labeling" placeholder="{{action == 'view' ? '' : 'Labeling'}}" data-ng-model="data.usrPermohonan_labeling" disabled/>
+        </div>
+    </div>
+    <hr class="background-color:rgba(10,10,10,.40)">
+    <div class="form-group">
+        <label class="col-lg-2 col-md-2 col-sm-2 control-label">Dokumen</label>
+        <div class="col-lg-9 col-md-9 col-sm-9">
+            <table class="table table-hover table-responsive table-bordered table-condensed">
+                <thead style="background-color: #eee; ">
+                <tr>
+                    <th>No</th>
+                    <th>Uraian</th>
+                    <th>Nomor Dokumen</th>
+                    <th>File</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Surat Permohonan (I-01)</td>
+                        <td>
+                        <div>
+                            <input type="text" class="form-control  text-left" name="i01" placeholder="{{action == 'view' ? '' : 'Nomor Surat Permohonan (I-01)'}}" data-ng-model="data.usrPermohonan_nomor_i_01" disabled/>
+                        </div>
+                        </td>
+                        <td><div id="tiket_dokumen" data-alt-component="alt/file" data-scope="i01_dokumen"></div></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Data Identitas (KTP/SIM)</td>
+                        <td>
+                            <div>
+                                <input type="text" class="form-control  text-left" name="ktp" placeholder="{{action == 'view' ? '' : 'Nomor Identitas (KTP/SIM)'}}" data-ng-model="data.usrPermohonan_nomor_identitas" disabled/>
+                            </div>
+                        </td>
+                        <td><div id="identitas_dokumen" data-alt-component="alt/file" data-scope="identitas_dokumen"></div></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>SIP (I-03)</td>
+                        <td>
+                            <div>
+                            <input type="text" style="text-align: left" class="form-control" name="i03" placeholder="{{action == 'view' ? '' : 'Nomor SIP (I-03)'}}" data-ng-model="data.usrPermohonan_nomor_i_03" disabled/>
+                            </div>
+                        </td>
+                        <td><div id="i03_dokumen" data-alt-component="alt/file" data-scope="i03_dokumen"></div></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>SPJBTL</td>
+                        <td>
+                            <div>
+                                <input type="text" style="text-align: left" class="form-control" name="nomor_spjbtl" placeholder="{{action == 'view' ? '' : 'Nomor SPJBTL'}}" data-ng-model="data.usrPermohonan_nomor_spjbtl" disabled/>
+                            </div>
+                        </td>
+                        <td><div id="spjbtl_dokumen" data-alt-component="alt/file" data-scope="spjbtl_dokumen"></div></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Perintah Kerja (I-09)</td>
+                        <td>
+                            <div>
+                                <input type="text" style="text-align: left" class="form-control" name="nomor_i_09" placeholder="{{action == 'view' ? '' : 'Nomor Perintah Kerja (I-09)'}}" data-ng-model="data.usrPermohonan_nomor_i_09" disabled/>
+                            </div>
+                        </td>
+                        <td><div id="i09_dokumen" data-alt-component="alt/file" data-scope="i09_dokumen"></div></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Berita Acara (I-10)</td>
+                        <td>
+                            <div>
+                                <input type="text" style="text-align: left" class="form-control" name="nomor_i_10" placeholder="{{action == 'view' ? '' : 'Nomor Berita Acara (I-10)'}}" data-ng-model="data.usrPermohonan_nomor_i_10" disabled/>
+                            </div>
+                        </td>
+                        <td><div id="i10_dokumen" data-alt-component="alt/file" data-scope="i10_dokumen"></div></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>PDL (I-11)</td>
+                        <td>
+                            <div>
+                                <input type="text" style="text-align: left" class="form-control" name="nomor_i_11" placeholder="{{action == 'view' ? '' : 'Nomor PDL (I-11)'}}" data-ng-model="data.usrPermohonan_nomor_i_11" disabled/>
+                            </div>
+                        </td>
+                        <td><div id="i11_dokumen" data-alt-component="alt/file" data-scope="i11_dokumen"></div></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Sertifikat Laik Operasi (SLO)</td>
+                        <td>
+                            <div>
+                                <input type="text" style="text-align: left" class="form-control" name="nomor_slo" placeholder="{{action == 'view' ? '' : 'Nomor SLO'}}" data-ng-model="data.usrPermohonan_nomor_slo" disabled/>
+                            </div>
+                        </td>
+                        <td><div id="slo_dokumen" data-alt-component="alt/file" data-scope="slo_dokumen"></div></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>Lain - lain</td>
+                        <td>
+                            <div>
+                                <!--<input type="text" style="text-align: left" class="form-control" name="nomor_slo" placeholder="{{action == 'view' ? '' : 'Nomor SLO'}}" data-ng-model="data.nomor_slo" disabled/>-->
+                            </div>
+                        </td>
+                        <td><div id="lain2_dokumen" data-alt-component="alt/file" data-scope="lain2_dokumen"></div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<hr class="background-color:rgba(0,0,0,.5)">

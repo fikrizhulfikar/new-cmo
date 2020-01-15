@@ -1,0 +1,58 @@
+<!--<div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div>-->
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-industry"></i>
+						<strong data-ng-if="action == 'view'">Data {{jarak.jenis_layanan}}</strong>
+						<strong data-ng-if="action == 'edit'">Edit Data Jarak {{jarak.jenis_layanan}}</strong>
+						<strong data-ng-if="action == 'add'">Tambah Data Jarak</strong>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<form class="form-horizontal" name="form">
+
+								<!-- INPUT UNTUK FORM ADD/EDIT -->
+								 <div>
+							        <div class="form-group">
+							            <label for="jenis_layanan" class="col-lg-2 col-md-2 col-sm-12 control-label">Jenis Layanan</label>
+										<div class="col-lg-10 col-md-10 col-sm-12">
+							                <input type="text" class="form-control" name="jenis_layanan" id="jenis_layanan" placeholder="Jenis Layanan" data-ng-model="jarak.jenis_layanan" data-ng-readonly="action=='view'">
+							            </div>
+							        </div>
+							        <div class="form-group">
+							            <label for="keterangan_layanan" class="col-lg-2 col-md-2 col-sm-12 control-label">Keterangan Layanan</label>
+										<div class="col-lg-10 col-md-10 col-sm-12">
+							                <input type="text" class="form-control" name="keterangan_layanan" id="keterangan_layanan" placeholder="Keterangan Layanan" data-ng-model="jarak.keterangan_layanan" data-ng-readonly="action=='view'">
+							            </div>
+							        </div>
+							        <div class="form-group">
+							            <label for="jarak" class="col-lg-2 col-md-2 col-sm-12 control-label">Jarak</label>
+										<div class="col-lg-10 col-md-10 col-sm-12">
+							                <input type="text" class="form-control" name="jarak" id="jarak" placeholder="Jarak" data-ng-model="jarak.jarak" data-ng-readonly="action=='view'">
+							            </div>
+							        </div>
+							        
+							    </div>
+
+								<div class="pull-right" data-ng-if="action != 'view'">
+									<div data-alt-component="alt/button" data-scope="btnsave"></div>
+									<div data-alt-component="alt/button" data-scope="btncancel"></div>
+								</div>
+
+								<div class="pull-right" data-ng-if="action == 'view'">
+									<div data-alt-component="alt/button" data-scope="btnback"></div>
+								</div>
+							</form>	
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

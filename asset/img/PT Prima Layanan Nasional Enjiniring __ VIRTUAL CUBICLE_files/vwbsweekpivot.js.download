@@ -1,0 +1,13 @@
+define([
+    'component/system/index'
+], function(){
+    alt.factory('Master_vwbsweekpivot', ['System', '$log', '$q', function(System, $log, $q){
+        var api = System('master/vwbspivot');
+
+        api.table = function(data){
+            return this.connect('table', data);
+        };
+
+        return api;
+    }]);
+});

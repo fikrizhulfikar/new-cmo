@@ -1,0 +1,40 @@
+<!--<div data-alt-transclude="alt/toolbar" data-scope="toolbar"></div>-->
+<div data-alt-component="alt/breadcrumb" data-scope="breadcrumb"></div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 0; padding-right: 0">
+			<div class="portlet box red-flamingo">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-file-word-o"></i><b>PENGELOLAAN TEMPLATE DATA TARGET</b>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div data-alt-transclude="alt/table" data-scope="table"  style="overflow-x: auto">
+					    <table class="table table-hover table-responsive table-bordered table-condensed table-striped">
+					        <thead>
+					        <tr>
+					            <th style="width: 40px;">No</th>
+					            <th style="">Nama</th>
+					            <th style="">Keterangan</th>
+					            <th style="">File</th>
+					            <th class="text-center" style="width: 120px;">Aksi</th>
+					        </tr>
+					        </thead>
+					        <tr data-ng-repeat="item in table.data" data-ng-init="btnedit = btnedit(index, item);">
+					            <td style="text-align: right;">{{ $index + table.offset + 1 }}.</td>
+					            <td>{{ item.nama }}</td>
+					            <td>{{ item.keterangan }}</td>
+					            <td><a target="_blank" data-ng-href="{{ alt.serverUrl }}upload/template/{{item.file}}">{{ item.file }}</a></td>
+					            <td class="text-center" style="white-space:nowrap">
+					                <div data-alt-component="alt/button" data-scope="btnedit" ></div>
+					            </td>
+					        </tr>
+					    </table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

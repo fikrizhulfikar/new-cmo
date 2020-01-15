@@ -1,0 +1,620 @@
+define([
+    'asset/lib/moment/min/moment-with-locales.min',
+    'asset/js/accounting.min',
+    'asset/lib/ui-select/dist/select.min',
+    'component/alt/button/service',
+    'component/activiti/task',
+    'component/iconplus/generatedoc',
+    'component/iconplus/master/unit',
+    'component/iconplus/master/customer',
+    'component/iconplus/master/pegawai',
+    'component/iconplus/master/prosedurenjiniring',
+    'component/iconplus/master/dpd',
+    'component/iconplus/master/kategori',
+    'component/system/user',
+    'component/iconplus/master/typeproduk',
+    'component/iconplus/master/penerbit',
+    'component/iconplus/master/jenisdisiplin',
+    'component/iconplus/master/uraianrefproduk',
+    'component/iconplus/master/referensiproduk',
+    'component/iconplus/master/vreferensiproduk',
+    'component/iconplus/master/timqc'
+], function(moment, accounting){
+    alt.module('ui.select');
+    return ['$scope', '$auth', '$window', '$routeParams', '$log', '$button', '$popup', '$alert','$validate','Activiti_Task', 'System_User','Iconplus_Master_Unit','Iconplus_Master_Kategori',
+        'Iconplus_Master_Customer', 'Iconplus_Master_Pegawai', 'Iconplus_Master_Dpd','Iconplus_Master_Referensi_Produk','Iconplus_Master_Uraian_Ref_Produk',
+        'Iconplus_Master_Prosedur_Enjiniring', 'Iconplus_Generatedoc','Iconplus_Master_Type_Produk','Iconplus_Master_Penerbit','Iconplus_Master_Jenis_Disiplin',
+        'Iconplus_VMaster_Referensi_Produk','Master_Tim_QC',
+        function($scope, $auth, $window, $routeParams, $log, $button, $popup, $alert, $validate, Activiti_Task, System_User, Iconplus_Master_Unit, Iconplus_Master_Kategori,
+                 Iconplus_Master_Customer, Iconplus_Master_Pegawai,Iconplus_Master_Dpd,Iconplus_Master_Referensi_Produk,Iconplus_Master_Uraian_Ref_Produk,
+                 Iconplus_Master_Prosedur_Enjiniring, Iconplus_Generatedoc,Iconplus_Master_Type_Produk,Iconplus_Master_Penerbit,Iconplus_Master_Jenis_Disiplin,
+                 Iconplus_VMaster_Referensi_Produk,Master_Tim_QC){
+            $scope.action = $routeParams.action;
+            $scope.title = $scope.action == 'add' ? 'Tambah' : $scope.action == 'edit' ? 'Edit' : 'Lihat';
+            $scope.table = [];
+            $scope.tabledesignguide = [];
+            $scope.tablecodestandard = [];
+            $scope.tablesoftware = [];
+            $scope.tableperaturanperundangan = [];
+            $scope.tablerefcodestandard = [];
+            $scope.tablerefperaturanperundangan = [];
+            $scope.tablerefperaturanlainnya = [];
+            $scope.tableproyeksejenis = [];
+            $scope.tablerefproyeksejenis = [];
+            $scope.tabletemplate = [];
+            $scope.tablerefoutline = [];
+            $scope.tablerefdesigncriteria = [];
+            $scope.tablerefgambar = [];
+            $scope.tablerefcalculation = [];
+
+            // toolbar
+            $scope.toolbar = {
+                title: 'DAFTAR PEMERIKSAAN DESAIN'
+                //description: $scope.title + ' Surat Keluar Permohonan Survey'
+            };
+
+            $scope.up = function(index,table){
+                var temp = table;
+                var newTable = [];
+                var newIndex = index - 1;
+                if(newIndex >= 0 ){
+                    for (var key in temp)
+                    {
+                        if(newIndex == key){
+                            newTable.push(temp[index]);
+                        }
+
+                        if(index != key){
+                            newTable.push(temp[key]);
+                        }
+                    }
+                    $scope.table = newTable;
+                }
+            };
+
+            $scope.down = function(index,table){
+                var temp = table;
+                var newTable = [];
+                var newIndex = index + 1;
+                var length = table.length - 1;
+                if(newIndex <= length ){
+                    for (var key in temp)
+                    {
+                        if(index != key){
+                            newTable.push(temp[key]);
+                        }
+
+                        if(newIndex == key){
+                            newTable.push(temp[index]);
+                        }
+                    }
+                    $scope.table = newTable;
+                }
+            };
+
+            // breadcrumb
+            $scope.breadcrumb = {
+                data: [{
+                    title: 'Pra Proyek'
+                }, {
+                    title: 'Daftar Pemeriksaan Desain',
+                    url: alt.baseUrl + 'praproyek/dpd/list'
+                }, {
+                    title: $scope.title,
+                    isactive: true
+                }]
+            };
+
+            $scope.showfiles = 0;
+            $scope.pushdokumen = $button('add', {
+                title: 'Tambah',
+                onclick: function(){
+                    $scope.showfiles++;
+                }
+            });
+
+            // pills step
+            $scope.id = $routeParams.id;
+
+            $scope.data = {
+                id : $routeParams.id,
+                usrKualitasPTL_data : ''
+            };
+            $scope.datapermohonan = {
+                data : {
+                    usrPenugasanSurvey_dari : ''
+                },
+                file : {
+                    isupload: false,
+                    isview: true,
+                    accept:'application/pdf',
+                    data: []
+                }
+            };
+            $scope.dataevaluasi = {};
+
+            $scope.dataproduk = {};
+            $scope.datadpdbarures = {};
+            $scope.datadpdqares = {};
+            $scope.dataqa = {};
+            $scope.datadpdbaru = {};
+
+            $scope.ref = {
+                status: [],
+                prosedur: {},
+                dpd: {},
+                kategori: [],
+                customer: [],
+                pegawai:[],
+                produk: [],
+                penerbit: [],
+                disiplin: [],
+                type: []
+            };
+            $scope.dokumendpd = {
+                isview: true,
+                isupload: false,
+                data: {}
+            };
+            $scope.dokumendpd2 = {
+                isview: true,
+                isupload: false,
+                data: {}
+            };
+            $scope.tableuraiandpd = {
+                total_data: [],
+                isloading: null,
+                reload: function () {
+                    // set parameter untuk dikirim
+                    var param = angular.copy($scope.table.filter);
+                    param.limit = $scope.table.limit;
+                    param.offset = $scope.table.offset;
+                    param.where = "id_referensi = '"+$scope.referensi.id_referensi+"'";
+
+                    // cek apakah sedang mengambil data, batalkan jika ada
+                    if ($scope.tableuraiandpd.isloading != null && $scope.tableuraiandpd.isloading.abort)
+                        $scope.tableuraiandpd.isloading.abort();
+
+                    // kirim data ke server
+                    $scope.tableuraiandpd.isloading = Iconplus_Master_Uraian_Ref_Produk.table(param);
+                    $scope.tableuraiandpd.isloading.then(function (response) {
+                        $scope.tableuraiandpd.total = response.data.total;
+                        $scope.tableuraiandpd.data = response.data.list;
+                    });
+                }
+            };
+
+            $scope.modal = {
+                header: 'Referensi Produk (DPD)',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+
+            $scope.modalviewdpd = {
+                header: 'Referensi Produk (DPD)',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+
+
+            $scope.modalrefcodestandard = {
+                header: 'Referensi Code & Standard',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+
+            
+            $scope.viewTransaksi = function (index, item) {
+                Iconplus_VMaster_Referensi_Produk.retrieve({where: "id_referensi = "+item.id_referensi}).then(function(response){
+                    $scope.referensi   = angular.copy(response.data);
+                    $scope.dokumendpd.data = response.data.dokumendpd;
+                    // $scope.dokumendpd2.data = response.data.dokumendpd2;
+
+                    $scope.tableuraiandpd.reload();
+
+                    $scope.modalviewdpd.index = index;
+                    $scope.modalviewdpd.buttons = [$scope.btncloseview];
+                    $scope.modalviewdpd.action = 'view';
+                    $scope.modalviewdpd.open();
+                })
+            };
+
+            $scope.btncloseview = $button('close', {
+                title: 'Tutup',
+                onclick: function(){
+                    $scope.modalviewdpd.close();
+                    // $scope.dokumendetail.clear();
+                }
+            });
+
+            Iconplus_Master_Type_Produk.list().then(function(response){
+                //angular.forEach(response.data, function(val, key){
+                //    $scope.ref.produk[val.id_type] = val;
+                //});
+                $scope.ref.produk = response.data;
+            });
+
+            Iconplus_Master_Penerbit.list().then(function(response){
+                $scope.ref.penerbit = response.data;
+                //angular.forEach(response.data, function(val, key){
+                //    $scope.ref.penerbit[val.id_penerbit] = val;
+                //});
+            });
+
+            Iconplus_Master_Jenis_Disiplin.list().then(function(response){
+                $scope.ref.disiplin = response.data;
+                //angular.forEach(response.data, function(val, key){
+                //    $scope.ref.disiplin[val.id_disiplin] = val;
+                //});
+            });
+
+            $scope.getdisiplinilmu = {selected : undefined};
+            $scope.getproduk = {selected : undefined};
+            $scope.getpenerbit = {selected : undefined};
+            $scope.editTransaksi = function(index,item){
+                $scope.modaledit.data = angular.copy(item);
+                Iconplus_Master_Jenis_Disiplin.retrieve({where:"id_disiplin = "+item.id_disiplin}).then(function(response){
+                    $scope.getdisiplinilmu.selected = response.data;
+                });
+
+                Iconplus_Master_Type_Produk.retrieve({where:"id_type = "+item.type_referensi}).then(function(response){
+                    $scope.getproduk.selected = response.data;
+                });
+
+                Iconplus_Master_Penerbit.retrieve({where:"id_penerbit = "+item.id_penerbit}).then(function(response){
+                    $scope.getpenerbit.selected = response.data;
+                });
+
+                $scope.modaledit.index = index;
+                $scope.modaledit.buttons = [$scope.btnsavemodaledit, $scope.btncloseedit];
+                $scope.modaledit.action = 'edit';
+                $scope.modaledit.open();
+            };
+
+            $scope.btnsavemodaledit = $button('save', {
+                onclick: function(){
+                    // $scope.modal.data.dokumendetail = $scope.dokumendetail.model;
+                    var isvalid = $validate();
+                    // .rule($validate.required($scope.modal.data.kode_referensi), 'Kode Referensi harus diisi!')
+                    // .rule($validate.required($scope.modal.data.crosscc), 'Judul PE harus diisi!')
+
+                    var isvalid2 = isvalid.check();
+
+                    if (!isvalid2) return false;
+
+                    var data = angular.copy($scope.modaledit.data);
+                    $scope.table[$scope.modaledit.index] = data;
+
+                    $scope.modaledit.close();
+                }
+            });
+            $scope.btncloseedit = $button('close', {
+                title: 'Batal',
+                onclick: function(){
+                    $scope.modal.close();
+                    // $scope.dokumendetail.clear();
+                }
+            });
+
+            $scope.btnupdate = $button('', {
+                title: 'Update Uraian DPD',
+                description: 'Update Uraian DPD',
+                class: 'btn btn-warning',
+                onclick: function(){
+                    $window.location.href = alt.baseUrl + 'master/referensiproduk/list?origin=usrKualitasQC&id='+$routeParams.id+'&processInstanceId='+$routeParams.processInstanceId;
+                }
+            });
+            $scope.modal2 = {
+                header: 'Checklist QC',
+                class : 'modal-lg',
+                action: 'view',
+                datas  : {},
+                buttons: []
+            };
+            $scope.editCatatanQC = function(index,item){
+                $scope.modal2.datas = angular.copy(item);
+                $scope.modal2.index = index;
+                $scope.modal2.buttons = [$scope.btnsavemodal2, $scope.btnclose2];
+                $scope.modal2.action = 'edit';
+                $scope.modal2.open();
+            };
+
+
+            $scope.pilihdisiplin = function (item) {
+                $scope.modaledit.data.id_disiplin = item.id_disiplin;
+                $scope.modaledit.data.jenis_disiplin = item.jenis_disiplin;
+            };
+
+            $scope.pilihproduk = function (item) {
+                $scope.modaledit.data.type_produk = item.type_produk;
+                $scope.modaledit.data.type_referensi = item.id_type;
+            };
+
+            $scope.pilihpenerbit = function (item) {
+                $scope.modaledit.data.id_penerbit = item.id_penerbit;
+                $scope.modaledit.data.kode_penerbit = item.kode_penerbit;
+                $scope.modaledit.data.penerbit = item.penerbit;
+            };
+
+
+            $scope.$watch('modal.data.id_acuan_ref', function(val){
+                if($scope.modal.data.id_acuan_ref){
+                    $scope.modal.data.kode_referensi = $scope.ref.dpd[val].kode_referensi;
+                    $scope.modal.data.type_produk = $scope.ref.dpd[val].type_produk;
+                    $scope.modal.data.penerbit = $scope.ref.dpd[val].penerbit;
+                    $scope.modal.data.keterangan = $scope.ref.dpd[val].keterangan;
+                }
+            });
+
+            $scope.usrPenugasanSurvey_dari_label = '';
+            $scope.retrieve = function(){
+                Activiti_Task.retrieve({id: $scope.id}).then(function(response) {
+                    // if($scope.action != 'edit') $scope.showfiles = 5;
+                    $scope.usr = response.data.definitionKey;
+                    $scope.evaluasi = response.data.processVariable.usrKoordinasiEvaluasi_nonotadinas ? true : false;
+                    $scope.engsurvey = response.data.processVariable.usrEngSurvey_tglproses ? true : false;
+                    alt.initComponentAll($scope, response);
+                    angular.forEach(response.data.processVariable, function(val, key){
+                        if(key.indexOf('usrPermohonan_') == 0) {
+                            $scope.datapermohonan.data[key] = val;
+                        }
+                        if(key.indexOf('usrKualitasMan_') == 0) {
+                            //if($scope.usr == 'usrKualitasMan')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        if(key.indexOf('usrKualitasPTL_') == 0) {
+                            $scope.datadpdbarures[key] = val;
+                            if($scope.usr == 'usrKualitasPTL')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        if(key.indexOf('usrKualitasQC_') == 0) {
+                            $scope.datadpdqares[key] = val;
+                            if($scope.usr == 'usrKualitasQC')$scope.data[key] = val;
+                            $scope.dataqa[key] = val;
+                        }
+                        if(key.indexOf('usrKualitasPTL_data') == 0) {
+                            if($scope.usr == 'usrKualitasPTL')$scope.data[key] = val;
+                            // $scope.datapersetujuansurvey[key] = val;
+                            $scope.table = angular.fromJson(eval(val));
+                            // console.log(angular.fromJson(eval(val)));
+                        }
+                        if(key.indexOf('usrProsedurMS_') == 0) {
+                            if($scope.usr == 'usrProsedurMS')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        if(key.indexOf('usrProsedurPTL_') == 0) {
+                            if($scope.usr == 'usrProsedurPTL')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        if(key.indexOf('usrWaktuMan_') == 0) {
+                            if($scope.usr == 'usrWaktuMan')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        if(key.indexOf('usrWaktuPTL_') == 0) {
+                            if($scope.usr == 'usrWaktuPTL')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        if(key.indexOf('usrProdukMAdkon_') == 0) {
+                            if($scope.usr == 'usrProdukMAdkon')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        if(key.indexOf('usrProdukAsman_') == 0) {
+                            if($scope.usr == 'usrProdukAsman')$scope.data[key] = val;
+                            $scope.dataproduk[key] = val;
+                        }
+                        if($scope.action == 'correct') {
+                            $scope.data[key] = angular.copy(val);
+                        }
+                    });
+
+                    if($scope.action == 'correct'){
+                        $auth.set_permission(1);
+                        $scope.data.definitionKey = $routeParams.definitionKey;
+                    }else{
+                        $scope.data.definitionKey = response.data.definitionKey;
+                        $scope.isSurvey = "usrPermohonanSurvey_nosurat" in response.data.processVariable;
+                        if($scope.data.definitionKey == 'usrKualitasMS') $auth.set_permission(5);
+                        else if($scope.data.definitionKey == 'usrKualitasQC') $auth.set_permission(33);
+                        else if($scope.data.definitionKey == 'usrKualitasMan') $auth.set_permission(9);
+                        else $auth.set_permission(73);
+                    }
+
+                    // tambahan dpd v2
+                    if($scope.datadpdbarures.usrKualitasPTL_tableproyeksejenis) $scope.tableproyeksejenis = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tableproyeksejenis);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablerefproyeksejenis) $scope.tablerefproyeksejenis = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablerefproyeksejenis);
+                    if($scope.datadpdbarures.usrKualitasPTL_tabletemplate) $scope.tabletemplate = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tabletemplate);
+
+                    if($scope.datadpdbarures.usrKualitasPTL_tablerefoutline) $scope.tablerefoutline = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablerefoutline);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablerefdesigncriteria) $scope.tablerefdesigncriteria = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablerefdesigncriteria);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablerefgambar) $scope.tablerefgambar = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablerefgambar);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablerefcalculation) $scope.tablerefcalculation = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablerefcalculation);
+
+                    $scope.datadpdbaru.outlineproduk = $scope.datadpdbarures.usrKualitasPTL_outlineproduk;
+                    $scope.datadpdbaru.perhatianms = $scope.datadpdbarures.usrKualitasPTL_perhatianms;
+                    $scope.datadpdbaru.catatancriticalcalculation = $scope.datadpdqares.usrKualitasQC_catatancriticalcalculation;
+                    $scope.datadpdbaru.catatandesigncriteria = $scope.datadpdqares.usrKualitasQC_catatandesigncriteria;
+                    $scope.datadpdbaru.catatangambarutama = $scope.datadpdqares.usrKualitasQC_catatangambarutama;
+                    $scope.datadpdbaru.catatanoutlineproduk = $scope.datadpdqares.usrKualitasQC_catatanoutlineproduk;
+                    if($scope.datadpdbarures.usrKualitasPTL_tglmulai) $scope.datadpdbaru.tglmulai2 = moment($scope.datadpdbarures.usrKualitasPTL_tglmulai,"YYYYMMDD").format();
+                    if($scope.datadpdbarures.usrKualitasPTL_tglselesai) $scope.datadpdbaru.tglselesai2 = moment($scope.datadpdbarures.usrKualitasPTL_tglselesai,"YYYYMMDD").format();
+                    if($scope.datadpdbarures.usrKualitasPTL_tabledesignguide) $scope.tabledesignguide = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tabledesignguide);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablecodestandard) $scope.tablecodestandard = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablecodestandard);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablerefcodestandard) $scope.tablerefcodestandard = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablerefcodestandard);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablesoftware) $scope.tablesoftware = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablesoftware);
+                    if($scope.datadpdbarures.usrKualitasPTL_tableperaturanperundangan) $scope.tableperaturanperundangan = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tableperaturanperundangan);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablerefperaturanperundangan) $scope.tablerefperaturanperundangan = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablerefperaturanperundangan);
+                    if($scope.datadpdbarures.usrKualitasPTL_tablerefperaturanlainnya) $scope.tablerefperaturanlainnya = angular.fromJson($scope.datadpdbarures.usrKualitasPTL_tablerefperaturanlainnya);
+                    $scope.datadpdbaru.designcriteria = $scope.datadpdbarures.usrKualitasPTL_designcriteria;
+                    $scope.datadpdbaru.gambarutama = $scope.datadpdbarures.usrKualitasPTL_gambarutama;
+                    $scope.datadpdbaru.criticalcalculation = $scope.datadpdbarures.usrKualitasPTL_criticalcalculation;
+                    // end tambahan dpd v2
+
+                    $scope.datapermohonan.file.data = response.data.usrPermohonan_dokumen;
+                });
+            };
+
+            $scope.retrieve();
+
+
+            $scope.checkgtzero=function(i){
+                if(i == 0) return false;
+                return true;
+            }
+
+            $scope.isvalid = function(isneeddocument){
+                isneeddocument = (typeof isneeddocument === 'undefined' && $scope.action != 'correct');
+                // $scope.data.usrPersetujuanSurvey_dokumen = $scope.usrPersetujuanSurvey_dokumen.model;
+
+                var isvalid = $validate();
+                if($scope.pills.current == 0){
+                    isvalid
+                    // .rule($validate.required($scope.data.nosuratpersetujuan), 'Nomor Surat Tugas harus diisi!')
+                    // .rule($validate.required($scope.data.tglsuratpersetujuan), 'Tanggal Surat Tugas harus diisi!')
+                    // .rule($scope.data.usrPersetujuanSurvey_tglsuratpersetujuan >= $scope.datapermohonansurvey.usrPermohonanSurvey_tglsurat, 'Tanggal persetujuan tidak boleh sebelum tanggal permohonan survey!')
+                    // .rule($validate.required($scope.data.usrPersetujuanSurvey_dokumen || !isneeddocument), 'Dokumen harus diupload!');
+                }
+
+                if($scope.pills.current == 1){
+                    if ($scope.data.hasilevaluasi == "tidak") {
+                        isvalid
+                        // .rule($validate.required($scope.data.tglsurat), 'Tanggal Approve harus diisi!')
+                            .rule($validate.required($scope.data.perihal), 'Catatan harus diisi!')
+                    }
+                }
+
+                if($scope.pills.current == 2){
+                    if ($scope.data.hasilevaluasi == "tidak") {
+                        isvalid
+                        // .rule($validate.required($scope.data.tglsurat), 'Tanggal Approve harus diisi!')
+                            .rule($validate.required($scope.data.perihal), 'Catatan harus diisi!')
+                    }
+                }
+                if($scope.pills.current == 3 ){
+                    if ($scope.data.hasilevaluasi == "tidak") {
+                        isvalid
+                        // .rule($validate.required($scope.data.tglsurat), 'Tanggal Approve harus diisi!')
+                            .rule($validate.required($scope.data.perihal), 'Catatan harus diisi!')
+                    }
+                }
+                return isvalid.check();
+            };
+
+            $scope.dokumendetail = {
+                isupload: $scope.action != 'view',
+                isview: $scope.action != 'add',
+                accept:'application/pdf',
+                data: {}
+            };
+
+
+            $scope.btnadd = $button('add', {
+                //class : 'btn btn-success',
+                title: 'Tambah Daftar Pemeriksaan Desain',
+                onclick: function(){
+                    $scope.modal.data = {};
+                    $scope.modal.action = 'add';
+                    $scope.modal.buttons = [$scope.btnsavemodal, $scope.btnclose];
+                    $scope.modal.open();
+                }
+            });
+
+            $scope.btnprint = $button('print', {
+                class : 'btn btn-info',
+                title: 'Draft DPD',
+                ondblclick: function(){
+                    // $scope.data.usrBiayaKesepakatan_suratpenawaranbiaya = $scope.suratpenawaranbiaya.model;
+                    // $scope.data.usrPersetujuanSurvey_draftsuratpenugasan = $scope.draftsuratpenugasan.model;
+                    // $scope.data.usrBiayaKesepakatan_draftkak = $scope.draftkak.model;
+                    // $scope.data.usrBiayaKesepakatan_draftklausulkeuangan = $scope.draftklausulkeuangan.model;
+                    // $scope.data.usrPersetujuanSurvey_suratpenawaranbiaya = $scope.suratpenawaranbiaya.model;
+                    if($scope.pills.current == 0){
+                       $scope.data.data = angular.toJson($scope.table);
+                        Activiti_Task.save($scope.data).then(function (response2) {
+                            $alert.add('Data berhasil disimpan!', $alert.success);
+                        });
+                    }
+                    if($scope.pills.current == 1){
+                        $scope.data.data = angular.toJson($scope.table);
+                        // for (i = 0; i < $scope.data.length; i++) {
+                        //     angular.forEach(response.data, function (val, key) {
+                        //         if ($scope.data[i].id_disiplin == 1)
+                        //             $scope.data.data1 = angular.toJson($scope.table);
+                        //     }        }
+                        Activiti_Task.save($scope.data).then(function (response2) {
+                            $alert.add('Data berhasil disimpan!', $alert.success);
+                        });
+                    };
+                    // Iconplus_Generatedoc.draftpenugasan($scope.data).then(function(response){
+                    Iconplus_Generatedoc.dpd($scope.data).then(function(response) {
+                        $window.location.href = alt.serverUrl + response.data;
+                    });
+                }});
+
+            $scope.btnsavemodal = $button('save', {
+                onclick: function(){
+                    // $scope.modal.data.dokumendetail = $scope.dokumendetail.model;
+                    var isvalid = $validate()
+                        .rule($validate.required($scope.modal.data.kode_referensi), 'Kode Referensi harus diisi!')
+                    // .rule($validate.required($scope.modal.data.crosscc), 'Judul PE harus diisi!')
+
+                    var isvalid2 = isvalid.check();
+
+                    if (!isvalid2) return false;
+
+                    var data = angular.copy($scope.modal.data);
+                    // $scope.dokumendetail.clear();
+                    if($scope.modal.action == 'add') {
+                        $scope.table.push(data);
+                    }
+                    else{
+                        $scope.table[$scope.modal.index] = data;
+                    }
+                    $scope.modal.close();
+                }
+            });
+            $scope.btnclose = $button('close', {
+                title: 'Batal',
+                onclick: function(){
+                    $scope.modal.close();
+                    // $scope.dokumendetail.clear();
+                }
+            });
+
+
+            $scope.modal = {
+                header: 'Referensi Produk (DPD)',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+
+            $scope.modaledit = {
+                header: 'Referensi Produk (DPD)',
+                class : 'modal-lg',
+                action: 'view',
+                data  : {},
+                buttons: []
+            };
+
+
+            // if($scope.data.notabuku_data) {
+            //     $scope.table = angular.fromJson($scope.data.notabuku_data);
+            //     // angular.forEach($scope.table, function (val, key) {
+            //     //     if (response.data['notabuku_dokumen_' + key] && $scope.table[key].dokumen == 'notabuku_dokumen_' + key) {
+            //     //         $scope.table[key].dokumendata = response.data['notabuku_dokumen_' + key];
+            //     //     }
+            //     // });
+            // }
+            if($scope.data.usrPersetujuanSurvey_data) {
+                $scope.table = angular.fromJson($scope.data.usrPersetujuanSurvey_data);
+            }
+
+               }];
+});
